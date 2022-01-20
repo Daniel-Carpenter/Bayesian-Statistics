@@ -1,0 +1,137 @@
+---
+title:  "Lab 1 - Bayesian Statistics"
+author: "Daniel Carpenter"
+date:   "January 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  md_document: default
+     
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+  pdf_document: 
+    toc: TRUE
+    number_sections: TRUE
+  word_document:
+    toc: TRUE
+    number_sections: TRUE    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+
+## Helpful `R Markdown` Cheat sheets and Links
+
+* [Lesson 1 for R Markdown](http://rmarkdown.rstudio.com/lesson-1.html)
+* [R Markdown Cheat sheet (v2.0)](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf)
+* [R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.209992917.1171562397.1642623613-1554842467.1639495227)
+* [Other R Markdown Cheat sheets](https://rmarkdown.rstudio.com/lesson-15.html)
+
+---
+
+## Examples of `LaTex` Formulae with R 
+
+* [Note helpful LaTex repository here](https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes#!#Adding_math_to_LaTeX)
+
+
+<br>
+
+#### Example `a`:
+$$
+(x + a)^n = 
+\sum_{k=0}^{n}
+  \begin{pmatrix}
+    n\\
+    k
+  \end{pmatrix}
+x^ka^{n-k}
+$$
+
+
+<br>
+
+#### Example `b`:
+$$
+(1 + x)^n = 1 
++ \frac{nx}{1!} + \frac{n(n-1)x^2}{n!} + \dotsm
+$$
+
+
+<br>
+
+#### Example `c`:
+$$
+f(x) = a_{0} + 
+\sum_{n = 1}^{\infty}
+  (a_{n}\cos\frac{n \pi x}{L} + b_{n}\sin\frac{n \pi x}{L})
+$$
+
+
+<br>
+
+#### Example `d`:
+$$
+e^x = 1 
++ \frac{x}{1!}
++ \frac{x^2}{2!}
++ \frac{x^3}{3!}
++ \dotsm, -\infty < x < \infty
+$$
+
+---
+
+## Histogram of $\mu$
+
+```{r histogram, echo=TRUE, cache=TRUE}
+library(rstan)
+library(Intro2R)
+
+# Suggested to do this with multiple cores
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
+
+# Read in the ddt csv file
+ddt <- read.csv("Input_Files/DDT.csv")
+
+# Create model using rstan
+basic_data <- list(y=ddt$LENGTH, N=length(ddt$LENGTH))
+fit <- stan(file = "Input_Files/basic.stan",
+            model_name = "basic",
+            data = basic_data,
+            chains = 3,
+            warmup = 1000,
+            cores = 3,
+            iter = 5000,
+            pars = c("mu")
+            )
+
+# ---
+
+library(ggplot2)
+library(rstanarm)
+library(bayesplot)
+
+# Create a blue histogram of mu
+color_scheme_set("blue")
+mcmc_hist(fit,pars = c("mu"))
+```
+
+---
+
+## Assessment for Bayesian Statistics
+
+Group             | Weight
+------------------|--------
+Assignments       | 40%
+Midterm Exam      | 10%
+Lab Exercises     | 10%
+Chapter Quizzes   | 10%
+Final Exam        | 30%
+**Total**         | **100%**
+
