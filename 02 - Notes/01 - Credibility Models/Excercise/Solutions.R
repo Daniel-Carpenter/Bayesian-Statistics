@@ -22,15 +22,15 @@ mc(1:4)
 x=1:4
 ya=ma(x)
 
-windows()
+
 plot(ya~x, type = "h", lwd = 10, main = "Model A")
 
 yb = mb(x)
-windows()
+
 plot(yb~x, type = "h", lwd = 10, main = "Model B")
 
 yc = mc(x)
-windows()
+
 plot(yc~x, type = "h", lwd = 10, main = "Model C")
 
 sum(ya)
@@ -48,7 +48,7 @@ library(ggplot2)
 ga = ggplot(dfa, aes(x = x, y = ya, col=I("red"))) + geom_line(lwd = 10)
 gb = ggplot(dfb, aes(x = x, y = yb, col = I("blue") )) + geom_line(lwd = 10)
 gc = ggplot(dfc, aes(x=x,y=yc, col = I("green"))) + geom_line(lwd = 10)
-windows()
+ 
 ga
 gb
 gc
