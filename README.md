@@ -1,6 +1,6 @@
-# Analytics & Metaheuristics
-> DSA 5113-995
-> Spring 2022
+# Bayesian Statistics
+> DSA 5403-995  
+> Spring 2022  
 
 ## Resources
 * [Book Resources](https://sites.google.com/site/doingbayesiandataanalysis/home)
