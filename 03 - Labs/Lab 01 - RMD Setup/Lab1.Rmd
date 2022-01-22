@@ -5,8 +5,7 @@ date:   "January 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  md_document: default
-     
+  github_document: default
   html_document:
     toc: yes
     toc_float: yes
@@ -17,6 +16,8 @@ output:
   word_document:
     toc: TRUE
     number_sections: TRUE    
+  md_document: default
+     
 ---
 
 ```{r setup, include=FALSE}
