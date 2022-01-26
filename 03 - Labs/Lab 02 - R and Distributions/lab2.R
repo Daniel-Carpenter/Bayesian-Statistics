@@ -2,7 +2,7 @@
 # Inputs -----------------------------------------------------------------------
   n = 10   # N Number of trials
   p = 0.5  # Probability of success 
-  X = 0:5  # Number of Successes in N independent trials
+  X = 0:10  # Number of Successes in N independent trials
 
 
 # Create function for discrete binomial distribution ---------------------------
@@ -50,7 +50,12 @@
   plot(X, y.dbinom)
   
   
+# Create a plot for Binomial Dist ----------------------------------------------
+  xVar <- 0:n
+  yVar <- dbinom(X, size=n, prob=p)
   
+  plot(x = xVar, y = yVar, type = 'h', main = 'Daniel Carpenter - Binomial Distribution Plot')
 
+  
 
 
