@@ -1,36 +1,56 @@
-# Bayesian course
-# Label 2
-# distributional theory
+
+# Inputs -----------------------------------------------------------------------
+  n = 10   # N Number of trials
+  p = 0.5  # Probability of success 
+  X = 0:5  # Number of Successes in N independent trials
 
 
-# Binomial
-dev.new(noRStudioGD = TRUE) # Comment this out when putting it into RMD
-x=0:10
-plot(x = x, 
-     
-     # Density Binomial Distribition for a discrete variable or a vector of discrete vars
-     # Since the prob = 0.6, then n * prob = 6 (which is the most probably)
-     y = dbinom(x, size=10,prob=0.6))
+# Create function for discrete binomial distribution ---------------------------
+  dmybin <- function(X, n, p) {
+    
+    # Change X to k to be consistent with textbook
+    k = X
+    
+    # Calculate the binomial coefficient (N k)
+    binomialCoefficient <- choose(n, X)
+    
+    # Return the discrete binomial calculation
+    return(binomialCoefficient * p^k * (1 - p)^(n - k))
+  }
 
-
-# rbinom = random sample from the binomial
-
-  ## 100 binomial experiments (n), which you throw a coin 10 times (size)
-  x = rbinom(n = 100, size = 10, prob=0.6)
-  y = rbinom(n = 80,  size = 10, prob=0.8)
+# Call and return Results of the function
+  y.dmybin = dmybin(X, n=n, p=p)
+  y.dmybin
   
-  ## Create a data frame that combines x, then the y. Repeat x 100 times and y 80 times
-  df = data.frame(Bin =c(x,y), Label=rep(c("x","y"),c(100,80)))
-  df
+  # Plot the distribution
+  plot(X, y.dmybin)
+  
+  
+# Create a Cumulative Probability Function Called `pmybin` ---------------------
+  pmybin <- function(dmybin, X, n, p) {
+    
+    # Return the Cumulative Probability
+    return(sum(dmybin(X, n, p)))
+  }
+  
+# Call the Cumulative Probability Function `pmybin` and Return Results
+  cumulativeProbability.pmybin <- pmybin(dmybin, X, n, p)
+  cumulativeProbability.pmybin
+
+# Call and Return Results of Base R Binomial Distribution Function `pbinom`
+  cumulativeProbability.pbinom <- pbinom(max(X), size=n, prob=p)
+  cumulativeProbability.pbinom
+  
+  
+# Call and return Results of the Base R Binomial Distribution Function ---------
+  y.dbinom = dbinom(X, size=n, prob=p)
+  y.dbinom
+  
+  # Plot the distribution
+  plot(X, y.dbinom)
+  
+  
+  
 
 
-if(!require(ggplot2)) install.packages(ggplot2)
 
-g = ggplot(df, aes(x = Label, y = Bin, fill = Label)) +
-  geom_boxplot()
-print(g)
-
-## Violin chart will ensure that you are not, for example, having a bi modal distribuition
-e = ggplot(df, aes(x = Label, y=Bin, fill = Label)) + 
-  geom_violin(aes(y = Bin)) +facet_wrap(~Label)
-print(e)

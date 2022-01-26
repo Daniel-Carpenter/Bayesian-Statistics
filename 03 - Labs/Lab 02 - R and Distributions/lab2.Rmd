@@ -28,19 +28,73 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Binomial Distribution
 
-### `LaTex` Formula for Binomial Distribution
+### `LaTex` Formula for Discrete Binomial Distribution
+> *Note* that the discrete binomial distribution is very useful for modeling processes in which the binary outcome can be either a success (1) or a failure (0)
 
 $$
-p(X = x|n, p)
+p(X = x|n, p) = 
+  \begin{pmatrix}
+  N \\
+  k 
+  \end{pmatrix}
+p^k(1-p)^{N - k}
 $$
 
+### Function (`dmybin`) to Calculate Discrete Binomial Distribition
+```{r dmybin, echo=TRUE}
+dmybin <- function(X, n, p) {
+  
+  # Change X to k to be consistent with textbook
+  k = X
+  
+  # Calculate the binomial coefficient (N k)
+  binomialCoefficient <- choose(n, X)
+  
+  # Return the discrete binomial calculation
+  return(binomialCoefficient * p^k * (1 - p)^(n - k))
+}
+```
 
+### Call and Return Results of the `dmybin` Function
+```{r call_dmybin, echo=TRUE}
+y.dmybin = dmybin(X=0:4, n=10, p=0.5)
+y.dmybin
+```
+
+### Call and Return Results of Base R Binomial Distribution Function `y.dbinom`
+```{r call_dbinom, echo=TRUE}
+y.dbinom = dbinom(x=0:4, size=10, prob=0.5)
+y.dbinom
+```
+
+---
+
+### Create a Cumulative Probability Function Called `pmybin`
+```{r pmybin, echo=TRUE}
+pmybin <- function(dmybin, x, n, p) {
+  
+  # Return the Cumulative Probability
+  return(sum(dmybin(0:x, n, p)))
+}
+```
+
+### Call and Return Results of the `pmybin` 
+```{r call_pmybin, echo=TRUE}
+cumulativeProbability.pmybin <- pmybin(dmybin, x=5, n=10, p=0.5)
+cumulativeProbability.pmybin
+```
+
+### Call and Return Results of Base R Binomial Function Distribution Function `pbinom`
+```{r pbinom, echo=TRUE}
+cumulativeProbability.pbinom <- pbinom(q = 5, size=10, prob=0.5)
+cumulativeProbability.pbinom
+```
 
 ---
 
 # Four Basic Distributional Functions: `dstem`, `pstem`, `rstem`, and `qstem`
 
-```{r binom, echo=TRUE}
+```{r dists, echo=TRUE}
 
 ```
 

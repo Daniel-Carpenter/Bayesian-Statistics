@@ -250,11 +250,66 @@ div.tocify {
 <hr />
 <div id="binomial-distribution" class="section level1" number="1">
 <h1 number="1"><span class="header-section-number">1</span> Binomial Distribution</h1>
-<div id="latex-formula-for-binomial-distribution" class="section level3" number="1.0.1">
-<h3 number="1.0.1"><span class="header-section-number">1.0.1</span> <code>LaTex</code> Formula for Binomial Distribution</h3>
+<div id="latex-formula-for-discrete-binomial-distribution" class="section level3" number="1.0.1">
+<h3 number="1.0.1"><span class="header-section-number">1.0.1</span> <code>LaTex</code> Formula for Discrete Binomial Distribution</h3>
+<blockquote>
+<p><em>Note</em> that the discrete binomial distribution is very useful for modeling processes in which the binary outcome can be either a success (1) or a failure (0)</p>
+</blockquote>
 <p><span class="math display">\[
-p(X = x|n, p)
+p(X = x|n, p) = 
+  \begin{pmatrix}
+  N \\
+  k 
+  \end{pmatrix}
+p^k(1-p)^{N - k}
 \]</span></p>
+</div>
+<div id="function-dmybin-to-calculate-discrete-binomial-distribition" class="section level3" number="1.0.2">
+<h3 number="1.0.2"><span class="header-section-number">1.0.2</span> Function (<code>dmybin</code>) to Calculate Discrete Binomial Distribition</h3>
+<pre class="r"><code>dmybin &lt;- function(X, n, p) {
+  
+  # Change X to k to be consistent with textbook
+  k = X
+  
+  # Calculate the binomial coefficient (N k)
+  binomialCoefficient &lt;- choose(n, X)
+  
+  # Return the discrete binomial calculation
+  return(binomialCoefficient * p^k * (1 - p)^(n - k))
+}</code></pre>
+</div>
+<div id="call-and-return-results-of-the-dmybin-function" class="section level3" number="1.0.3">
+<h3 number="1.0.3"><span class="header-section-number">1.0.3</span> Call and Return Results of the <code>dmybin</code> Function</h3>
+<pre class="r"><code>y.dmybin = dmybin(X=0:4, n=10, p=0.5)
+y.dmybin</code></pre>
+<pre><code>## [1] 0.0009765625 0.0097656250 0.0439453125 0.1171875000 0.2050781250</code></pre>
+</div>
+<div id="call-and-return-results-of-base-r-binomial-distribution-function-y.dbinom" class="section level3" number="1.0.4">
+<h3 number="1.0.4"><span class="header-section-number">1.0.4</span> Call and Return Results of Base R Binomial Distribution Function <code>y.dbinom</code></h3>
+<pre class="r"><code>y.dbinom = dbinom(x=0:4, size=10, prob=0.5)
+y.dbinom</code></pre>
+<pre><code>## [1] 0.0009765625 0.0097656250 0.0439453125 0.1171875000 0.2050781250</code></pre>
+<hr />
+</div>
+<div id="create-a-cumulative-probability-function-called-pmybin" class="section level3" number="1.0.5">
+<h3 number="1.0.5"><span class="header-section-number">1.0.5</span> Create a Cumulative Probability Function Called <code>pmybin</code></h3>
+<pre class="r"><code>pmybin &lt;- function(dmybin, x, n, p) {
+  
+  # Return the Cumulative Probability
+  return(sum(dmybin(0:x, n, p)))
+}</code></pre>
+</div>
+<div id="call-and-return-results-of-the-pmybin" class="section level3" number="1.0.6">
+<h3 number="1.0.6"><span class="header-section-number">1.0.6</span> Call and Return Results of the <code>pmybin</code></h3>
+<pre class="r"><code>cumulativeProbability.pmybin &lt;- pmybin(dmybin, x=5, n=10, p=0.5)
+cumulativeProbability.pmybin</code></pre>
+<pre><code>## [1] 0.6230469</code></pre>
+</div>
+<div id="call-and-return-results-of-base-r-binomial-function-distribution-function-pbinom" class="section level3" number="1.0.7">
+<h3 number="1.0.7"><span class="header-section-number">1.0.7</span> Call and Return Results of Base R Binomial Function Distribution Function <code>pbinom</code></h3>
+<pre class="r"><code>cumulativeProbability.pbinom &lt;- pbinom(q = 5, size=10, prob=0.5)
+cumulativeProbability.pbinom</code></pre>
+<pre><code>## [1] 0.6230469</code></pre>
 <hr />
 </div>
 </div>
