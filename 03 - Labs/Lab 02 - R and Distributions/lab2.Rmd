@@ -1,0 +1,47 @@
+---
+title:  "Lab 2 - Bayesian Statistics - Distributional Theory"
+author: "Daniel Carpenter"
+date:   "January 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+  github_document: default
+  pdf_document: 
+    toc: TRUE
+    number_sections: TRUE
+  word_document:
+    toc: TRUE
+    number_sections: TRUE    
+  md_document: default
+     
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+# Binomial Distribution
+
+### `LaTex` Formula for Binomial Distribution
+
+$$
+p(X = x|n, p)
+$$
+
+
+
+---
+
+# Four Basic Distributional Functions: `dstem`, `pstem`, `rstem`, and `qstem`
+
+```{r binom, echo=TRUE}
+
+```
+
+
