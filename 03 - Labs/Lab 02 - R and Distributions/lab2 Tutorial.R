@@ -10,7 +10,7 @@ plot(x = x,
      
      # Density Binomial Distribition for a discrete variable or a vector of discrete vars
      # Since the prob = 0.6, then n * prob = 6 (which is the most probably)
-     y = dbinom(x, size=10,prob=0.6))
+     y = dbinom(x, size=10,prob=0.5))
 
 
 # rbinom = random sample from the binomial

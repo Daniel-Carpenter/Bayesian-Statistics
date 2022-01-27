@@ -26,10 +26,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ---
 
-# Binomial Distribution
+# Discrete Binomial Distribution
+> *Note* that the discrete binomial distribution is very useful for modeling processes in which the binary outcome can be ***either*** a success (`1`, `TRUE`) or a failure (`0`, `FALSE`)
 
 ### `LaTex` Formula for Discrete Binomial Distribution
-> *Note* that the discrete binomial distribution is very useful for modeling processes in which the binary outcome can be either a success (1) or a failure (0)
 
 $$
 p(X = x|n, p) = 
@@ -61,7 +61,7 @@ y.dmybin = dmybin(X=0:4, n=10, p=0.5)
 y.dmybin
 ```
 
-### Call and Return Results of Base R Binomial Distribution Function `y.dbinom`
+### Call and Return Results of `base` R Binomial Distribution Function `dbinom`
 ```{r call_dbinom, echo=TRUE}
 y.dbinom = dbinom(x=0:4, size=10, prob=0.5)
 y.dbinom
@@ -84,7 +84,7 @@ cumulativeProbability.pmybin <- pmybin(dmybin, x=5, n=10, p=0.5)
 cumulativeProbability.pmybin
 ```
 
-### Call and Return Results of Base R Binomial Function Distribution Function `pbinom`
+### Call and Return Results of `base` R Binomial Function Distribution Function `pbinom`
 ```{r pbinom, echo=TRUE}
 cumulativeProbability.pbinom <- pbinom(q = 5, size=10, prob=0.5)
 cumulativeProbability.pbinom
@@ -94,7 +94,7 @@ cumulativeProbability.pbinom
 ```{r bdist_plot, echo=TRUE}
 x = 0:10
 
-plot(x = 0:10, 
+plot(x, 
      y = dbinom(x, size = 10, prob = 0.5),
      type = 'h', # h := histogram like
      main = 'Daniel Carpenter - Binomial Distributon',

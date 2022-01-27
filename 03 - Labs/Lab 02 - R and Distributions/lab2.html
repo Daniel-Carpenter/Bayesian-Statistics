@@ -248,13 +248,13 @@ div.tocify {
 
 
 <hr />
-<div id="binomial-distribution" class="section level1" number="1">
-<h1 number="1"><span class="header-section-number">1</span> Binomial Distribution</h1>
+<div id="discrete-binomial-distribution" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> Discrete Binomial Distribution</h1>
+<blockquote>
+<p><em>Note</em> that the discrete binomial distribution is very useful for modeling processes in which the binary outcome can be <strong><em>either</em></strong> a success (<code>1</code>, <code>TRUE</code>) or a failure (<code>0</code>, <code>FALSE</code>)</p>
+</blockquote>
 <div id="latex-formula-for-discrete-binomial-distribution" class="section level3" number="1.0.1">
 <h3 number="1.0.1"><span class="header-section-number">1.0.1</span> <code>LaTex</code> Formula for Discrete Binomial Distribution</h3>
-<blockquote>
-<p><em>Note</em> that the discrete binomial distribution is very useful for modeling processes in which the binary outcome can be either a success (1) or a failure (0)</p>
-</blockquote>
 <p><span class="math display">\[
 p(X = x|n, p) = 
   \begin{pmatrix}
@@ -284,8 +284,8 @@ p^k(1-p)^{N - k}
 y.dmybin</code></pre>
 <pre><code>## [1] 0.0009765625 0.0097656250 0.0439453125 0.1171875000 0.2050781250</code></pre>
 </div>
-<div id="call-and-return-results-of-base-r-binomial-distribution-function-y.dbinom" class="section level3" number="1.0.4">
-<h3 number="1.0.4"><span class="header-section-number">1.0.4</span> Call and Return Results of Base R Binomial Distribution Function <code>y.dbinom</code></h3>
+<div id="call-and-return-results-of-base-r-binomial-distribution-function-dbinom" class="section level3" number="1.0.4">
+<h3 number="1.0.4"><span class="header-section-number">1.0.4</span> Call and Return Results of <code>base</code> R Binomial Distribution Function <code>dbinom</code></h3>
 <pre class="r"><code>y.dbinom = dbinom(x=0:4, size=10, prob=0.5)
 y.dbinom</code></pre>
 <pre><code>## [1] 0.0009765625 0.0097656250 0.0439453125 0.1171875000 0.2050781250</code></pre>
@@ -306,7 +306,7 @@ cumulativeProbability.pmybin</code></pre>
 <pre><code>## [1] 0.6230469</code></pre>
 </div>
 <div id="call-and-return-results-of-base-r-binomial-function-distribution-function-pbinom" class="section level3" number="1.0.7">
-<h3 number="1.0.7"><span class="header-section-number">1.0.7</span> Call and Return Results of Base R Binomial Function Distribution Function <code>pbinom</code></h3>
+<h3 number="1.0.7"><span class="header-section-number">1.0.7</span> Call and Return Results of <code>base</code> R Binomial Function Distribution Function <code>pbinom</code></h3>
 <pre class="r"><code>cumulativeProbability.pbinom &lt;- pbinom(q = 5, size=10, prob=0.5)
 cumulativeProbability.pbinom</code></pre>
 <pre><code>## [1] 0.6230469</code></pre>
@@ -315,7 +315,7 @@ cumulativeProbability.pbinom</code></pre>
 <h3 number="1.0.8"><span class="header-section-number">1.0.8</span> Create a Binomial Distribution Plot</h3>
 <pre class="r"><code>x = 0:10
 
-plot(x = 0:10, 
+plot(x, 
      y = dbinom(x, size = 10, prob = 0.5),
      type = &#39;h&#39;, # h := histogram like
      main = &#39;Daniel Carpenter - Binomial Distributon&#39;,
