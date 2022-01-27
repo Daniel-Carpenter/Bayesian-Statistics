@@ -60,8 +60,6 @@
     
 # PART II - Using dstem, pstem, rstem, qstem ===================================
   
-    # Suppose that 𝑋 ∼ 𝑃𝑜𝑖𝑠(𝜆). Use R and the above function types to answer the following:
-    
       # i. Find 𝑃(𝑋 = 4|𝜆 = 3) (What is the probability that there are exactly 4 successes when 3 is the average)
         dpois(x = 4, lambda = 3)
     
@@ -115,9 +113,14 @@
         # Create Box Plots
         basePlot + geom_boxplot()
                     
-        # Create Box Plots
+        # Create Violin Plots
         basePlot + geom_violin()
           
+        # Create Histogram Plots
+        ggplot(df) + 
+          geom_histogram(aes(y = x, fill = Sample)) + 
+          facet_wrap(~Sample) +
+          theme_minimal()
         
         
         

@@ -5,19 +5,19 @@ date:   "January 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
+  md_document: default
+     
+  github_document: default
   html_document:
     toc: yes
     toc_float: yes
     number_sections: yes
-  github_document: default
   pdf_document: 
     toc: TRUE
     number_sections: TRUE
   word_document:
     toc: TRUE
     number_sections: TRUE    
-  md_document: default
-     
 ---
 
 ```{r setup, include=FALSE}
@@ -103,10 +103,79 @@ plot(x,
 
 ---
 
-# Four Basic Distributional Functions: `dstem`, `pstem`, `rstem`, and `qstem`
+# Poisson and Four Basic Distributional Functions: `dpois`, `ppois`, `rpois`, and `qpois`
 
-```{r dists, echo=TRUE}
+## `a` Poisson Calculations
 
+### Find 𝑃(𝑋 = 4|𝜆 = 3)
+* What is the probability that there are exactly 4 successes when 3 is the average?
+```{r i, echo=TRUE}
+dpois(x = 4, lambda = 3)
+```
+### Find 𝑃(𝑋 ≤ 4|𝜆 = 3)
+* What is the probability that there are 4 or less successes when 3 is the average? 
+```{r ii, echo=TRUE}
+ppois(q = 4, lambda = 3)
+```
+        
+### Find 𝑃(𝑋 > 4|𝜆 = 3)
+* What is the probability that there are more than 4 successes when 3 is the average?
+```{r iii, echo=TRUE}
+ppois(q = 4, lambda = 3, lower.tail = FALSE)
+```
+      
+### Find x so that 𝑃(𝑋 ≤ 𝑥|𝜆 = 3)= 0.9997077 
+* How many successes when 3 on average and cumulative probability of 0.9997077?
+```{r iv, echo=TRUE}
+qpois(p = 0.9997077, lambda = 3)
+```
+        
+### Create a sample of size 100 from a Poisson distribution that has parameter 𝜆 = 3. Store in an object.
+```{r v, echo=TRUE}
+poissonSample3 <- rpois(n = 100, lambda = 3)
+```
+        
+### Make a second sample of size 100 from a Poisson that has parameter 𝜆 = 6, store in an object
+```{r vi, echo=TRUE}
+poissonSample6 <- rpois(n = 100, lambda = 6)
 ```
 
+## `b/c` Data Frame and Base `ggplot` for Boxplots and Violins
+```{r b/c, echo=TRUE, message=FALSE}
+if(!require(tidyverse)) install.packages(tidyverse)
 
+# Create data frame with both samples
+df <- data.frame(Fst = poissonSample3,
+                 Snd = poissonSample6) %>%
+  
+  # Pivot data into single column for ggplot use
+  pivot_longer(cols      = c("Fst", "Snd"),
+               names_to  = "Sample",
+               values_to = "x")
+
+
+# Create a base Plot Object for future distribution graphs
+basePlot <- ggplot(df,
+                   aes(x = Sample,
+                       y = x,
+                       fill = Sample)) + 
+            
+            # Color palette and theme
+            scale_fill_brewer(palette = "Pastel1") +
+            theme_minimal() +
+          
+            # Title
+            labs(title    = 'Sample Distribution Created from rpois Poisson Function',
+                 subtitle = 'Sample Size (n) = 100 | Fst Lambda = 3; Snd Lamda = 6')
+```
+        
+                
+## `b` Create Box Plots
+```{r boxplot, echo=TRUE}
+basePlot + geom_boxplot()
+```
+                    
+## `c` Create Violin Plots
+```{r violin, echo=TRUE}
+basePlot + geom_violin()
+```
