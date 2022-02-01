@@ -7,10 +7,11 @@
 2. Running Probability
 3. Plotting Probability Distributions
 4. Calculating Probabilities
+5. Conditional Probability
 
 ## Types of Probabilities
-1. Inside the Head (Personal Belief)
-2. Outside the Head (Long Run Frequency)
+1. Inside the Head (`Personal/Subjective Beliefs`)
+2. Outside the Head (`Long Run Frequency`) (calculate the long-run frequency; e.g., simulations or using data) 
 
 ## 1. Distributions Overview
 
@@ -110,6 +111,28 @@ polygon(x = c(-5,xcurve,10), y = c(0,ycurve,0), col = "green3")
 
 ## 4. Calculating Probabilities
 
+### Probability Density
+> Calculates the density of the bin (or interval)
+
+Term                  | Description
+----------------------|-------------
+Probability `Mass`    |  Probability of falling in a bin (*interval*) on  a continuous scale
+Probability `Density` | Ratio of probability mass to the bin (interval)width. *"Stuff per unit of space it takes up"*
+
+<img src = "Images/probDensity.png" width = 550> <br>
+
+### Normal PDF (Probability Density Function)
+> Estimation of probability density
+
+<img src = "Images/pdf.png" width = 550> <br>
+
+### Highest Density Interval (HDI)
+
+<img src = "Images/hdi.png" width = 550> <br>
+<img src = "Images/hdiExamples.png" width = 550> <br>
+
+
+
 ### What is the probability `x > 12`, given mean and standard deviation
 ```R
 # Calculating probabilities
@@ -159,3 +182,43 @@ text(locator(1), paste("Area=", area)) #locator waits for a left click
 
 > Output  
 <img src = "Images/probBetween.png" width = 350> <br>
+
+---
+<br>
+
+## 5 - Conditional Probability
+> Conditional probability of something, given known data
+```
+Conditional Probability of X given Y = p(x | y)
+```
+
+### Example of Conditional Probability (1)
+
+<img src = "Images/condProb.png" width = 600> <br>
+
+* ***Q***: p(`Blond Hair` |` Blue Eyes`)
+* ***Reads as*** what is the conditional probability that someone has `blonde hair` given them having `blue eyes`
+  ```
+  Answer - Conditional Probability that someone has Blonde Hair, given them having blue eyes:
+  0.16 / 0.36 = 0.45, or 45%
+  ```
+
+### Example of Conditional Probability (2)
+* ***Q1***: p(`Red Hair` |` Hazel Eyes`)
+* ***Reads as*** what is the conditional probability that someone has `red hair` given them having `hazel eyes`
+  ```
+  Answer - Conditional Probability that someone has Red Hair, given them having hazel eyes:
+  0.02/ 0.16 = 0.125, or 12.5%
+  ```
+
+* ***Q2***: Are these two probabilies independant of each other?
+* Test: multiply `marginal probabilities` and compare against `joint probability`. 
+  * If they are `equal`, they are `independant`
+  * If they are `not`, they are `dependant`
+  ```
+  Answer: 
+  Marginal Red * Marginal Hazel = 0.12 * 0.16 = 0.0192
+  Joint Red and Hazel = 0.200
+  
+  Since the do NOT equal, they are dependant
+  ```
