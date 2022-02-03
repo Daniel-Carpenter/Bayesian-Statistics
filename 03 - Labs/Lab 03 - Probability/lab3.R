@@ -90,20 +90,18 @@
       exactProb = 0 # The exact probability of the questions
       
       # If no provided LOWER AND UPPER Bound (NA as parameter value) then assume none
-      if(!(is.na(lowerBound) & is.na(upperBound))) {
+      if (!(is.na(lowerBound)) & !(is.na(upperBound))) {
         title <- paste0(", P(", lowerBound, " <= X < ",upperBound,")")
         exactProb = pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma) # calculate prob 
-      }
-      
+        
       # If no provided LOWER Bound (NA as parameter value) then assume none
-      else if(is.na(lowerBound)) {
+      } else if (is.na(lowerBound)) {
         lowerBound = curveLowerBound
         title <- paste0(", P(X < ",upperBound,")") # Set a dynamic title
         exactProb = pnorm(upperBound, mu, sigma) # calculate prob 
-      }
-      
+        
       # If no provided UPPER Bound (NA as parameter value) then assume none
-      else if(is.na(upperBound)) {
+      } else if(is.na(upperBound)) {
         upperBound = curveUpperBound
         title <- paste0(", P(X >= ",lowerBound,")")
         exactProb = 1 - pnorm(lowerBound, mu, sigma) # calculate prob 
@@ -171,12 +169,22 @@
   # Continuous variables 
   if(!require(ggplot2)) install.packages("ggplot2")
   
-  g = ggplot(NULL, aes(c(-10,10))) + 
+  ggplot(data = NULL, aes(c(-10,10))) +
+    
+    # LHS of the distribution (Blue)
     geom_area(stat = "function", 
               fun = dnorm, 
               args = list(mean = 0, sd = 3),
-              fill = "red", xlim = c(-10, 0)) 
+              fill = "red", xlim = c(-10, 0))  + 
+    
+    # RHS of the distribution (Blue)
+    geom_area(stat = "function", 
+              fun = dnorm, 
+              args = list(mean = 0, sd = 3),
+              fill = "blue", xlim = c(0, 10))  + 
+    
+    # Labels on the chart
+    labs(title = "Daniel Carpenter",
+         subtitle = "Normal Distribution with ggplot")
    
-  g
-  
   

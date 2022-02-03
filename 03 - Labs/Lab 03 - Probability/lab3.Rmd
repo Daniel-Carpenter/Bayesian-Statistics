@@ -6,16 +6,15 @@ date:   "February 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  html_document:
-    toc: yes
-    toc_float: yes
-    number_sections: yes
-  github_document: default
   md_document: default
      
   pdf_document: 
     toc: TRUE
     number_sections: TRUE
+  github_document: default
+  html_document:
+    toc: yes
+    toc_float: yes
   word_document:
     toc: TRUE
     number_sections: TRUE    
@@ -28,9 +27,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ---
 
 # Task `1`: Calculating Exact Probability
-> Assume 𝑋 ∼ 𝑁(𝜇 = 10, 𝜎 = 4)
 
 ## Inputs for `mu` and `sigma`
+
+$X \sim N(\mu = 10, \sigma = 4)$
+
 ```{r inputs, echo=TRUE, message=FALSE}
 mu    = 10
 sigma = 4
@@ -209,15 +210,34 @@ mynormplot(
 
 ---
 
-<br
+<br>
 
-# Task `6` - Formula for `Normal Density`
-$$
-X \sim N(\mu, \sigma)
-$$
+# Task `6`: 
+Formula for Normal Density using $\LaTeX: \ \ X \sim N(\mu, \sigma)$
 
 ---
 
-<br
+<br>
 
-# Task `6`
+# Task `7`:
+```{r ggplot, echo=TRUE, message=FALSE}
+if(!require(ggplot2)) install.packages("ggplot2")
+
+ggplot(data = NULL, aes(c(-10,10))) +
+  
+  # LHS of the distribution (Red)
+  geom_area(stat = "function", 
+            fun = dnorm, 
+            args = list(mean = 0, sd = 3),
+            fill = "red", xlim = c(-10, 0))  + 
+  
+  # RHS of the distribution (Blue)
+  geom_area(stat = "function", 
+            fun = dnorm, 
+            args = list(mean = 0, sd = 3),
+            fill = "blue", xlim = c(0, 10))  + 
+  
+  # Labels on the chart
+  labs(title = "Daniel Carpenter",
+       subtitle = "Normal Distribution with ggplot")
+```
