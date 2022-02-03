@@ -1,0 +1,32 @@
+---
+title:  "Lab 3 - Bayesian Statistics - Distributional Theory Continued"
+author: "Daniel Carpenter"
+date:   "February 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  md_document: default
+     
+  github_document: default
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+  pdf_document: 
+    toc: TRUE
+    number_sections: TRUE
+  word_document:
+    toc: TRUE
+    number_sections: TRUE    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+# Title
+```{r chunkName, echo=TRUE, message=FALSE}
+
+```
