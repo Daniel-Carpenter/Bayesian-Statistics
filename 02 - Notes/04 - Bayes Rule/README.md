@@ -2,40 +2,56 @@
 
 ## Outline
 1. Mean & Variance for `Discrete` *vs.* `Continuous` Variables
-2. Bayes Rule Overview
+2. `Bayes Rule` Overview
+3. `Sample Sizes` and Changing Outcomes
 
 ---
 <br>
 
 ## 1. Mean & Variance for `Discrete` *vs.* `Continuous` Variables
 
-### Discrete Variables
+### `Discrete` Variables
 
 *Sum of the expected values x probability*  
 * E(x) = &sum;<sub>n=1</sub> [x<sub>n</sub> &times; p<sub>n</sub>]
 * Variance is same, but using variance formula
 
-### Continuous Variables
+### `Continuous` Variables
 * `Mean`: Get the *area* of the density for the range you wish to find. Area under entire curve always 1.
 * The expected value of `x` is found via a `probability density function`. Use an integral to get the area from 0 to 1.  
   E(x) = &int;<sub>0</sub><sup>1</sup>[x p(x) dx]
 
   <img src = "Images/contMean.png" width = 400> <br>
 
+### *Disclaimer for Continuous Variables*
+* Note that in most situations in the real world, computing the integral using bayes can be `impossible`. 
+* Real world uses `Monte Carlo Simulation` more often, which future notes will contain examples
+
 ---
 <br>
 
 ## 2. `Bayes Rule` Overview
 
-### Definition
-> Probability of A, given B
+### Conceptual Definition
+> `Outcome`, given the `probability of x` and the `value of x`
 
-* Note that in most situations in the real world, computing the integral using bayes can be `impossible`. 
-* Real world uses `Monte Carlo Simulation` more often, which future notes will contain examples
+### Terms
+Term        | Analog        | Example
+------------|---------------|-------------
+Prior       | `x`, or the data  | x
+Likelihood  | Probability       | probability
+Posterior   | The probability weighted outcome | Expected value of x
 
+### Example
+<img src = "Images/priorTimesLikelihood.png" width = 400> <br>
+
+---
+<br>
+
+### Bayes Theorem  Definiton
 <img src = "Images/bayesFormula.png" width = 550> <br>
 
-### Example using Table
+### Example of Bayes Theorem using Table
 <img src = "Images/bayesEx.png" width = 550> <br>
 
 ### Viewing Frequency via Bar Chart (*`Example.R`*)
@@ -140,3 +156,17 @@ posNotUser      = 1 - trueNegative
 ```
 [1] 0.3322148
 ```
+
+---
+<br>
+
+## 3. `Sample Sizes` and Changing Outcomes
+
+### How do Sample Sizes Affect the Outcome? *`(Prior same)`*
+* Notice modes `change drastically` from prior to likelihood to posterior
+* Change in modes indicate that the `prior has little influence relative to change in sample size`
+<img src = "Images/sampleSizeOnly.png" width = 450> <br>
+
+### How do Sample Sizes Affect the Outcome? *`(Prior with Broad Distribution)`*
+* Notice modes `similar` from prior to likelihood to posterior (*due to broad distribution*)
+<img src = "Images/sampleSizeOnlyPriorBroad.png" width = 450> <br>
