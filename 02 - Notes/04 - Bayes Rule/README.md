@@ -2,6 +2,7 @@
 
 ## Outline
 1. Mean & Variance for `Discrete` *vs.* `Continuous` Variables
+2. Bayes Rule Overview
 
 ---
 <br>
@@ -28,6 +29,9 @@
 
 ### Definition
 > Probability of A, given B
+
+* Note that in most situations in the real world, computing the integral using bayes can be `impossible`. 
+* Real world uses `Monte Carlo Simulation` more often, which future notes will contain examples
 
 <img src = "Images/bayesFormula.png" width = 550> <br>
 
@@ -127,6 +131,7 @@ trueNegative   = 0.99
 posNotUser      = 1 - trueNegative
 
 
+# What is the probability of a false positive?
 (truePositive * userPopulation) / (trueNegative * userPopulation + posNotUser * 0.995)
 
 0.99*0.005/(0.99*0.005+0.01*0.995)
