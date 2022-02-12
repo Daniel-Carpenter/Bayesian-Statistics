@@ -91,6 +91,13 @@ priorPlot <- plot(x = theta, y = prior,
 ```
 
 ## `c.` Formula for the Likelihood
+
+### Formula
+$$
+likelihood: p(D|\theta) = \frac{p(\theta|D)}{p(\theta) / \sum_{\theta^*}p(D|\theta^*) \ p(\theta^*)}
+$$
+
+### R Calculations
 ```{r 2c, echo=TRUE, message=FALSE}
 # Substitute Dummy Input value for `x`
 numSuccesses = round(n / 2)
@@ -122,7 +129,9 @@ lines(x = theta, y = prior, type = "b", pch = 19, col = "tomato3")
 ## `f.` Formula and Plot of the Posterior
 
 ### Formula for Posterior
-
+$$
+posterior: p(\theta|D) = \frac{p(D|\theta) \ p(\theta)}{\sum_{\theta^*}p(D|\theta^*) \ p(\theta^*)}
+$$
 
 ### Plot of Posterior
 ```{r 2f, echo=TRUE, message=FALSE}
