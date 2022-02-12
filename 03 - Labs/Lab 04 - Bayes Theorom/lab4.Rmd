@@ -130,7 +130,7 @@ lines(x = theta, y = prior, type = "b", pch = 19, col = "tomato3")
 
 ### Formula for Posterior
 $$
-posterior: p(\theta|D) = \frac{p(D|\theta) \ p(\theta)}{\sum_{\theta^*}p(D|\theta^*) \ p(\theta^*)}
+posterior: p(\theta|D) = \frac{p(D|\theta) \ p(\theta)}{p(D)}
 $$
 
 ### Plot of Posterior
@@ -153,7 +153,7 @@ plot(x = theta, y = posterior,
 ```{r 2f1, echo=TRUE, message=FALSE}
 # Plot the Posterior
 plot(x = theta, y = posterior, 
-                     main = paste0("Likelihood, Prior, Posterior \nover the Discrete Values of Theta | Daniel Carpenter\n",
+                     main = paste0("Prior, Likelihood, Posterior \nover the Discrete Values of Theta | Daniel Carpenter\n",
                                    "x = ", numSuccesses, ", n = ", n),
                      type = "b", pch = 19, col = "steelblue",
      ylab = "Probability")
@@ -173,16 +173,56 @@ lines(x = theta, y = likelihood, type = "b", pch = 19, col = "darkseagreen")
 
 # Task `3`: 
 
-## `a.`
+## `a.` Matrix in R that will hold the 5 column vectors
 ```{r 3a, echo=TRUE, message=FALSE}
+bayesMatrix <- matrix(data = c(theta, prior, likelihood, h, posterior), 
+                      nr = n, nc = 5, byrow = FALSE)
+colnames(bayesMatrix) <- c("theta", "prior", "likelihood", "h", "post")
+
+# Print Table
+knitr::kable(bayesMatrix)
+
+# Totals for each Column
+knitr::kable(colSums(bayesMatrix))
 ```
 
-## `b.`
-```{r 3b, echo=TRUE, message=FALSE}
-```
+## `b.` Rewrite Bayes’ theorem in terms of h = prior * likelihood
+$$
+p(\theta|D) = \frac{p(D|\theta) \ p(\theta)}{\sum_{\theta^*}p(D|\theta^*) \ p(\theta^*)}  
+$$
 
-## `c.`
+## `c.` Plot Prior, Likelihood, and Posterior in `ggplot`
 ```{r 3c, echo=TRUE, message=FALSE}
+numThetaVals = 1:n
+df <- as.data.frame(cbind(bayesMatrix, numThetaVals))
+
+
+if(!require(tidyverse)) install.packages(tidyverse)
+df <- df %>%
+  
+  # Select to only the needed data
+  select(-h) %>%
+  
+  # Pivot y axis variables into single column for ggplot-ing
+  pivot_longer(cols      = c("prior", "likelihood", "post"),
+               values_to = "values",
+               names_to  = "statNames")
+
+# Plot it!
+basePlot <- ggplot(df,
+                   aes(x = numThetaVals,
+                       y = values,
+                       color = statNames)) +
+  # Theme and colors
+  theme_minimal() +
+  scale_color_manual(values = c('darkseagreen', 'steelblue', "tomato3")) +
+  
+  # Labels
+  labs(title = "Prior, Likelihood, Posterior over the Discrete Values of Theta",
+       subtitle = paste0("Daniel Carpenter | x = ", numSuccesses, ", n = ", n),
+       x = 'Number of Theta Values', y = 'Probability')
+basePlot + geom_point()
+
 ```
 
 
