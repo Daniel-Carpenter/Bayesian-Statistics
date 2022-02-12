@@ -148,6 +148,8 @@ plot(x = theta, y = posterior,
      type = "b", pch = 19, col = "steelblue")
 ```
 
+
+### Combined Plots
 ```{r 2f1, echo=TRUE, message=FALSE}
 # Plot the Posterior
 plot(x = theta, y = posterior, 
