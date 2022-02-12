@@ -16,13 +16,13 @@ colSums(mat.bayes)
 
 # rbind is a useful function
 
-#rownames(mat.bayes)= c(rep("", 30))
+rownames(mat.bayes)= c(rep("", 30))
 
 mat.bayes
 
 df = as.data.frame(mat.bayes)
 
-library(xtable)
+if(!require(xtable)) install.packages(xtable)
 xtable(df)
 
 #BCI
@@ -46,7 +46,7 @@ BCI
 # Bayesian point estimate is the posterior mean
 sum(df$post*...)
 
-library(ggplot2)
+if(!require(ggplot2)) install.packages(ggplot2)
 dev.new(noRStudioGD = TRUE)
 g = ggplot(df, aes(x = theta)) + geom_point(aes(y = prior), col = "red", size = 3) +
   ... + geom_point(aes(y=post), col = "green")

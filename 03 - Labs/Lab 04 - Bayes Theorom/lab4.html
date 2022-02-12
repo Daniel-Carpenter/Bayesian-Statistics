@@ -253,15 +253,35 @@ div.tocify {
 <h1>Task <code>1</code>:</h1>
 <div id="a.-classical-point-estimate-for-𝜃" class="section level2">
 <h2><code>a.</code> Classical Point Estimate for 𝜃</h2>
+<pre class="r"><code># Probability of success given N number of trials
+from = 0
+to   = 1
+n    = 10
+
+theta &lt;- seq(from, to, length = n)
+
+# Point Estimate for Theta
+pointEst &lt;- mean(theta)
+pointEst</code></pre>
+<pre><code>## [1] 0.5</code></pre>
 </div>
 <div id="b.-confidence-interval-using-𝜃" class="section level2">
 <h2><code>b.</code> Confidence Interval using 𝜃</h2>
-<ul>
-<li><code>i.</code> Find classical 95% confidence interval using <span class="math inline">\(\theta\)</span></li>
-<li><code>ii.</code> Interpretation of the Interval above</li>
-<li><code>iii.</code> How many sample are used to make the interval?</li>
-<li><code>iv.</code> How many sample are assumed to give the interpretation?</li>
-</ul>
+<p><code>i.</code> Find classical 95% confidence interval using <span class="math inline">\(\theta\)</span></p>
+<pre class="r"><code>classicalEst &lt;- pointEst + c(-1, 1) * 1.95 * sqrt(pointEst*(1 - pointEst) / n)
+classicalEst</code></pre>
+<pre><code>## [1] 0.1916779 0.8083221</code></pre>
+<p><code>ii.</code> Interpretation of the Interval above</p>
+<pre class="r"><code>print(paste0(&quot;We can be 95% confident that the true value of theta will be between &quot;,
+             round(classicalEst[1], 4), &quot; and &quot;, round(classicalEst[2], 4), 
+             &quot; (rounded to 4 decimal places) if repreated samples were taken.&quot;))</code></pre>
+<pre><code>## [1] &quot;We can be 95% confident that the true value of theta will be between 0.1917 and 0.8083 (rounded to 4 decimal places) if repreated samples were taken.&quot;</code></pre>
+<p><code>iii.</code> How many sample are used to make the interval?</p>
+<pre class="r"><code>print(paste0(&quot;There are &quot;, n, &quot; number of samples used to make the interval.&quot;))</code></pre>
+<pre><code>## [1] &quot;There are 10 number of samples used to make the interval.&quot;</code></pre>
+<p><code>iv.</code> How many samples are assumed to give the interpretation?</p>
+<pre class="r"><code>print(paste0(&quot;An infinite number of samples are assumed to give this interpretation&quot;))</code></pre>
+<pre><code>## [1] &quot;An infinite number of samples are assumed to give this interpretation&quot;</code></pre>
 <hr />
 <p><br></p>
 </div>

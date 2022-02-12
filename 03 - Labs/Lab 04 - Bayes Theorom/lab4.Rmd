@@ -26,16 +26,43 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## `a.` Classical Point Estimate for 𝜃
 ```{r 1a, echo=TRUE, message=FALSE}
+# Probability of success given N number of trials
+from = 0
+to   = 1
+n    = 10
+
+theta <- seq(from, to, length = n)
+
+# Point Estimate for Theta
+pointEst <- mean(theta)
+pointEst
 ```
 
 ## `b.` Confidence Interval using 𝜃
-```{r 1b, echo=TRUE, message=FALSE}
+
+`i.` Find classical 95% confidence interval using $\theta$
+```{r 1bi, echo=TRUE, message=FALSE}
+classicalEst <- pointEst + c(-1, 1) * 1.95 * sqrt(pointEst*(1 - pointEst) / n)
+classicalEst
 ```
 
-* `i.` Find classical 95% confidence interval using $\theta$
-* `ii.` Interpretation of the Interval above
-* `iii.` How many sample are used to make the interval?
-* `iv.` How many sample are assumed to give the interpretation?
+
+`ii.` Interpretation of the Interval above
+```{r 1bii, echo=TRUE, message=FALSE}
+print(paste0("We can be 95% confident that the true value of theta will be between ",
+             round(classicalEst[1], 4), " and ", round(classicalEst[2], 4), 
+             " (rounded to 4 decimal places) if repreated samples were taken."))
+```
+
+`iii.` How many sample are used to make the interval?
+```{r 1biii, echo=TRUE, message=FALSE}
+print(paste0("There are ", n, " number of samples used to make the interval."))
+```
+
+`iv.` How many samples are assumed to give the interpretation?
+```{r 1biv, echo=TRUE, message=FALSE}
+print(paste0("An infinite number of samples are assumed to give this interpretation"))
+```
 
 ---
 
