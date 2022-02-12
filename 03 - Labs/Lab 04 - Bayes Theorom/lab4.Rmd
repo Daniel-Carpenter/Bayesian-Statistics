@@ -193,7 +193,10 @@ $$
 
 ## `c.` Plot Prior, Likelihood, and Posterior in `ggplot`
 ```{r 3c, echo=TRUE, message=FALSE}
+## Number of Theta numbers to plot
 numThetaVals = 1:n
+
+## Convert to data fram for plotting
 df <- as.data.frame(cbind(bayesMatrix, numThetaVals))
 
 
@@ -220,8 +223,12 @@ basePlot <- ggplot(df,
   # Labels
   labs(title = "Prior, Likelihood, Posterior over the Discrete Values of Theta",
        subtitle = paste0("Daniel Carpenter | x = ", numSuccesses, ", n = ", n),
-       x = 'Number of Theta Values', y = 'Probability')
-basePlot + geom_point()
+       x = 'Number of Theta Values', y = 'Probability') +
+
+  # The points
+  geom_point()
+
+basePlot 
 
 ```
 
@@ -230,14 +237,99 @@ basePlot + geom_point()
 
 <br>
 
-# Task `4`: 
+# Task `4`: Create Function `mybinpost()` to Dynamically Produce Above Calculations
 
-## `a.`
+## `a. - b.` Create Function `mybinpost()`
 ```{r 4a, echo=TRUE, message=FALSE}
-```
+mybinpost <- function(n, x, theta, alpha) {
+  
+  # CALCULATIONS -------------------------------------------
+    
+    ## Calculate prior assuming uniform distribution
+    prior = rep(1/n, n)
+  
+    ## Calculate the likelihood
+    likelihood  = dbinom(x=x, size=n, prob=theta)
+    
+    ## Calculate the Prior x the Likelihood
+    h <-  prior * likelihood
+    
+    ## Get the posterior Distribution
+    posterior = h / sum(h) 
+    
+    ## Consolidate into a matrix with column names
+    bayesMatrix <- matrix(data = c(theta, prior, likelihood, h, posterior), 
+                        nr = n, nc = 5, byrow = FALSE)
+    colnames(bayesMatrix) <- c("theta", "prior", "likelihood", "h", "post")
 
-## `b.`
-```{r 4b, echo=TRUE, message=FALSE}
+        
+  # PLOTTING -----------------------------------------------
+    
+    ## Number of Theta numbers to plot
+    numThetaVals = 1:n
+    
+    ## Convert to data frame for ggplot
+    df <- as.data.frame(cbind(bayesMatrix, numThetaVals))
+    
+    
+    if(!require(tidyverse)) install.packages(tidyverse)
+    df <- df %>%
+      
+      ### Select to only the needed data
+      select(-h) %>%
+      
+      ### Pivot y axis variables into single column for ggplot-ing
+      pivot_longer(cols      = c("prior", "likelihood", "post"),
+                   values_to = "values",
+                   names_to  = "statNames")
+    
+    ## Plot it!
+    basePlot <- ggplot(df,
+                       aes(x = numThetaVals,
+                           y = values,
+                           color = statNames)) +
+      ### Theme and colors
+      theme_minimal() +
+      scale_color_manual(values = c('darkseagreen', 'steelblue', "tomato3")) +
+      
+      ### Labels
+      labs(title = "Prior, Likelihood, Posterior over the Discrete Values of Theta",
+           subtitle = paste0("Daniel Carpenter | x = ", x, ", n = ", n),
+           x = 'Number of Theta Values', y = 'Probability')+ 
+      
+      ### Create the points
+      geom_point()
+    
+    # Output Plot
+    print(basePlot)
+    
+    
+  # BCI & Point Est ------------------------------------------
+    
+    ## BCI
+    cp = cumsum(posterior) # cumulative sum
+    L = max(which(cp<alpha/2)) # this gives the max index where  cp < alpha/2
+    U = min(which(cp > 1-alpha/2))
+    BCI = df$theta[c(L,U)] # close to the desired BCI
+    
+    ## Bayesian point estimate is the posterior mean
+    bayesPointEst <- mean(posterior)
+    
+    
+  # RETURN DATA --------------------------------------------- 
+    
+    ## Used for latex output of a matrix
+    if(!require(xtable)) install.packages(xtable)
+    
+    ## Return a list of relevant data
+    return(c(bayesMatrix,
+             xtable(bayesMatrix),
+             n,
+             x,
+             bayesPointEst,
+             BCI))
+}
+
 ```
 
 
@@ -245,13 +337,16 @@ basePlot + geom_point()
 
 <br>
 
-# Task `5`: 
+# Task `5`: Run the Fun
 
-## `a.`
+## `a.` `mybinpost(n=20,x=12,theta = seq(0,1,length=50), alpha=0.05)`
 ```{r 5a, echo=TRUE, message=FALSE}
+mybinpost(n=20,x=12,theta = seq(0,1,length=50), alpha=0.05)
 ```
 
-## `b.`
+## `b.` `mybinpost(n=50, x=25, theta=seq(0,1,length=30), alpha=0.1)`
 ```{r 5b, echo=TRUE, message=FALSE}
+mybinpost(n=20, x=10, theta=seq(0,1,length=20), alpha=0.05)
+mybinpost(n=50, x=25, theta=seq(0,1,length=30), alpha=0.1)
 ```
 
