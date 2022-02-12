@@ -24,13 +24,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Task `1`: 
 
-## `a.`
+## `a.` Classical Point Estimate for 𝜃
 ```{r 1a, echo=TRUE, message=FALSE}
 ```
 
-## `b.`
+## `b.` Confidence Interval using 𝜃
 ```{r 1b, echo=TRUE, message=FALSE}
 ```
+
+* `i.` Find classical 95% confidence interval using $\theta$
+* `ii.` Interpretation of the Interval above
+* `iii.` How many sample are used to make the interval?
+* `iv.` How many sample are assumed to give the interpretation?
 
 ---
 
