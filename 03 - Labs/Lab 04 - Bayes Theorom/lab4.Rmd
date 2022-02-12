@@ -69,29 +69,90 @@ print(paste0("An infinite number of samples are assumed to give this interpretat
 <br>
 
 # Task `2`: 
+> Bayesian methods – Bayes’ rule. Assume discrete values of 𝜃 and a uniform prior on the values of 𝜃
 
-## `a.`
+## `a.` Suppose we take `theta = seq(0, 1, length = 20)`
 ```{r 2a, echo=TRUE, message=FALSE}
+# Probability of success given N number of trials
+from = 0
+to   = 1
+n    = 20
+
+theta <- seq(from, to, length = n)
 ```
 
-## `b.`
+## `b.` Plot the prior using base R.
 ```{r 2b, echo=TRUE, message=FALSE}
+prior = rep(1/n, n)
+
+priorPlot <- plot(x = theta, y = prior, 
+                  main = paste0("Uniform Prior on the Values of Theta | Daniel Carpenter\n n = ", n),
+                  type = "b", pch = 19, col = "tomato3")
 ```
 
-## `c.`
+## `c.` Formula for the Likelihood
 ```{r 2c, echo=TRUE, message=FALSE}
+# Substitute Dummy Input value for `x`
+numSuccesses = round(n / 2)
+
+likelihood  = dbinom(x=numSuccesses, size = n, prob = theta)
 ```
 
-## `d.`
+## `d.` Plot the Likelihood over Discrete Values of 𝜃
 ```{r 2d, echo=TRUE, message=FALSE}
+likelihoodPlot <- plot(x = theta, y = likelihood, 
+                       main = paste0("Likelihood over the Discrete Values of Theta | Daniel Carpenter\n",
+                                     "x = ", numSuccesses, ", n = ", n),
+                       type = "b", pch = 19, col = "darkseagreen")
 ```
 
-## `e.`
+## `e.` Prior and the Likelihood Plotted Together
 ```{r 2e, echo=TRUE, message=FALSE}
+# Plot the likelihood
+plot(x = theta, y = likelihood, 
+                     main = paste0("Likelihood and Prior over the Discrete Values of Theta | Daniel Carpenter\n",
+                                   "x = ", numSuccesses, ", n = ", n),
+     ylab = "Probability",
+                     type = "b", pch = 19, col = "darkseagreen")
+
+# Plot the Prior
+lines(x = theta, y = prior, type = "b", pch = 19, col = "tomato3")
 ```
 
-## `f.`
+## `f.` Formula and Plot of the Posterior
+
+### Formula for Posterior
+
+
+### Plot of Posterior
 ```{r 2f, echo=TRUE, message=FALSE}
+# Calculate the Prior x the Likelihood
+h <-  prior * likelihood
+
+# Get the posterior Distribution
+posterior = h / sum(h)
+
+# Plot of only the posterior
+plot(x = theta, y = posterior,
+     main = paste0("Posterior over the Discrete Values of Theta | Daniel Carpenter\n",
+                   "x = ", numSuccesses, ", n = ", n),
+     type = "b", pch = 19, col = "steelblue")
+```
+
+```{r 2f1, echo=TRUE, message=FALSE}
+# Plot the Posterior
+plot(x = theta, y = posterior, 
+                     main = paste0("Likelihood, Prior, Posterior \nover the Discrete Values of Theta | Daniel Carpenter\n",
+                                   "x = ", numSuccesses, ", n = ", n),
+                     type = "b", pch = 19, col = "steelblue",
+     ylab = "Probability")
+
+# Prior
+lines(x = theta, y = prior,     type = "b", pch = 19, col = "tomato3")
+
+# Likelihood
+lines(x = theta, y = likelihood, type = "b", pch = 19, col = "darkseagreen")
+
 ```
 
 
