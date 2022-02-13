@@ -82,12 +82,23 @@ theta <- seq(from, to, length = n)
 ```
 
 ## `b.` Plot the prior using base R.
+```{r colors, echo=TRUE, message=FALSE}
+# Define some colors for the later plots
+red   = 'tomato3'
+blue  = 'steelblue'
+green = 'darkseagreen'
+
+# NOTE THAT COLORS CONSISTENT FOR PRIOR, LIK, AND POST
+# BUT UNABLE TO TELL WHICH TO ASIGN BASED ON GRAPH IN LAB
+colorPalette <- c(blue, green, red)
+```
+
 ```{r 2b, echo=TRUE, message=FALSE}
 prior = rep(1/n, n)
 
 priorPlot <- plot(x = theta, y = prior, 
                   main = paste0("Uniform Prior on the Values of Theta | Daniel Carpenter\n n = ", n),
-                  type = "b", pch = 19, col = "tomato3")
+                  type = "b", pch = 19, col = red)
 ```
 
 ## `c.` Formula for the Likelihood
@@ -110,7 +121,7 @@ likelihood  = dbinom(x=numSuccesses, size = n, prob = theta)
 likelihoodPlot <- plot(x = theta, y = likelihood, 
                        main = paste0("Likelihood over the Discrete Values of Theta | Daniel Carpenter\n",
                                      "x = ", numSuccesses, ", n = ", n),
-                       type = "b", pch = 19, col = "darkseagreen")
+                       type = "b", pch = 19, col = blue)
 ```
 
 ## `e.` Prior and the Likelihood Plotted Together
@@ -120,10 +131,10 @@ plot(x = theta, y = likelihood,
                      main = paste0("Likelihood and Prior over the Discrete Values of Theta | Daniel Carpenter\n",
                                    "x = ", numSuccesses, ", n = ", n),
      ylab = "Probability",
-                     type = "b", pch = 19, col = "darkseagreen")
+                     type = "b", pch = 19, col = blue)
 
 # Plot the Prior
-lines(x = theta, y = prior, type = "b", pch = 19, col = "tomato3")
+lines(x = theta, y = prior, type = "b", pch = 19, col = red)
 ```
 
 ## `f.` Formula and Plot of the Posterior
@@ -145,7 +156,7 @@ posterior = h / sum(h)
 plot(x = theta, y = posterior,
      main = paste0("Posterior over the Discrete Values of Theta | Daniel Carpenter\n",
                    "x = ", numSuccesses, ", n = ", n),
-     type = "b", pch = 19, col = "steelblue")
+     type = "b", pch = 19, col = green)
 ```
 
 
@@ -155,14 +166,14 @@ plot(x = theta, y = posterior,
 plot(x = theta, y = posterior, 
                      main = paste0("Prior, Likelihood, Posterior \nover the Discrete Values of Theta | Daniel Carpenter\n",
                                    "x = ", numSuccesses, ", n = ", n),
-                     type = "b", pch = 19, col = "steelblue",
+                     type = "b", pch = 19, col = green,
      ylab = "Probability")
 
 # Prior
-lines(x = theta, y = prior,     type = "b", pch = 19, col = "tomato3")
+lines(x = theta, y = prior,     type = "b", pch = 19, col = red)
 
 # Likelihood
-lines(x = theta, y = likelihood, type = "b", pch = 19, col = "darkseagreen")
+lines(x = theta, y = likelihood, type = "b", pch = 19, col = blue)
 
 ```
 
@@ -175,9 +186,12 @@ lines(x = theta, y = likelihood, type = "b", pch = 19, col = "darkseagreen")
 
 ## `a.` Matrix in R that will hold the 5 column vectors
 ```{r 3a, echo=TRUE, message=FALSE}
+# Get the length of theta
+numRows <- length(theta)
+
 bayesMatrix <- matrix(data = c(theta, prior, likelihood, h, posterior), 
-                      nr = n, nc = 5, byrow = FALSE)
-colnames(bayesMatrix) <- c("theta", "prior", "likelihood", "h", "post")
+                      nr = numRows, nc = 5, byrow = FALSE)
+colnames(bayesMatrix) <- c("theta", "prior", "likelihood", "h", "posterior")
 
 # Print Table
 knitr::kable(bayesMatrix)
@@ -186,7 +200,7 @@ knitr::kable(bayesMatrix)
 knitr::kable(colSums(bayesMatrix))
 ```
 
-## `b.` Rewrite Bayes’ theorem in terms of h = prior * likelihood
+## `b.` Rewrite Bayes’ theorem in terms of `h = prior * likelihood`
 $$
 p(\theta|D) = \frac{p(D|\theta) \ p(\theta)}{\sum_{\theta^*}p(D|\theta^*) \ p(\theta^*)}  
 $$
@@ -194,10 +208,10 @@ $$
 ## `c.` Plot Prior, Likelihood, and Posterior in `ggplot`
 ```{r 3c, echo=TRUE, message=FALSE}
 ## Number of Theta numbers to plot
-numThetaVals = 1:n
+thetaNumericValues = 1:numRows
 
 ## Convert to data fram for plotting
-df <- as.data.frame(cbind(bayesMatrix, numThetaVals))
+df <- as.data.frame(cbind(bayesMatrix, thetaNumericValues))
 
 
 if(!require(tidyverse)) install.packages(tidyverse)
@@ -207,18 +221,18 @@ df <- df %>%
   select(-h) %>%
   
   # Pivot y axis variables into single column for ggplot-ing
-  pivot_longer(cols      = c("prior", "likelihood", "post"),
+  pivot_longer(cols      = c("prior", "likelihood", "posterior"),
                values_to = "values",
                names_to  = "statNames")
 
 # Plot it!
 basePlot <- ggplot(df,
-                   aes(x = numThetaVals,
+                   aes(x = thetaNumericValues,
                        y = values,
                        color = statNames)) +
   # Theme and colors
   theme_minimal() +
-  scale_color_manual(values = c('darkseagreen', 'steelblue', "tomato3")) +
+  scale_color_manual(values = colorPalette) +
   
   # Labels
   labs(title = "Prior, Likelihood, Posterior over the Discrete Values of Theta",
@@ -245,8 +259,11 @@ mybinpost <- function(n, x, theta, alpha) {
   
   # CALCULATIONS -------------------------------------------
     
+    ## Get the length of theta
+    numRows <- length(theta)
+  
     ## Calculate prior assuming uniform distribution
-    prior = rep(1/n, n)
+    prior = rep(1/numRows, numRows)
   
     ## Calculate the likelihood
     likelihood  = dbinom(x=x, size=n, prob=theta)
@@ -257,19 +274,20 @@ mybinpost <- function(n, x, theta, alpha) {
     ## Get the posterior Distribution
     posterior = h / sum(h) 
     
-    ## Consolidate into a matrix with column names
-    bayesMatrix <- matrix(data = c(theta, prior, likelihood, h, posterior), 
-                        nr = n, nc = 5, byrow = FALSE)
-    colnames(bayesMatrix) <- c("theta", "prior", "likelihood", "h", "post")
+    ## Consolidate into a matrix with row and column names
+    bayesMatrix <- matrix(c(theta, prior, likelihood, h, posterior), 
+                        nr = numRows, nc = 5, byrow = FALSE)
+    colnames(bayesMatrix) <- c("theta", "prior", "likelihood", "h", "posterior")
+    rownames(bayesMatrix)= c(rep("", numRows))
 
         
   # PLOTTING -----------------------------------------------
     
     ## Number of Theta numbers to plot
-    numThetaVals = 1:n
+    thetaNumericValues = 1:numRows
     
     ## Convert to data frame for ggplot
-    df <- as.data.frame(cbind(bayesMatrix, numThetaVals))
+    df <- as.data.frame(cbind(bayesMatrix, thetaNumericValues))
     
     
     if(!require(tidyverse)) install.packages(tidyverse)
@@ -279,18 +297,18 @@ mybinpost <- function(n, x, theta, alpha) {
       select(-h) %>%
       
       ### Pivot y axis variables into single column for ggplot-ing
-      pivot_longer(cols      = c("prior", "likelihood", "post"),
+      pivot_longer(cols      = c("prior", "likelihood", "posterior"),
                    values_to = "values",
                    names_to  = "statNames")
     
     ## Plot it!
     basePlot <- ggplot(df,
-                       aes(x = numThetaVals,
+                       aes(x = thetaNumericValues,
                            y = values,
                            color = statNames)) +
       ### Theme and colors
       theme_minimal() +
-      scale_color_manual(values = c('darkseagreen', 'steelblue', "tomato3")) +
+      scale_color_manual(values = colorPalette) +
       
       ### Labels
       labs(title = "Prior, Likelihood, Posterior over the Discrete Values of Theta",
@@ -322,12 +340,12 @@ mybinpost <- function(n, x, theta, alpha) {
     if(!require(xtable)) install.packages(xtable)
     
     ## Return a list of relevant data
-    return(c(bayesMatrix,
-             xtable(bayesMatrix),
-             n,
-             x,
-             bayesPointEst,
-             BCI))
+    return(list('bayesMatrix'      = bayesMatrix,
+                'latexBayesMat'    = xtable(bayesMatrix),
+                'numTrials'        = n,
+                'numSuccesses'     = x,
+                'bayesPointEst'    = bayesPointEst,
+                'bayesCredIntvl95' = BCI))
 }
 
 ```
@@ -339,14 +357,13 @@ mybinpost <- function(n, x, theta, alpha) {
 
 # Task `5`: Run the Fun
 
-## `a.` `mybinpost(n=20,x=12,theta = seq(0,1,length=50), alpha=0.05)`
+## `a.` Test #1  of `mybinpost()`
 ```{r 5a, echo=TRUE, message=FALSE}
 mybinpost(n=20,x=12,theta = seq(0,1,length=50), alpha=0.05)
 ```
 
-## `b.` `mybinpost(n=50, x=25, theta=seq(0,1,length=30), alpha=0.1)`
+## `b.` Test #2 of `mybinpost()`
 ```{r 5b, echo=TRUE, message=FALSE}
-mybinpost(n=20, x=10, theta=seq(0,1,length=20), alpha=0.05)
 mybinpost(n=50, x=25, theta=seq(0,1,length=30), alpha=0.1)
 ```
 
