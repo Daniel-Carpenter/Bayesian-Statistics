@@ -196,9 +196,42 @@ mycoin(p = seq(0,1,length=20), prior =rep(1/20, 20), n=10, x=4, alpha = 0.1)
 
 # Task `2`: 
 
-##  
-```{r 2a, echo=TRUE, message=FALSE}
+**Inputs**  
+```{r 2inputs, echo=TRUE, message=FALSE}
+n = 1000   # Intervals
+p = 0.5  # Probability
 ```
+
+**Variance using raw Definition** $V(X) = \frac{E(X - \mu)^2}{n}$  
+```{r 2var1, echo=TRUE, message=FALSE}
+
+varMethod1 <- function(n, p) {
+  # Calculate the binomial distribution using parameters n, p, and q
+  mu = n * p
+  X  = pbinom(q=1-p, size=n, prob=p)
+  
+  # Calculate the variance of X using above formula 
+  variance = (X - mu)^2 / n
+  return(round(variance, 1))
+}
+
+varMethod1(n, p)
+```
+
+**Verify** $n \times p \times q$ **is the above variance**
+```{r 2var2, echo=TRUE, message=FALSE}
+varMethod2 <- function(n, p) {
+  # Calculate q
+  q = 1 - p
+  
+  # Calculate the variance
+  variance2 <- n*p*q
+  return(variance2)
+}
+
+varMethod2(n, p)
+```
+
 
 ---
 
