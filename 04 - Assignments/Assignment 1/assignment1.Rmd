@@ -54,11 +54,142 @@ classicalConfInt95(classicalPointEst, n)
 ```
 
 
-## `c.` `mycoin()`: Bayes Box 
-```{r 1c, echo=TRUE, message=FALSE}
+## `c.` `mycoin()`: Bayes Box and Related Data
+
+### Create the function `mycoin()`
+```{r 1ci, echo=TRUE, message=FALSE, warning=FALSE}
+mycoin <- mybinpost <- function(n, x, p, prior, alpha) {
+  
+  # CALCULATIONS -------------------------------------------
+    
+    ## Get the length of p
+    numRows <- length(p)
+  
+    ## Calculate the likelihood
+    likelihood  = dbinom(x=x, size=n, prob=p)
+    
+    ## Calculate the Prior x the Likelihood
+    h <-  prior * likelihood
+    
+    ## Get the posterior Distribution
+    posterior = h / sum(h) 
+    
+    ## Consolidate into a matrix with row and column names
+    bayesMatrix <- matrix(c(p, prior, likelihood, h, posterior), 
+                        nr = numRows, nc = 5, byrow = FALSE)
+    colnames(bayesMatrix) <- c("p", "prior", "likelihood", "h", "posterior")
+    rownames(bayesMatrix)= c(rep("", numRows))
+    rbind(bayesMatrix, colSums(bayesMatrix)) # Column totals
+
+        
+  # PLOTTING -----------------------------------------------
+    
+    ## Define some colors for the later plots
+      red   = 'tomato3'
+      blue  = 'steelblue'
+      green = 'darkseagreen'
+      colorPalette <- c(blue, green, red) # Consolidate in color palette
+    
+    ## Number of Theta numbers to plot
+    thetaNumericValues = 1:numRows
+    
+    ## Convert to data frame for ggplot
+    df <- as.data.frame(cbind(bayesMatrix, thetaNumericValues))
+    
+    
+    if(!require(tidyverse)) install.packages(tidyverse)
+    df <- df %>%
+      
+      ### Select to only the needed data
+      select(-h) %>%
+      
+      ### Pivot y axis variables into single column for ggplot-ing
+      pivot_longer(cols      = c("prior", "likelihood", "posterior"),
+                   values_to = "values",
+                   names_to  = "statNames")
+    
+    ## Plot it!
+    basePlot <- ggplot(df,
+                       aes(x = thetaNumericValues,
+                           y = values,
+                           color = statNames)) +
+      ### Theme and colors
+      theme_minimal() +
+      scale_color_manual(values = colorPalette) +
+      
+      ### Labels
+      labs(title = "Prior, Likelihood, Posterior over the Discrete Values of Theta",
+           subtitle = paste0("Daniel Carpenter | x = ", x, ", n = ", n),
+           x = 'Number of Theta Values', y = 'Probability')+ 
+      
+      ### Create the points
+      geom_point()
+    
+    # Output Plot
+    print(basePlot)
+    
+    
+  # BCI & Point Est ------------------------------------------
+    
+    ## BCI
+    cp = cumsum(posterior) # cumulative sum
+    L = max(which(cp<alpha/2)) # this gives the max index where  cp < alpha/2
+    U = min(which(cp > 1-alpha/2))
+    BCI = df$p[c(L,U)] # close to the desired BCI
+    
+    ## Bayesian point estimate is the posterior mean
+    bayesPointEst <- mean(posterior)
+    
+    
+  # CLasical Point Est and Interval 95% CI ----------------
+      classicalPointEstimate <- classicalPointEst(n)    
+      cCI95 <- classicalConfInt95(classicalPointEst, n)
+
+          
+  # RETURN DATA ---------------------------------------------
+      
+    # Create a folder for the Output to stay organized
+    outputFolder <- 'Output/'
+    dir.create(outputFolder)
+    
+    # Create the folder for this task
+    task1Folder  <- paste0(outputFolder, 'Task_01/')
+    dir.create(task1Folder)
+    print(paste0('Please find the Output Files located at ', task1Folder))
+    
+    ## File name for writing data to current wd
+    nameOfFile <- paste("", sum(p),sum(prior),n,x,alpha, sep = "_") # Used this name since unique identifier
+    
+    ## Write a CSV  
+    write.csv(x = as.data.frame(bayesMatrix), 
+              file = paste0(task1Folder, "BayesBox", nameOfFile, ".csv"))
+      
+    ## Write above plot to jpg
+    ggsave(filename = paste0(task1Folder, "BayesPlot", nameOfFile, ".jpg"),
+           plot     = basePlot,
+           height   = 8.5,
+           width    = 11)
+    
+    ## Used for latex output of a matrix
+    if(!require(xtable)) install.packages(xtable)
+    
+    ## Return a list of relevant data
+    return(list('bayesMatrix'      = bayesMatrix,
+                'bayesPointEst'    = bayesPointEst,
+                'bayesCredIntvl95' = BCI,
+                'classicalPEst'    = classicalPointEstimate,
+                'classicalCI95'    = cCI95))
+}
+
 ```
 
-
+### Call the function `mycoin()` with 3 sets of inputs
+```{r 1cii, echo=TRUE, message=FALSE, warning=FALSE}
+mycoin(p = seq(0,1,length=20), prior =rep(1/20, 20), n=10, x=4, alpha = 0.05)
+mycoin(p = seq(0,1,length=40), prior =rep(1/40, 40), n=10, x=4, alpha = 0.05)
+mycoin(p = seq(0,1,length=20), prior =rep(1/20, 20), n=10, x=4, alpha = 0.1)
+# mycoin(p = seq(0,1,length=40), prior = pr, n =10, x=4, alpha=0.05)
+```
 ---
 
 <br>
