@@ -1,0 +1,189 @@
+---
+title:    "Assignment 1"
+subtitle: "Bayesian Statistics"
+author:   "Daniel Carpenter"
+date:     "February 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document: 
+    toc: TRUE
+    number_sections: TRUE
+  github_document: default
+  md_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+# Task `1`: 
+
+## `a.`
+```{r 1a, echo=TRUE, message=FALSE}
+```
+
+
+## `b.`
+```{r 1b, echo=TRUE, message=FALSE}
+```
+
+
+## `c.`
+```{r 1c, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `2`: 
+
+##  
+```{r 2a, echo=TRUE, message=FALSE}
+```
+
+---
+
+<br>
+
+# Task `3`: 
+
+## `a.` 
+```{r 3a, echo=TRUE, message=FALSE}
+```
+
+## `b.`
+```{r 3b, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `4`: 
+
+## `a.` 
+```{r 4a, echo=TRUE, message=FALSE}
+```
+
+
+## `b.` 
+```{r 4b, echo=TRUE, message=FALSE}
+```
+
+
+## `c.` 
+```{r 4c, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `5`:
+
+## `a.`
+```{r 5a, echo=TRUE, message=FALSE}
+```
+
+## `b.`
+```{r 5b, echo=TRUE, message=FALSE}
+```
+
+## `c.`
+```{r 5c, echo=TRUE, message=FALSE}
+```
+
+## `d.`
+```{r 5d, echo=TRUE, message=FALSE}
+```
+
+## `e.`
+```{r 5e, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `6`: 
+
+##  
+```{r 6a, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `7`: 
+
+##  
+```{r 7a, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `8`:
+
+## `a.`
+```{r 8a, echo=TRUE, message=FALSE}
+```
+
+## `b.`
+```{r 8b, echo=TRUE, message=FALSE}
+```
+
+## `c.`
+```{r 8c, echo=TRUE, message=FALSE}
+```
+
+## `d.`
+```{r 8d, echo=TRUE, message=FALSE}
+```
+
+## `e.`
+```{r 8e, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `9`: 
+
+##  
+```{r 9a, echo=TRUE, message=FALSE}
+```
+
+
+---
+
+<br>
+
+# Task `10`: 
+
+## `a.` 
+```{r 10a, echo=TRUE, message=FALSE}
+```
+
+
+## `b.` 
+```{r 10b, echo=TRUE, message=FALSE}
+```
+
