@@ -548,25 +548,33 @@ classicalConfInt95(classicalPointEst, n)</code></pre>
 <div id="task-2" class="section level1">
 <h1>Task <code>2</code>:</h1>
 <p><strong>Inputs</strong></p>
-<pre class="r"><code>n = 10   # Intervals
+<pre class="r"><code>n = 1000   # Intervals
 p = 0.5  # Probability</code></pre>
 <p><strong>Variance using raw Definition</strong> <span class="math inline">\(V(X) = \frac{E(X - \mu)^2}{n}\)</span></p>
-<pre class="r"><code># Calculate the binomial distribution using parameters n, p, and q
-mu = n * p
-X  = pbinom(q=1-p, size=n, prob=p)
+<pre class="r"><code>varMethod1 &lt;- function(n, p) {
+  # Calculate the binomial distribution using parameters n, p, and q
+  mu = n * p
+  X  = pbinom(q=1-p, size=n, prob=p)
+  
+  # Calculate the variance of X using above formula 
+  variance = (X - mu)^2 / n
+  return(round(variance, 1))
+}
 
-# Calculate the variance of X using above formula 
-variance = (X - mu)^2 / n
-round(variance, 1)</code></pre>
-<pre><code>## [1] 2.5</code></pre>
+varMethod1(n, p)</code></pre>
+<pre><code>## [1] 250</code></pre>
 <p><strong>Verify</strong> <span class="math inline">\(n \times p \times q\)</span> <strong>is the above variance</strong></p>
-<pre class="r"><code># Calculate q
-q = 1 - p
+<pre class="r"><code>varMethod2 &lt;- function(n, p) {
+  # Calculate q
+  q = 1 - p
+  
+  # Calculate the variance
+  variance2 &lt;- n*p*q
+  return(variance2)
+}
 
-# Calculate the variance
-variance2 &lt;- n*p*q
-variance2</code></pre>
-<pre><code>## [1] 2.5</code></pre>
+varMethod2(n, p)</code></pre>
+<pre><code>## [1] 250</code></pre>
 <hr />
 <p><br></p>
 </div>
