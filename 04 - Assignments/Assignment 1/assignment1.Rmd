@@ -24,17 +24,37 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Task `1`: 
 
-## `a.`
+## `a.` Classical Point Estimate for 𝜃 (*Probability of Success*)
 ```{r 1a, echo=TRUE, message=FALSE}
+# Function that creates a classical point est
+classicalPointEst <- function(n) {
+  theta <- seq(0, 1, length = n)
+  
+  # Point Estimate for Theta
+  return(mean(theta))
+}
+
+n = 10 # Num Trials
+classicalPointEst(n)
 ```
 
 
-## `b.`
+## `b.` Find classical 95% confidence interval using $\theta$
 ```{r 1b, echo=TRUE, message=FALSE}
+# Function for classical CI est at 95% confidence
+classicalConfInt95 <- function(classicalPointEstFun = classicalPointEst, n) {
+  # Get the classical point est
+  pointEst <- classicalPointEstFun(n)
+  
+  # Return the classical interval
+  return(pointEst + c(-1, 1) * 1.95 * sqrt(pointEst*(1 - pointEst) / n))
+}
+  
+classicalConfInt95(classicalPointEst, n)
 ```
 
 
-## `c.`
+## `c.` `mycoin()`: Bayes Box 
 ```{r 1c, echo=TRUE, message=FALSE}
 ```
 

@@ -251,14 +251,36 @@ div.tocify {
 <hr />
 <div id="task-1" class="section level1">
 <h1>Task <code>1</code>:</h1>
-<div id="a." class="section level2">
-<h2><code>a.</code></h2>
+<div id="a.-classical-point-estimate-for-𝜃-probability-of-success" class="section level2">
+<h2><code>a.</code> Classical Point Estimate for 𝜃 (<em>Probability of Success</em>)</h2>
+<pre class="r"><code># Function that creates a classical point est
+classicalPointEst &lt;- function(n) {
+  theta &lt;- seq(0, 1, length = n)
+  
+  # Point Estimate for Theta
+  return(mean(theta))
+}
+
+n = 10 # Num Trials
+classicalPointEst(n)</code></pre>
+<pre><code>## [1] 0.5</code></pre>
 </div>
-<div id="b." class="section level2">
-<h2><code>b.</code></h2>
+<div id="b.-find-classical-95-confidence-interval-using-theta" class="section level2">
+<h2><code>b.</code> Find classical 95% confidence interval using <span class="math inline">\(\theta\)</span></h2>
+<pre class="r"><code># Function for classical CI est at 95% confidence
+classicalConfInt95 &lt;- function(classicalPointEstFun = classicalPointEst, n) {
+  # Get the classical point est
+  pointEst &lt;- classicalPointEstFun(n)
+  
+  # Return the classical interval
+  return(pointEst + c(-1, 1) * 1.95 * sqrt(pointEst*(1 - pointEst) / n))
+}
+  
+classicalConfInt95(classicalPointEst, n)</code></pre>
+<pre><code>## [1] 0.1916779 0.8083221</code></pre>
 </div>
-<div id="c." class="section level2">
-<h2><code>c.</code></h2>
+<div id="c.-mycoin-bayes-box" class="section level2">
+<h2><code>c.</code> <code>mycoin()</code>: Bayes Box</h2>
 <hr />
 <p><br></p>
 </div>
@@ -273,10 +295,10 @@ div.tocify {
 </div>
 <div id="task-3" class="section level1">
 <h1>Task <code>3</code>:</h1>
-<div id="a.-1" class="section level2">
+<div id="a." class="section level2">
 <h2><code>a.</code></h2>
 </div>
-<div id="b.-1" class="section level2">
+<div id="b." class="section level2">
 <h2><code>b.</code></h2>
 <hr />
 <p><br></p>
@@ -284,13 +306,13 @@ div.tocify {
 </div>
 <div id="task-4" class="section level1">
 <h1>Task <code>4</code>:</h1>
-<div id="a.-2" class="section level2">
+<div id="a.-1" class="section level2">
 <h2><code>a.</code></h2>
 </div>
-<div id="b.-2" class="section level2">
+<div id="b.-1" class="section level2">
 <h2><code>b.</code></h2>
 </div>
-<div id="c.-1" class="section level2">
+<div id="c." class="section level2">
 <h2><code>c.</code></h2>
 <hr />
 <p><br></p>
@@ -298,13 +320,13 @@ div.tocify {
 </div>
 <div id="task-5" class="section level1">
 <h1>Task <code>5</code>:</h1>
-<div id="a.-3" class="section level2">
+<div id="a.-2" class="section level2">
 <h2><code>a.</code></h2>
 </div>
-<div id="b.-3" class="section level2">
+<div id="b.-2" class="section level2">
 <h2><code>b.</code></h2>
 </div>
-<div id="c.-2" class="section level2">
+<div id="c.-1" class="section level2">
 <h2><code>c.</code></h2>
 </div>
 <div id="d." class="section level2">
@@ -334,13 +356,13 @@ div.tocify {
 </div>
 <div id="task-8" class="section level1">
 <h1>Task <code>8</code>:</h1>
-<div id="a.-4" class="section level2">
+<div id="a.-3" class="section level2">
 <h2><code>a.</code></h2>
 </div>
-<div id="b.-4" class="section level2">
+<div id="b.-3" class="section level2">
 <h2><code>b.</code></h2>
 </div>
-<div id="c.-3" class="section level2">
+<div id="c.-2" class="section level2">
 <h2><code>c.</code></h2>
 </div>
 <div id="d.-1" class="section level2">
@@ -362,10 +384,10 @@ div.tocify {
 </div>
 <div id="task-10" class="section level1">
 <h1>Task <code>10</code>:</h1>
-<div id="a.-5" class="section level2">
+<div id="a.-4" class="section level2">
 <h2><code>a.</code></h2>
 </div>
-<div id="b.-5" class="section level2">
+<div id="b.-4" class="section level2">
 <h2><code>b.</code></h2>
 </div>
 </div>
