@@ -242,19 +242,68 @@ varMethod2(n, p)
 
 # Task `3`: 
 
+* Below *Derived from Statistics for Engineering and the Sciences, Sixth Edition*
+* William M. Mendenhall, Terry L. Sincich
+* Taylor & Francis, Jan 15, 2016 - Mathematics - 500 pages
+
 ## `a.` 
-* $M_x(t) = E(e^{Xt}) = \sum_Xe^{Xt}p(x)$
+* Moment generating function derivation:  
 
-```{r 3a, echo=TRUE, message=FALSE}
+$$
+M_x(t) = E(e^{Xt}) 
+= \sum_Xe^{Xt}p(x) 
+= \sum_Xe^{xt}\begin{pmatrix}n \\ x \end{pmatrix}p^xq^{n-x}
+= \sum_X\begin{pmatrix}n \\ x \end{pmatrix}(pe^t)^xq^{n-x}
+$$
 
+* Binomial theorem defined as:  
 
-```
+$$
+(a + b)^n = \sum_X\begin{pmatrix}n \\ x \end{pmatrix}a^xb^{n-x}
+$$
+
+* If $a = pe^t$ and $b = q$, then $m(t) = (pe^t + q)^n$
   
 ## `b.`
-* If $X$ ~ $Bin(n, p)$ then $M_x(t) = (q + pe^t)^n$ where $q = 1 - p$
 
-```{r 3b, echo=TRUE, message=FALSE}
-```
+### `i.`
+Since $\left.\mu_{k}^{\prime}=\frac{d^{k} m(t)}{d t^{k}}\right]_{t=0}$, then 
+$$
+\begin{aligned}
+\mu_{1}^{\prime} &\left.\left.=\mu=\frac{d m(t)}{d t}\right]_{t=0}=n\left(p e^{t}+q\right)^{n-1}\left(p e^{t}\right)\right]_{t=0} \\
+&=n\left(p e^{0}+q\right)^{n-1}\left(p e^{0}\right)
+\end{aligned}
+$$
+
+Since $e^{0}=1$, then $np = E(x)$, which is defined below as $\mu_{1}^{\prime}$
+$$
+\mu_{1}^{\prime}=\mu=n(p+q)^{n-1} p=n(1)^{n-1} p=n p
+$$
+
+Now get $\mu_{2}^{\prime}$
+$$
+\begin{aligned}
+\mu_{2}^{\prime} &\left.\left.=\frac{d^{2} m(t)}{d t^{2}}\right]_{t=0}=n p \frac{d}{d t}\left[e^{t}\left(p e^{t}+q\right)^{n-1}\right]\right]_{t=0} \\
+&\left.=n p\left[e^{t}(n-1)\left(p e^{t}+q\right)^{n-2} p e^{t}+\left(p e^{t}+q\right)^{n-1} e^{t}\right]\right]_{t=0} \\
+&=n p[(1)(n-1)(1) p+(1)(1)]=n p[(n-1) p+1] \\
+&=n p(n p-p+1)=n p(n p+q)=n^{2} p^{2}+n p q
+\end{aligned}
+$$
+
+
+### `ii.`
+From `i`, we can get the variance
+$$
+\sigma^{2}=E\left(X^{2}\right)-\mu^{2}=\mu_{2}^{\prime}-\left(\mu_{1}^{\prime}\right)^{2}
+$$
+
+
+### `iii.`
+The above calculation in `ii.` gives us $\mu_{2}^{\prime}$ and $\mu_{1}^{\prime}=\mu$, so $V(X) = npq$
+$$
+\sigma^{2}=n^{2} p^{2}+n p q-(n p)^{2}=n p q
+$$
+
 
 
 ---
@@ -263,20 +312,118 @@ varMethod2(n, p)
 
 # Task `4`: 
 
-## `a.` 
-```{r 4a, echo=TRUE, message=FALSE}
+## Create Normal Density Function called `mynorm()`
+```{r mynorm, echo=TRUE, message=FALSE}
+    mynorm <- function(mu, sigma, 
+                       lowerBound = NA, upperBound = NA, 
+                       alpha,
+                       roundTo = 4, 
+                       color = paste0("lightsteelblue", floor(runif(1, min=1, max=4))),
+                       returnCMD = TRUE)
+    {
+      
+      # Calculate the "xlim" lower and upper bound for the Normal PDF Curve
+      curveLowerBound <- mu - 3*sigma
+      curveUpperBound <- mu + 3*sigma
+      
+      # Initialize variables related to output and graph
+      title <- ""   # Title of graph
+      exactProb = 0 # The exact probability of the questions
+      
+      # If no provided LOWER AND UPPER Bound (NA as parameter value) then assume none
+      if (!(is.na(lowerBound)) & !(is.na(upperBound))) {
+        title <- paste0(", P(", lowerBound, " <= X < ",upperBound,")")
+        exactProb = pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma) # calculate prob 
+        
+      # If no provided LOWER Bound (NA as parameter value) then assume none
+      } else if (is.na(lowerBound)) {
+        lowerBound = curveLowerBound
+        title <- paste0(", P(X < ",upperBound,")") # Set a dynamic title
+        exactProb = pnorm(upperBound, mu, sigma) # calculate prob 
+        
+      # If no provided UPPER Bound (NA as parameter value) then assume none
+      } else if(is.na(upperBound)) {
+        upperBound = curveUpperBound
+        title <- paste0(", P(X >= ",lowerBound,")")
+        exactProb = 1 - pnorm(lowerBound, mu, sigma) # calculate prob 
+      }
+      
+      # Create the line that displays the bell curve (between the CURVE bounds defined above)
+      curve(
+        
+        ## Normally Distributed
+        dnorm(x,mu,sigma), 
+        
+        ## Normally Distributed
+        xlim=c(curveLowerBound, curveUpperBound), 
+        
+        ## Line width
+        lwd =2, 
+        
+        ## Title with descriptive characteristics about function parameters
+        main = paste0("Probability Distribution (by Daniel Carpenter)\n",
+                      "X ~ N(",mu,", ",sigma,")", title),
+        
+        ## X and Y labels
+        ylab = 'Probability Density',
+        xlab = 'Value of X',
+      )
+
+      
+      # Add the AREA of between the lower and upper bound P(lowerBound<X<=upperBound)
+      
+        ## X-Axis curve (length does not matter)
+        xcurve = seq(lowerBound,upperBound, length=1000)
+        
+        ## Y-Axis Curve
+        ycurve = dnorm(xcurve, mu,sigma)
+        
+        ## Combine the X and Y curve to form the area (in green)
+        polygon(c(lowerBound, xcurve, upperBound), 
+                c(0, ycurve, 0), 
+                col=color) 
+        
+        ## Legend
+        legend("topleft", legend="Area (of Prob. Density)", 
+               fill=color, bty = "n")
+      
+      # Add the probability as text
+        
+        ## Calculate the area (probability)
+        area = exactProb
+        areaRounded = round(area, roundTo)
+        
+        ## Place this on the above plot
+        text(12,0.02,substitute(paste("Probability = ", areaRounded), 
+                                list(areaRounded = areaRounded)))
+        
+      # Quantiles
+        
+        ## Alpha (Lower Tail)
+        lowerTail = qnorm(p = alpha / 2, 
+                          mean = mu, sd = sigma,
+                          lower.tail = TRUE)
+        
+        ## 1 minus alpha (upper tail)
+        upperTail = qnorm(p = alpha / 2, 
+                          mean = mu, sd = sigma,
+                          lower.tail = FALSE)
+        
+      # Return stats about the Plot
+      if (returnCMD) {
+        return(list(shadedArea = areaRounded,
+                    lowerTail = lowerTail,
+                    upperTail = upperTail))
+      }
+    }
 ```
 
-
-## `b.` 
-```{r 4b, echo=TRUE, message=FALSE}
+## `a.` Call Normal Density Function `mynorm()`
+```{r 2a, echo=TRUE, message=FALSE}
+mynorm(mu=10, sigma=8, 
+       lowerBound = 8, upperBound = 11,
+       alpha = 0.10)
 ```
-
-
-## `c.` 
-```{r 4c, echo=TRUE, message=FALSE}
-```
-
 
 ---
 
