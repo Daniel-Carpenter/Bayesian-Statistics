@@ -188,7 +188,10 @@ mycoin <- mybinpost <- function(n, x, p, prior, alpha) {
 mycoin(p = seq(0,1,length=20), prior =rep(1/20, 20), n=10, x=4, alpha = 0.05)
 mycoin(p = seq(0,1,length=40), prior =rep(1/40, 40), n=10, x=4, alpha = 0.05)
 mycoin(p = seq(0,1,length=20), prior =rep(1/20, 20), n=10, x=4, alpha = 0.1)
-# mycoin(p = seq(0,1,length=40), prior = pr, n =10, x=4, alpha=0.05)
+
+# Assume Prior equaling the length of the p
+pr =rep(1/40, 40)
+mycoin(p = seq(0,1,length=40), prior = pr, n =10, x=4, alpha=0.05)
 ```
 ---
 
@@ -198,8 +201,8 @@ mycoin(p = seq(0,1,length=20), prior =rep(1/20, 20), n=10, x=4, alpha = 0.1)
 
 **Inputs**  
 ```{r 2inputs, echo=TRUE, message=FALSE}
-n = 1000   # Intervals
-p = 0.5  # Probability
+n = 1000  # Intervals
+p = 0.5   # Probability
 ```
 
 **Variance using raw Definition** $V(X) = \frac{E(X - \mu)^2}{n}$  
@@ -240,10 +243,16 @@ varMethod2(n, p)
 # Task `3`: 
 
 ## `a.` 
-```{r 3a, echo=TRUE, message=FALSE}
-```
+* $M_x(t) = E(e^{Xt}) = \sum_Xe^{Xt}p(x)$
 
+```{r 3a, echo=TRUE, message=FALSE}
+
+
+```
+  
 ## `b.`
+* If $X$ ~ $Bin(n, p)$ then $M_x(t) = (q + pe^t)^n$ where $q = 1 - p$
+
 ```{r 3b, echo=TRUE, message=FALSE}
 ```
 
