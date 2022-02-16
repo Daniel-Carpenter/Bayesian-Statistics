@@ -242,66 +242,63 @@ varMethod2(n, p)
 
 # Task `3`: 
 
-* Below *Derived from Statistics for Engineering and the Sciences, Sixth Edition*
-* William M. Mendenhall, Terry L. Sincich
-* Taylor & Francis, Jan 15, 2016 - Mathematics - 500 pages
-
-## `a.` 
-* Moment generating function derivation:  
-
+## `i` 
+Definition of The m.g.f of the Binomial Distribution:
 $$
-M_x(t) = E(e^{Xt}) 
-= \sum_Xe^{Xt}p(x) 
-= \sum_Xe^{xt}\begin{pmatrix}n \\ x \end{pmatrix}p^xq^{n-x}
-= \sum_X\begin{pmatrix}n \\ x \end{pmatrix}(pe^t)^xq^{n-x}
+b(x ; n, p)=\frac{n !}{x !(n-x) !} p^{x} q^{n-x} \quad \text { with } \quad q=1-p .
 $$
 
-* Binomial theorem defined as:  
-
-$$
-(a + b)^n = \sum_X\begin{pmatrix}n \\ x \end{pmatrix}a^xb^{n-x}
-$$
-
-* If $a = pe^t$ and $b = q$, then $m(t) = (pe^t + q)^n$
-  
-## `b.`
-
-### `i.`
-Since $\left.\mu_{k}^{\prime}=\frac{d^{k} m(t)}{d t^{k}}\right]_{t=0}$, then 
+MGF Given by:
 $$
 \begin{aligned}
-\mu_{1}^{\prime} &\left.\left.=\mu=\frac{d m(t)}{d t}\right]_{t=0}=n\left(p e^{t}+q\right)^{n-1}\left(p e^{t}\right)\right]_{t=0} \\
-&=n\left(p e^{0}+q\right)^{n-1}\left(p e^{0}\right)
+M(x, t) &=\sum_{x=0}^{n} e^{x t} \frac{n !}{x !(n-x) !} p^{x} q^{n-x} \\
+&=\sum_{x=0}^{n} \frac{n !}{x !(n-x) !}\left(p e^{t}\right)^{x} q^{n-x} \\
+&=\left(p e^{t}+q\right)^{n}
 \end{aligned}
 $$
 
-Since $e^{0}=1$, then $np = E(x)$, which is defined below as $\mu_{1}^{\prime}$
-$$
-\mu_{1}^{\prime}=\mu=n(p+q)^{n-1} p=n(1)^{n-1} p=n p
-$$
-
-Now get $\mu_{2}^{\prime}$
+Differentiate the MGF with respect to $t$ using the function-of-a-function rule:
 $$
 \begin{aligned}
-\mu_{2}^{\prime} &\left.\left.=\frac{d^{2} m(t)}{d t^{2}}\right]_{t=0}=n p \frac{d}{d t}\left[e^{t}\left(p e^{t}+q\right)^{n-1}\right]\right]_{t=0} \\
-&\left.=n p\left[e^{t}(n-1)\left(p e^{t}+q\right)^{n-2} p e^{t}+\left(p e^{t}+q\right)^{n-1} e^{t}\right]\right]_{t=0} \\
-&=n p[(1)(n-1)(1) p+(1)(1)]=n p[(n-1) p+1] \\
-&=n p(n p-p+1)=n p(n p+q)=n^{2} p^{2}+n p q
+\frac{d M(x, t)}{d t} &=n\left(q+p e^{t}\right)^{n-1} p e^{t} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-1}
 \end{aligned}
 $$
 
-
-### `ii.`
-From `i`, we can get the variance
+Now use $t=0$ to get $E(x)$
 $$
-\sigma^{2}=E\left(X^{2}\right)-\mu^{2}=\mu_{2}^{\prime}-\left(\mu_{1}^{\prime}\right)^{2}
+E(x)=n p(p+q)^{n-1}=n p .
 $$
 
 
-### `iii.`
-The above calculation in `ii.` gives us $\mu_{2}^{\prime}$ and $\mu_{1}^{\prime}=\mu$, so $V(X) = npq$
+## `ii. / iii.`
+Find the second moment using product rule:
 $$
-\sigma^{2}=n^{2} p^{2}+n p q-(n p)^{2}=n p q
+\frac{d u v}{d x}=u \frac{d v}{d x}+v \frac{d u}{d x}
+$$
+$$
+\begin{aligned}
+\frac{d^{2} M(x, t)}{d t^{2}} &=n p e^{t}\left\{(n-1)\left(p e^{t}+q\right)^{n-2} p e^{t}\right\}+\left(p e^{t}+q\right)^{n-1}\left\{n p e^{t}\right\} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{(n-1) p e^{t}+\left(p e^{t}+q\right)\right\} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{q+n p e^{t}\right\} .
+\end{aligned}
+$$
+
+Use $t=0$ again:
+$$
+\begin{aligned}
+E\left(x^{2}\right) &=n p(p+q)^{n-2}(n p+q) \\
+&=n p(n p+q)
+\end{aligned}
+$$
+
+**Finally we now have derived $V(X)=E(X-\mu)^{2}$ that the variance of $X$ is $n p q$ where** $q=1-p$.
+$$
+\begin{aligned}
+V(x) &=E\left(x^{2}\right)-\{E(x)\}^{2} \\
+&=n p(n p+q)-n^{2} p^{2} \\
+&=n p q
+\end{aligned}
 $$
 
 
