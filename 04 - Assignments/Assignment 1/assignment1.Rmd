@@ -292,7 +292,7 @@ E\left(x^{2}\right) &=n p(p+q)^{n-2}(n p+q) \\
 \end{aligned}
 $$
 
-**Finally we now have derived $V(X)=E(X-\mu)^{2}$ that the variance of $X$ is $n p q$ where** $q=1-p$.
+**Finally we now have derived $V(X)=E(X-\mu)^{2}$ (`i`) AND that the variance of $X$ is $n p q$ where $q=1-p$ (`ii.`).**
 $$
 \begin{aligned}
 V(x) &=E\left(x^{2}\right)-\{E(x)\}^{2} \\
@@ -428,26 +428,90 @@ mynorm(mu=10, sigma=8,
 
 # Task `5`:
 
-## `a.`
-```{r 5a, echo=TRUE, message=FALSE}
+## `5.1.` Find  $\hat{\lambda}$ as a formula
+* Do this by first finding the likelihood function which is shown as $L(\lambda)$
+$$
+L(\lambda)=\prod_{i=1}^{n} f_{X}\left(x_{i} ; \lambda\right)=\prod_{i=1}^{n}\left\{\frac{\lambda^{x_{i}}}{x_{i} !} e^{-\lambda}\right\}=\frac{\lambda^{x_{1}+\ldots+x_{n}}}{x_{1} ! \ldots x_{n} !} e^{-n \lambda}
+$$
+
+## `5.2.` Find the second derivative of $L(\lambda)$ as a formula.
+
+### `5.2.1`: get $\log L(\lambda)$
+$$
+\log L(\lambda)=\sum_{i=1}^{n} x_{i} \log \lambda-n \lambda-\sum_{i=1}^{n} \log \left(x_{i} !\right)
+$$
+
+### `5.2.1`: Second derivative of $L(\lambda)$
+$$
+\frac{d}{d \lambda}\{\log L(\lambda)\}
+=\sum_{i=1}^{n} \frac{x_{i}}{\lambda}-n=
+0 \\ \text{so,}  \ \widehat{\lambda}=\frac{1}{n} 
+\sum_{i=1}^{n} x_{i}=\bar{x}
+$$
+
+
+## `5.3/5.4.` Show $\hat{\lambda}$ is a maximum. (how will you do this?). Show using calculus that the max of 𝐿(𝜃) is the same as the maximum of 𝑙(𝜃)
+* To check for the maximum, set $\lambda = \hat{\lambda}$ when in above derivation.
+* Then check to see if negative
+
+$$
+\frac{d^{2}}{d \lambda^{2}}\{\log L(\lambda)\}
+=-\frac{1}{\lambda^{2}} \sum_{i=1}^{n} x_{i}<0 \quad 
+\text {where} \ \lambda=\widehat{\lambda}
+$$
+
+## `5.5.` Make a function called `myml(x)`
+* Draws the graph of 𝐿(𝜆) and 𝑙(𝜆) with the x = vector of data
+```{r fun5.5, echo=TRUE, message=FALSE}
+myml <- function(x) {
+  
+  # SETUP -------------------------------------------------
+    
+    roundTo = 4 # Round to nearest value
+    
+    # Get value of n to calculate lambdaHat
+    n = length(x)
+  
+  # CALCULATIONS ------------------------------------------
+  
+    ## Get the value of lamda hat and put put it in a text obj
+    if(!require(latex2exp)) install.packages(latex2exp)
+    lambdaHat <- round(sum(x) / n, roundTo)
+    lHatText <- paste('Lambda Hat = ', lambdaHat)
+    
+    ## Calculate Lamda
+    # x = seq(0,8, length = 9)
+    l <- dpois(x, lambdaHat)
+    
+    ## Calculate MLE using log estimate
+    L <- log(l)
+  
+  # PLOTS ------------------------------------------------
+  
+    ## Plot Lamda and Lambda Hat
+    plot(x=x,  y=L, col = 'steelblue', type = 'b', ylim = c(min(L)-1, max(l) + 1))
+    lines(x=x, y=l, col = 'tomato3',   type = 'b')
+    
+    ## Plot the text of Lambda Hat
+    text(x=lambdaHat, y=mean(l) + 0.5, lHatText)
+    title(main = "MLE - Daniel Carpenter")
+  
+  # OUTPUT -----------------------------------------------
+    
+    ## Return Lambda Hat in a List
+    return(list(`Lambda Hat` = lambdaHat))
+}
 ```
 
-## `b.`
-```{r 5b, echo=TRUE, message=FALSE}
-```
+> Give the output of your function when x = {3,4,3,5,6}.
 
-## `c.`
-```{r 5c, echo=TRUE, message=FALSE}
-```
+```{r out5.5, echo=TRUE, message=FALSE}
+x = c(3,4,5,6)
 
-## `d.`
-```{r 5d, echo=TRUE, message=FALSE}
+myml(x)
 ```
-
-## `e.`
-```{r 5e, echo=TRUE, message=FALSE}
-```
-
+## `5.6.`
+The maximum likelihood estimate does not account for prior information. We know the prior times the likelihood forms the posterior, which the M.L. Estimate only uses the likelihood.
 
 ---
 
@@ -455,9 +519,6 @@ mynorm(mu=10, sigma=8,
 
 # Task `6`: 
 
-##  
-```{r 6a, echo=TRUE, message=FALSE}
-```
 
 
 ---

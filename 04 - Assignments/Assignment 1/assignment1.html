@@ -677,7 +677,7 @@ E\left(x^{2}\right) &amp;=n p(p+q)^{n-2}(n p+q) \\
 &amp;=n p(n p+q)
 \end{aligned}
 \]</span></p>
-<p><strong>Finally we now have derived <span class="math inline">\(V(X)=E(X-\mu)^{2}\)</span> that the variance of <span class="math inline">\(X\)</span> is <span class="math inline">\(n p q\)</span> where</strong> <span class="math inline">\(q=1-p\)</span>. <span class="math display">\[
+<p><strong>Finally we now have derived <span class="math inline">\(V(X)=E(X-\mu)^{2}\)</span> (<code>i</code>) AND that the variance of <span class="math inline">\(X\)</span> is <span class="math inline">\(n p q\)</span> where <span class="math inline">\(q=1-p\)</span> (<code>ii.</code>).</strong> <span class="math display">\[
 \begin{aligned}
 V(x) &amp;=E\left(x^{2}\right)-\{E(x)\}^{2} \\
 &amp;=n p(n p+q)-n^{2} p^{2} \\
@@ -815,6 +815,119 @@ V(x) &amp;=E\left(x^{2}\right)-\{E(x)\}^{2} \\
 </div>
 <div id="task-5" class="section level1">
 <h1>Task <code>5</code>:</h1>
+<div id="find-hatlambda-as-a-formula" class="section level2">
+<h2><code>5.1.</code> Find <span class="math inline">\(\hat{\lambda}\)</span> as a formula</h2>
+<ul>
+<li>Do this by first finding the likelihood function which is shown as <span class="math inline">\(L(\lambda)\)</span> <span class="math display">\[
+L(\lambda)=\prod_{i=1}^{n} f_{X}\left(x_{i} ; \lambda\right)=\prod_{i=1}^{n}\left\{\frac{\lambda^{x_{i}}}{x_{i} !} e^{-\lambda}\right\}=\frac{\lambda^{x_{1}+\ldots+x_{n}}}{x_{1} ! \ldots x_{n} !} e^{-n \lambda}
+\]</span></li>
+</ul>
+</div>
+<div id="find-the-second-derivative-of-llambda-as-a-formula." class="section level2">
+<h2><code>5.2.</code> Find the second derivative of <span class="math inline">\(L(\lambda)\)</span> as a formula.</h2>
+<div id="get-log-llambda" class="section level3">
+<h3><code>5.2.1</code>: get <span class="math inline">\(\log L(\lambda)\)</span></h3>
+<p><span class="math display">\[
+\log L(\lambda)=\sum_{i=1}^{n} x_{i} \log \lambda-n \lambda-\sum_{i=1}^{n} \log \left(x_{i} !\right)
+\]</span></p>
+</div>
+<div id="second-derivative-of-llambda" class="section level3">
+<h3><code>5.2.1</code>: Second derivative of <span class="math inline">\(L(\lambda)\)</span></h3>
+<p><span class="math display">\[
+\frac{d}{d \lambda}\{\log L(\lambda)\}
+=\sum_{i=1}^{n} \frac{x_{i}}{\lambda}-n=
+0 \\ \text{so,}  \ \widehat{\lambda}=\frac{1}{n} 
+\sum_{i=1}^{n} x_{i}=\bar{x}
+\]</span></p>
+</div>
+</div>
+<div id="show-hatlambda-is-a-maximum.-how-will-you-do-this.-show-using-calculus-that-the-max-of-𝐿𝜃-is-the-same-as-the-maximum-of-𝑙𝜃" class="section level2">
+<h2><code>5.3/5.4.</code> Show <span class="math inline">\(\hat{\lambda}\)</span> is a maximum. (how will you do this?). Show using calculus that the max of 𝐿(𝜃) is the same as the maximum of 𝑙(𝜃)</h2>
+<ul>
+<li>To check for the maximum, set <span class="math inline">\(\lambda = \hat{\lambda}\)</span> when in above derivation.</li>
+<li>Then check to see if negative</li>
+</ul>
+<p><span class="math display">\[
+\frac{d^{2}}{d \lambda^{2}}\{\log L(\lambda)\}
+=-\frac{1}{\lambda^{2}} \sum_{i=1}^{n} x_{i}&lt;0 \quad 
+\text {where} \ \lambda=\widehat{\lambda}
+\]</span></p>
+</div>
+<div id="make-a-function-called-mymlx" class="section level2">
+<h2><code>5.5.</code> Make a function called <code>myml(x)</code></h2>
+<ul>
+<li>Draws the graph of 𝐿(𝜆) and 𝑙(𝜆) with the x = vector of data</li>
+</ul>
+<pre class="r"><code>myml &lt;- function(x) {
+  
+  # SETUP -------------------------------------------------
+    
+    roundTo = 4 # Round to nearest value
+    
+    # Get value of n to calculate lambdaHat
+    n = length(x)
+  
+  # CALCULATIONS ------------------------------------------
+  
+    ## Get the value of lamda hat and put put it in a text obj
+    if(!require(latex2exp)) install.packages(latex2exp)
+    lambdaHat &lt;- round(sum(x) / n, roundTo)
+    lHatText &lt;- paste(&#39;Lambda Hat = &#39;, lambdaHat)
+    
+    ## Calculate Lamda
+    # x = seq(0,8, length = 9)
+    l &lt;- dpois(x, lambdaHat)
+    
+    ## Calculate MLE using log estimate
+    L &lt;- log(l)
+  
+  # PLOTS ------------------------------------------------
+  
+    ## Plot Lamda and Lambda Hat
+    plot(x=x,  y=L, col = &#39;steelblue&#39;, type = &#39;b&#39;, ylim = c(min(L)-1, max(l) + 1))
+    lines(x=x, y=l, col = &#39;tomato3&#39;,   type = &#39;b&#39;)
+    
+    ## Plot the text of Lambda Hat
+    text(x=lambdaHat, y=mean(l) + 0.5, lHatText)
+    title(main = &quot;MLE - Daniel Carpenter&quot;)
+  
+  # OUTPUT -----------------------------------------------
+    
+    ## Return Lambda Hat in a List
+    return(list(`Lambda Hat` = lambdaHat))
+}</code></pre>
+<blockquote>
+<p>Give the output of your function when x = {3,4,3,5,6}.</p>
+</blockquote>
+<pre class="r"><code>x = c(3,4,5,6)
+
+myml(x)</code></pre>
+<p><img src="data:image/png;base64,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" width="672" /></p>
+<pre><code>## $`Lambda Hat`
+## [1] 4.5</code></pre>
+</div>
+<div id="section" class="section level2">
+<h2><code>5.6.</code></h2>
+<p>The maximum likelihood estimate does not account for prior information. We know the prior times the likelihood forms the posterior, which the M.L. Estimate only uses the likelihood.</p>
+<hr />
+<p><br></p>
+</div>
+</div>
+<div id="task-6" class="section level1">
+<h1>Task <code>6</code>:</h1>
+<hr />
+<p><br></p>
+</div>
+<div id="task-7" class="section level1">
+<h1>Task <code>7</code>:</h1>
+<div id="section-1" class="section level2">
+<h2></h2>
+<hr />
+<p><br></p>
+</div>
+</div>
+<div id="task-8" class="section level1">
+<h1>Task <code>8</code>:</h1>
 <div id="a." class="section level2">
 <h2><code>a.</code></h2>
 </div>
@@ -833,42 +946,6 @@ V(x) &amp;=E\left(x^{2}\right)-\{E(x)\}^{2} \\
 <p><br></p>
 </div>
 </div>
-<div id="task-6" class="section level1">
-<h1>Task <code>6</code>:</h1>
-<div id="section" class="section level2">
-<h2></h2>
-<hr />
-<p><br></p>
-</div>
-</div>
-<div id="task-7" class="section level1">
-<h1>Task <code>7</code>:</h1>
-<div id="section-1" class="section level2">
-<h2></h2>
-<hr />
-<p><br></p>
-</div>
-</div>
-<div id="task-8" class="section level1">
-<h1>Task <code>8</code>:</h1>
-<div id="a.-1" class="section level2">
-<h2><code>a.</code></h2>
-</div>
-<div id="b.-1" class="section level2">
-<h2><code>b.</code></h2>
-</div>
-<div id="c.-1" class="section level2">
-<h2><code>c.</code></h2>
-</div>
-<div id="d.-1" class="section level2">
-<h2><code>d.</code></h2>
-</div>
-<div id="e.-1" class="section level2">
-<h2><code>e.</code></h2>
-<hr />
-<p><br></p>
-</div>
-</div>
 <div id="task-9" class="section level1">
 <h1>Task <code>9</code>:</h1>
 <div id="section-2" class="section level2">
@@ -879,10 +956,10 @@ V(x) &amp;=E\left(x^{2}\right)-\{E(x)\}^{2} \\
 </div>
 <div id="task-10" class="section level1">
 <h1>Task <code>10</code>:</h1>
-<div id="a.-2" class="section level2">
+<div id="a.-1" class="section level2">
 <h2><code>a.</code></h2>
 </div>
-<div id="b.-2" class="section level2">
+<div id="b.-1" class="section level2">
 <h2><code>b.</code></h2>
 </div>
 </div>
