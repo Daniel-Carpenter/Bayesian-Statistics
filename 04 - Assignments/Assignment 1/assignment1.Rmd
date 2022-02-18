@@ -216,7 +216,7 @@ varMethod1 <- function(n, p) {
   
   # Calculate the variance of X using above formula 
   variance = (X - mu)^2 / n
-  return(round(variance, 1))
+  return(format(round(variance, 1), nsmall=1))
 }
 
 varMethod1(n, p)
@@ -389,7 +389,7 @@ $$
         
         ## Calculate the area (probability)
         area = exactProb
-        areaRounded = round(area, roundTo)
+        areaRounded = format(round(area, roundTo), nsmall=roundTo)
         
         ## Place this on the above plot
         text(12,0.02,substitute(paste("Probability = ", areaRounded), 
@@ -471,28 +471,27 @@ myml = function(x) {
   lambda=seq(.01,2*max(x),0.5)
   
   # Calculate Poisson MLE
-  lambdahat = round(sum(x)/length(x),4)
+  lambdahat = sum(x)/length(x)
   
   #the likelihood function
   lik <- exp(-length(x)* lambda)*(lambda^sum(x))/prod(factorial(x))
   
   #the loglikelihood function
   loglik <- -length(x)* lambda+sum(x)*log(lambda)+log(prod(factorial(x)))
-  # return(list(mle=lambdahat))
   
   # Plot the likelihood
   plot(lambda, lik,    
        col = 'steelblue', type = 'l', 
        main = 'Plot for Likelihood Lambda (Poisson MLE)\nDaniel Carpenter',
        xlab = 'Lambda', ylab = 'Likelihood')
-  text(x=lambdahat, y=mean(lik), paste('L Hat=',round(lambdahat, 4)))
+  text(x=lambdahat, y=mean(lik), paste('L Hat=',format(round(lambdahat, 4), nsmall=4)))
   
   # Plot the loglikelihood
   plot(lambda, loglik,
        col = 'tomato3', type = 'l', 
        main = 'Plot for Log(Likelihood) Lambda (Poisson MLE)\nDaniel Carpenter',
        xlab = 'Lambda', ylab = 'Log Likelihood')
-  text(x=lambdahat, y=mean(loglik), paste('L Hat=',round(lambdahat, 4)))
+  text(x=lambdahat, y=mean(loglik), paste('L Hat=',format(round(lambdahat, 4), nsmall=4)))
   
   return(list(lambdahat = lambdahat))
 }
@@ -582,26 +581,82 @@ Above is  is always less than 0. Therefore $\hat\theta = \frac{X}{n}$ is the max
 
 <br>
 
-# Task `8`:
+# Task `8`: Newton Raphson Fun
+> Estimate the root of a function and graphs it
 
-## `a.`
-```{r 8a, echo=TRUE, message=FALSE}
+## Newton Rasphson Formula
+$$
+x_{n+1}=x_{n}-\frac{f\left(x_{n}\right)}{f^{\prime}\left(x_{n}\right)}
+$$
+
+## Create `mynr()` Function
+```{r mynrFun, echo=TRUE, message=FALSE}
+
+mynr <- function(f, fdash, x0,
+                 tol = 1e-5, n = 1000) 
+{
+  
+  # ROOT CALCULATIONS ---------------------------------------------------------
+  
+  # Check the initial guess is correct
+  fa <- f(x0)
+  if (fa == 0.0) {
+    approxRoot <- x0
+  } else {   # If not the guess, then solve
+    for (i in 1:n) {
+      x1 <- x0 - (f(x0) / fdash) # Calculate next value x1
+      n[i] <- x1 # Store x1
+      
+      # Once the difference between x0 and x1 becomes sufficiently small, output the results.
+      if (abs(x1 - x0) < tol) {
+        approxRoot <- tail(n, n=1)
+      }
+      # If mynr function has not yet reached convergence set x1 as x0 and continue
+      x0 <- x1
+    }
+  }
+  
+  # PLOTS --------------------------------------------------------------------
+  
+  # Plot the function
+  curve(f, col='slategray4', lwd=3, lty=1, ylab='f(x)',
+        xlim=c(approxRoot-3,approxRoot+3), ylim=c(-1,3))
+  
+  # X Axis
+  abline(h=0, col = 'tomato3', lty=2, lwd=1)
+  
+  # Where function crosses x axis
+  abline(v=approxRoot, col = 'seagreen4',  lty=2, lwd=1)
+  
+  # Plot the root as text, rounded to 4 decimals
+  text(x=approxRoot + 1, y = -0.5, paste("Root = ",format(round(approxRoot, 4), nsmall=4)))
+  
+  # Title
+  title(main = "Newton Raphson Method of Plotting Derivative Roots\nDaniel Carpenter")
+  
+  # Return the Root Approximation  
+  return(list('ApproxRoot' = approxRoot))
+}
 ```
 
-## `b.`
-```{r 8b, echo=TRUE, message=FALSE}
-```
+## Call `mynr()` Function
+```{r call_mynrFun, echo=TRUE, message=FALSE}
+# Package for computing derivative
+if(!require(numDeriv)) install.packages('numDeriv') 
 
-## `c.`
-```{r 8c, echo=TRUE, message=FALSE}
-```
+# Inputs
+  
+  ## Base Function to take derivative of and plot
+  f <- function(x) { x^2-5*x+6 } 
+  
+  ## Initial guess of root
+  x0 <- 5 
+  
+  ## First-order derivative f'(x0)
+  fdash <- genD(func = f, x = x0)$D[1] 
 
-## `d.`
-```{r 8d, echo=TRUE, message=FALSE}
-```
-
-## `e.`
-```{r 8e, echo=TRUE, message=FALSE}
+# Call Function
+mynr(f, fdash, x0)
 ```
 
 
