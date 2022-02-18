@@ -451,7 +451,7 @@ $$
 $$
 
 
-## `5.3/5.4.` Show $\hat{\lambda}$ is a maximum. (how will you do this?). Show using calculus that the max of 𝐿(𝜃) is the same as the maximum of 𝑙(𝜃)
+## `5.3/5.4.` Show $\hat{\lambda}$ is a maximum. 
 * To check for the maximum, set $\lambda = \hat{\lambda}$ when in above derivation.
 * Then check to see if negative
 
@@ -593,7 +593,8 @@ $$
 ```{r mynrFun, echo=TRUE, message=FALSE}
 
 mynr <- function(f, fdash, x0,
-                 tol = 1e-5, n = 1000) 
+                 tol = 1e-5, n = 1000,
+                 dec = 4) 
 {
   
   # ROOT CALCULATIONS ---------------------------------------------------------
@@ -629,7 +630,7 @@ mynr <- function(f, fdash, x0,
   abline(v=approxRoot, col = 'seagreen4',  lty=2, lwd=1)
   
   # Plot the root as text, rounded to 4 decimals
-  text(x=approxRoot + 1, y = -0.5, paste("Root = ",format(round(approxRoot, 4), nsmall=4)))
+  text(x=approxRoot + 1, y = -0.5, paste("Root = ",format(round(approxRoot, dec), nsmall=dec)))
   
   # Title
   title(main = "Newton Raphson Method of Plotting Derivative Roots\nDaniel Carpenter")
@@ -664,10 +665,68 @@ mynr(f, fdash, x0)
 
 <br>
 
-# Task `9`: 
+# Task `9`: MLE Using NR
 
-##  
-```{r 9a, echo=TRUE, message=FALSE}
+## Create `mynrml()` Function
+```{r mynrmlFun, echo=TRUE, message=FALSE}
+mynrml <- function(x, x0, 
+                   tol = 1e-7, N = 100, dec = 4, a = 0, b = 10) {
+  
+  loglik.dash <- function(lambda, arg = x) {
+    (1/lambda)*sum(arg) - length(arg)
+  }
+  
+  loglik.dashdash <- function(lambda, arg = x) {
+    (-1/(lambda^2))*sum(arg)
+  }
+  
+  # Create The Plot
+  curve(loglik.dash, col = 'lightsteelblue', 
+        lwd = 2, xlim = c(a,b), ylim = c(-5,10), 
+        xlab ='Theta', ylab ='Derivative of Log Likelihood', 
+        main ='MLE Using NR Method\nDaniel Carpenter')
+  
+    # Use the Newton Raphson method -----------------------------------------
+    
+    # First initialize k to 0, the vector containing each iteration, 
+    # i, the count of iterations, and x1.
+    k <- vector(mode = , length = )
+    i <- 1
+    x1 <- x0
+    
+    # implement the loop
+    while (i < N) {
+      x1 <- x0 - (loglik.dash(lambda = x0) / loglik.dashdash(lambda = x0))
+      
+      # Store each iterating in k
+      k[i] <- x1
+      
+      # If the sequence of x_i’s converges, i.e. the distance between x_i and x_i+1 
+      # is below the pre-specified tolerance level, the loop ends
+      if (abs(x1 - x0) < tol) {
+        root <- k[length(k)]
+        out <- list(Estimate = root)
+      } #if the loop isn’t ready to end, iterate
+      
+      i <- i+1
+      x0 <- x1 
+    } #If the loop doesn’t end after N iterations, it stops
+  
+  # Add the MLE Estimate on the graph with text
+  points(x0, 0, col = 'steelblue4', pch = 16, cex=1.5)
+  text(x0 + 1, 1, paste('Estimate=',format(round(x0, dec), nsmall=dec)))
+  
+  return(out)
+}
+```
+
+## Call `mynrml()` Function
+
+```{r mynrmlFun_call, echo=TRUE, message=FALSE}
+x = c(3,4,3,5,6)
+x0 = 3
+
+mynrml(x, x0)
 ```
 
 
@@ -681,7 +740,8 @@ mynr(f, fdash, x0)
 ```{r mynrfFun, echo=TRUE, message=FALSE}
 
 mynrf <- function(f, x0,
-                 tol = 1e-5, n = 1000) 
+                 tol = 1e-5, n = 1000,
+                 dec = 4) 
 {
   
   # ROOT CALCULATIONS ---------------------------------------------------------
@@ -723,7 +783,7 @@ mynrf <- function(f, x0,
   abline(v=approxRoot, col = 'seagreen4',  lty=2, lwd=1)
   
   # Plot the root as text, rounded to 4 decimals
-  text(x=approxRoot + 1, y = -0.5, paste("Root = ",format(round(approxRoot, 4), nsmall=4)))
+  text(x=approxRoot + 1, y = -0.5, paste("Root = ",format(round(approxRoot, dec), nsmall=dec)))
   
   # Title
   title(main = "Newton Raphson Method of Plotting Derivative Roots\nDaniel Carpenter")
