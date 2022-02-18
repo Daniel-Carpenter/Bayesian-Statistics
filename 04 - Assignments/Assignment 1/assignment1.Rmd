@@ -198,7 +198,8 @@ mycoin(p = seq(0,1,length=40), prior = pr, n =10, x=4, alpha=0.05)
 <br>
 
 # Task `2`: 
-
+> *THIS SHOWS AN EXAMPLE, SEE PART `ii/iii` OF `TASK 3` FOR FINAL PROOF OF $V(X)$*
+  
 **Inputs**  
 ```{r 2inputs, echo=TRUE, message=FALSE}
 n = 1000  # Intervals
@@ -463,51 +464,44 @@ $$
 ## `5.5.` Make a function called `myml(x)`
 * Draws the graph of 𝐿(𝜆) and 𝑙(𝜆) with the x = vector of data
 ```{r fun5.5, echo=TRUE, message=FALSE}
-myml <- function(x) {
+
+myml = function(x) {
   
-  # SETUP -------------------------------------------------
-    
-    roundTo = 4 # Round to nearest value
-    
-    # Get value of n to calculate lambdaHat
-    n = length(x)
+  # Create lambda vector as a set of values ranging from 0 to 2*max(x)
+  lambda=seq(.01,2*max(x),0.5)
   
-  # CALCULATIONS ------------------------------------------
+  # Calculate Poisson MLE
+  lambdahat = round(sum(x)/length(x),4)
   
-    ## Get the value of lamda hat and put put it in a text obj
-    if(!require(latex2exp)) install.packages(latex2exp)
-    lambdaHat <- round(sum(x) / n, roundTo)
-    lHatText <- paste('Lambda Hat = ', lambdaHat)
-    
-    ## Calculate Lamda
-    # x = seq(0,8, length = 9)
-    l <- dpois(x, lambdaHat)
-    
-    ## Calculate MLE using log estimate
-    L <- log(l)
+  #the likelihood function
+  lik <- exp(-length(x)* lambda)*(lambda^sum(x))/prod(factorial(x))
   
-  # PLOTS ------------------------------------------------
+  #the loglikelihood function
+  loglik <- -length(x)* lambda+sum(x)*log(lambda)+log(prod(factorial(x)))
+  # return(list(mle=lambdahat))
   
-    ## Plot Lamda and Lambda Hat
-    plot(x=x,  y=L, col = 'steelblue', type = 'b', ylim = c(min(L)-1, max(l) + 1))
-    lines(x=x, y=l, col = 'tomato3',   type = 'b')
-    
-    ## Plot the text of Lambda Hat
-    text(x=lambdaHat, y=mean(l) + 0.5, lHatText)
-    title(main = "MLE - Daniel Carpenter")
+  # Plot the likelihood
+  plot(lambda, lik,    
+       col = 'steelblue', type = 'l', 
+       main = 'Plot for Likelihood Lambda (Poisson MLE)\nDaniel Carpenter',
+       xlab = 'Lambda', ylab = 'Likelihood')
+  text(x=lambdahat, y=mean(lik), paste('L Hat=',round(lambdahat, 4)))
   
-  # OUTPUT -----------------------------------------------
-    
-    ## Return Lambda Hat in a List
-    return(list(`Lambda Hat` = lambdaHat))
+  # Plot the loglikelihood
+  plot(lambda, loglik,
+       col = 'tomato3', type = 'l', 
+       main = 'Plot for Log(Likelihood) Lambda (Poisson MLE)\nDaniel Carpenter',
+       xlab = 'Lambda', ylab = 'Log Likelihood')
+  text(x=lambdahat, y=mean(loglik), paste('L Hat=',round(lambdahat, 4)))
+  
+  return(list(lambdahat = lambdahat))
 }
 ```
 
 > Give the output of your function when x = {3,4,3,5,6}.
 
 ```{r out5.5, echo=TRUE, message=FALSE}
-x = c(3,4,5,6)
-
+x = c(3,4,3,5,6)
 myml(x)
 ```
 ## `5.6.`
@@ -519,6 +513,21 @@ The maximum likelihood estimate does not account for prior information. We know 
 
 # Task `6`: 
 
+Prove whether $\hat\lambda$ by proving $E(y) = \lambda$, for a random variable $Y$ ∼ $Poisson(\lambda)$, $E(Y) = \lambda$
+
+$$
+\begin{aligned}
+E(Y) &=\sum_{y=0}^{\infty} y \frac{e^{-\lambda} \lambda^{y}}{y !} \\
+&=\sum_{y=1}^{\infty} y \frac{e^{-\lambda} \lambda^{y}}{y !} \\
+&=\sum_{y=1}^{\infty} \frac{e^{-\lambda} \lambda^{y}}{(y-1) !} \\
+&=\lambda e^{-\lambda} \sum_{y=1}^{\infty} \frac{\lambda^{y-1}}{(y-1) !} \\
+&=\lambda e^{-\lambda} \sum_{y=0}^{\infty} \frac{\lambda^{y}}{y !} \\
+&=\lambda e^{-\lambda} e^{\lambda} \\
+&=\lambda
+\end{aligned}
+$$
+
+Therefore, $E(Y) = \lambda$, which indicates that $\lambda$ is not biased.
 
 
 ---
