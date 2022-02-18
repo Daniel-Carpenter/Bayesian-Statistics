@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ---
 
-# Task `1`: 
+# Task `1`: Bayes Box
 
 ## `a.` Classical Point Estimate for 𝜃 (*Probability of Success*)
 ```{r 1a, echo=TRUE, message=FALSE}
@@ -197,7 +197,7 @@ mycoin(p = seq(0,1,length=40), prior = pr, n =10, x=4, alpha=0.05)
 
 <br>
 
-# Task `2`: 
+# Task `2`: Variance
 > *THIS SHOWS AN EXAMPLE, SEE PART `ii/iii` OF `TASK 3` FOR FINAL PROOF OF $V(X)$*
   
 **Inputs**  
@@ -241,10 +241,10 @@ varMethod2(n, p)
 
 <br>
 
-# Task `3`: 
+# Task `3`: MGF
 
 ## `i` 
-Definition of The m.g.f of the Binomial Distribution:
+Definition of The M.G.F of the Binomial Distribution:
 $$
 b(x ; n, p)=\frac{n !}{x !(n-x) !} p^{x} q^{n-x} \quad \text { with } \quad q=1-p .
 $$
@@ -308,7 +308,7 @@ $$
 
 <br>
 
-# Task `4`: 
+# Task `4`: Normal Density
 
 ## Create Normal Density Function called `mynorm()`
 ```{r mynorm, echo=TRUE, message=FALSE}
@@ -427,7 +427,7 @@ mynorm(mu=10, sigma=8,
 
 <br>
 
-# Task `5`:
+# Task `5`: MLE
 
 ## `5.1.` Find  $\hat{\lambda}$ as a formula
 * Do this by first finding the likelihood function which is shown as $L(\lambda)$
@@ -511,7 +511,7 @@ The maximum likelihood estimate does not account for prior information. We know 
 
 <br>
 
-# Task `6`: 
+# Task `6`: Un/Biased $\lambda$
 
 Prove whether $\hat\lambda$ by proving $E(y) = \lambda$, for a random variable $Y$ ∼ $Poisson(\lambda)$, $E(Y) = \lambda$
 
@@ -534,11 +534,48 @@ Therefore, $E(Y) = \lambda$, which indicates that $\lambda$ is not biased.
 
 <br>
 
-# Task `7`: 
+# Task `7`: MLE for Bernoulli
 
-##  
-```{r 7a, echo=TRUE, message=FALSE}
-```
+Consider $n$ Bernoulli trials with $X$ successes.
+$$
+p(x)=\left(\begin{array}{l}
+n \\
+X
+\end{array}\right) \theta^{X}(1-\theta)^{n-X}
+$$
+
+Compute the likelihood: $L(\theta)$
+$$
+L(\theta)=\left(\begin{array}{l}
+n \\
+X
+\end{array}\right) \theta^{X}(1-\theta)^{n-X}
+$$
+
+Find the log(liklihood):
+$$
+\log L(\theta)=\log \left\{\left(\begin{array}{l}
+n \\
+x
+\end{array}\right)\right\}+x \log (\theta)+(n-x) \log (1-\theta)
+$$
+
+Then, Find the derivative of log(likelihood)
+$$
+\frac{d}{d \theta} \log L(\theta)=\frac{x}{\theta}-\frac{n-x}{1-\theta}
+$$
+
+Set log(likelihood) to $0$
+$$
+\frac{x}{\theta}-\frac{n-x}{1-\theta}=0 \Longleftrightarrow x-\theta x=n \theta-\theta x \Longleftrightarrow \theta=\frac{x}{n}
+$$
+
+$\hat{\theta}=\frac{x}{n}$ is the candidate.  Now take the second derivative:
+$$
+\frac{d^{2}}{d \theta^{2}} \log L(\theta)=-\frac{x}{\theta^{2}}-\frac{n-x}{(1-\theta)^{2}}
+$$
+
+Above is  is always less than 0. Therefore $\hat\theta = \frac{X}{n}$ is the maximum likelihood estimator for $\theta$.
 
 
 ---
