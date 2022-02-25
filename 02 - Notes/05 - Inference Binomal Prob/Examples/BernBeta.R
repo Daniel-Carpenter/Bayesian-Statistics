@@ -237,3 +237,5 @@ BernBeta = function( priorBetaAB , Data , plotType=c("Points","Bars")[2] ,
   
   return( c(a+z,b+N-z) )
 } # end of function
+
+beta(3,3)
