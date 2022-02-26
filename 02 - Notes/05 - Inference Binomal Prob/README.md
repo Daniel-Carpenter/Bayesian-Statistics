@@ -18,7 +18,22 @@
 
 * Beta parameter betwen `0` and `1`
 
+---
+
+## Beta Conjugates
+> Hyper paramters (alpha and theta) control the shape of the beta distribution
+
+---
+
 ## Beta in R
+
+### R Functions to Find Area Under Beta Distributions
+
+#### Less Than/Greater Than
+<img src = "Images/betaR.png"> <br>
+
+#### Between Two Thetas
+<img src = "Images/betweenR.png"> <br>
 
 ### Call `beta(a,b)`
 ```R
@@ -81,6 +96,8 @@ curve(mixbeta(x, 0.9, 4,40,2,2))
 <img src = "Images/kappa.png"> <br>
 <img src = "Images/kappaAlg.png"> <br>
 <img src = "Images/kappaGraph.png"> <br>
+
+---
 
 ## Get the Posterior
 
