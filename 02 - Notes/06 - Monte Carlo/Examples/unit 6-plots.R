@@ -2,13 +2,16 @@
 
 # plotting a distribution
 
+# Normal Distribution
 windows()
 curve(dnorm(x,mean = 10,sd=5), col = "Red", lwd =3, xlim = c(10-4*5, 10+4*5))
+
+# Gamma Distribution
+windows()
 curve(dgamma(x, shape = 4,scale = 2), xlim = c(0,20))
 
 
 # random samples and histograms
-
 x = rnorm(1000, mean = 10, sd = 5)
 hist(x, col = "Red")
 
