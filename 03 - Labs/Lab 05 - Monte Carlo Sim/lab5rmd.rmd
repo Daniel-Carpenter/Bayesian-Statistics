@@ -220,7 +220,6 @@ col = 'red')
 * Output, shows how the outcome of the experiment changes when using an updated prior beliefs.
 
 ```{r 2.2, echo=TRUE, message=FALSE}
-
 # Here, get the value of h to use in this example. This objected created in previous code chunk
 # When calling outputOfCdbbox2 <- cdbbox2(k=2,lik=dbinom(x=4,size=10,prob=c(0.4,0.8)),theta=c(0.4,0.8),h1="s") 
 h = outputOfCdbbox2$h
@@ -246,6 +245,91 @@ ans <- coindie(n=10,h=h,E2=c(2,3,4,5),
 <br>
 
 ## Task 3
+
+### `3.1` 
+Core of `simR()`? Take a random sample from the uniform of size 1. 
+If the proposed value is less than or equal to alpha (or the area at `i`, `j`), 
+then accept it as the solution. Else, reject it.
+
+### `3.2` 
+```{r 3.2, echo=TRUE, message=FALSE}
+
+  # This function makes discrete simulations from a posterior with any number of h values
+  # n=nu of iterations
+  # You can embellish this function
+  simR<-function(n=10000, h=c(0.03344302,0.06165627),...){
+    alpha<-c() # holds transition probs
+    alpha[1]<-1
+    u<-c() # holds uniform values
+    u[1]<-1
+    post<-c()# post sample
+    prop<-c() # vec of proposed states 1s and 2s
+    prop[1]=1 # initial state
+    post[1]=prop[1]
+    for(i in 2:n){ # starts at 2 because initial value given above
+      # proposal state 
+      prop[i]=sample(1:length(h),1,replace=TRUE)
+      # calculate alpha
+      # notice h[prop[i]] gives the actual value of h
+      alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+      # to calculate accepting proposal with prob alpha
+      # select a random value from  a uniform (0,1)
+      u[i]=runif(1)
+      if(u[i]<=alpha[i]){post[i]<-prop[i]}
+      else{post[i]<-post[i-1]}
+    }
+    res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE)
+    sim<-table(post)/n
+    # windows only works with a pc
+    # quartz with macs
+    # dev.new(noRStudioGD = TRUE) # or quartz() 
+    
+    barplot(sim,...)
+    postexact<-h/sum(h)
+    # The returned output is a list 
+    # Use obj$ to obtain whatever interests you
+    return(list(iter=res,sim=sim,postexact=postexact,post=post) )
+  }
+
+  
+  # Create a funciton to establish a Uniform Binomial Experiment
+  getH <- function(numThetaValues, x, n) {
+    
+    ## Form uniform probability
+    theta <- seq(0, 1, length = numThetaValues)
+    
+    ## Calculate prior assuming uniform distribution
+    prior = rep(1/numThetaValues, numThetaValues)
+    
+    ## Calculate the likelihood
+    likelihood  = dbinom(x=x, size=n, prob=theta)
+    
+    ## Calculate the Prior x the Likelihood
+    h <-  prior * likelihood
+    
+    return(h)
+  }
+  
+  
+  # Inputs for getH()
+  numThetaValues = 40
+  x = 4
+  n = 10
+  
+  # Call simROut and add some extras to the plot
+  simROut <- simR(n=10000, h=getH(numThetaValues, x, n),
+                  
+                  # Title
+                  main = paste("Histogram of Simulation Output using simR()\n",
+                               "Assumes Uniform Prior dist. over ", numThetaValues, 
+                               " values of theta.\nProb. ", x, 
+                               " with ", n, "bernoulli trials"),
+                  ylab = "Probability",
+                  xlab = 'Number of Theta Values',
+                  col = 'lightblue'
+                  )
+
+```
 
 
 

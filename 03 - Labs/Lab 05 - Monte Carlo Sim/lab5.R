@@ -123,42 +123,42 @@
   # Notice the ... - this corresponds to the ... in the barplot
   # You can use additional arguments which pass to the barplot
   coindie<-function(n=100, h=c(1/4,3/4),E2=c(5,6),init=1,...){
-  library(xtable)
-  dieset<-c()
-  dieset[1]<-"E1"
-  die<-function(n=1){
-  sample(1:6,size=n,replace=TRUE)
-  }
-  
-  coin<-function(n=1){
-  sample(1:2,size=n,replace=TRUE)
-  }
-  face<-c()
-  alpha<-c() # holds acceptance probs
-  alpha[1]<-1
-  post<-c()# post sample
-  prop<-c() # vec of proposed states 1s and 2s
-  prop[1]=init # initial state
-  post[1]=prop[1]
-  dice<-c()
-  dice[1]<-die()
-  
-  for(i in 2:n){ # starts at 2 because initial value given above
-  prop[i]<-coin()
-  alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
-  
-  dice[i]<-die()
-  ifelse(alpha[i]==1,dieset[i]<-"E1",dieset[i]<-"E2")
-  # is x an element of set y
-  if(alpha[i]==1 | (is.element(dice[i],E2) & alpha[i]!=1)){post[i]<-prop[i]}
-  else{post[i]<-post[i-1]}
-   }  
-  res<-matrix(c(prop,round(alpha,2),dieset,dice,post ),nc=5,nr=n,byrow=FALSE,dimnames=list(1:n,c("proposal","alpha", "E","dice","post")))
-  sim<-table(post)/n
-  postexact<-h/sum(h)
-  dev.new(noRStudioGD = TRUE)
-  barplot(sim,...)
-  return(list(iter=res,sim=sim,postexact=postexact,post=post,xtable=xtable(res,dig=1)) )
+    library(xtable)
+    dieset<-c()
+    dieset[1]<-"E1"
+    die<-function(n=1){
+    sample(1:6,size=n,replace=TRUE)
+    }
+    
+    coin<-function(n=1){
+    sample(1:2,size=n,replace=TRUE)
+    }
+    face<-c()
+    alpha<-c() # holds acceptance probs
+    alpha[1]<-1
+    post<-c()# post sample
+    prop<-c() # vec of proposed states 1s and 2s
+    prop[1]=init # initial state
+    post[1]=prop[1]
+    dice<-c()
+    dice[1]<-die()
+    
+    for(i in 2:n){ # starts at 2 because initial value given above
+    prop[i]<-coin()
+    alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+    
+    dice[i]<-die()
+    ifelse(alpha[i]==1,dieset[i]<-"E1",dieset[i]<-"E2")
+    # is x an element of set y
+    if(alpha[i]==1 | (is.element(dice[i],E2) & alpha[i]!=1)){post[i]<-prop[i]}
+    else{post[i]<-post[i-1]}
+     }  
+    res<-matrix(c(prop,round(alpha,2),dieset,dice,post ),nc=5,nr=n,byrow=FALSE,dimnames=list(1:n,c("proposal","alpha", "E","dice","post")))
+    sim<-table(post)/n
+    postexact<-h/sum(h)
+    dev.new(noRStudioGD = TRUE)
+    barplot(sim,...)
+    return(list(iter=res,sim=sim,postexact=postexact,post=post,xtable=xtable(res,dig=1)) )
   }
   
   coindie(n=20,h=c(0.6,0.4),E2=c(3,4,5,6)) ->ans
@@ -180,3 +180,83 @@
   ans3=coindie(n=1000,h=ans$h,E2=1:ans$k)
   ans4=c(0.5,0.8)[ans3$post]
   plot(ans4,type="l",main="Trace plot",xlab="Iteration",ylab="theta")
+
+  
+  
+  
+  # TASK 3 ======================================================================
+
+  # This function makes discrete simulations from a posterior with any number of h values
+  # n=nu of iterations
+  # You can embellish this function
+  simR<-function(n=10000, h=c(0.03344302,0.06165627),...){
+    alpha<-c() # holds transition probs
+    alpha[1]<-1
+    u<-c() # holds uniform values
+    u[1]<-1
+    post<-c()# post sample
+    prop<-c() # vec of proposed states 1s and 2s
+    prop[1]=1 # initial state
+    post[1]=prop[1]
+    for(i in 2:n){ # starts at 2 because initial value given above
+      # proposal state 
+      prop[i]=sample(1:length(h),1,replace=TRUE)
+      # calculate alpha
+      # notice h[prop[i]] gives the actual value of h
+      alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+      # to calculate accepting proposal with prob alpha
+      # select a random value from  a uniform (0,1)
+      u[i]=runif(1)
+      if(u[i]<=alpha[i]){post[i]<-prop[i]}
+      else{post[i]<-post[i-1]}
+    }
+    res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE)
+    sim<-table(post)/n
+    # windows only works with a pc
+    # quartz with macs
+    # dev.new(noRStudioGD = TRUE) # or quartz() 
+    
+    barplot(sim,...)
+    postexact<-h/sum(h)
+    # The returned output is a list 
+    # Use obj$ to obtain whatever interests you
+    return(list(iter=res,sim=sim,postexact=postexact,post=post) )
+  }
+
+  
+  # Uniform Binomial Experiment
+  getH <- function(numThetaValues, x, n) {
+    
+    ## Form uniform probability
+    theta <- seq(0, 1, length = numThetaValues)
+    
+    ## Calculate prior assuming uniform distribution
+    prior = rep(1/numThetaValues, numThetaValues)
+    
+    ## Calculate the likelihood
+    likelihood  = dbinom(x=x, size=n, prob=theta)
+    
+    ## Calculate the Prior x the Likelihood
+    h <-  prior * likelihood
+    
+    return(h)
+  }
+  
+  numThetaValues = 40
+  x = 4
+  n = 10
+  
+  
+  simROut <- simR(n=10000, h=getH(numThetaValues, x, n),
+                  
+                  # Title
+                  main = paste("Histogram of Simulation Output using simR()\n",
+                               "Assumes Uniform Prior dist. over ", numThetaValues, 
+                               " values of theta. Prob. ", x, 
+                               " with ", n, "bernoulli trials"),
+                  ylab = "Probability",
+                  xlab = 'Number of Theta Values',
+                  col = 'lightblue'
+                  )
+
+  
