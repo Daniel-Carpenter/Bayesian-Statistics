@@ -1,0 +1,254 @@
+---
+title:    "Lab 5 - MCMC"
+subtitle: "Bayesian Statistics"
+author:   "Daniel Carpenter"
+date:     "February 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+## Task `1`
+
+### `1.1b. i-ii`
+```{r 1a, echo=TRUE, message=FALSE}
+
+  # 1 (i-ii)
+  # Make a coin-die bbox
+  # k = number of faces in the event set E for acceptance of proposal
+  # Lik = likelihood for 2 states of theta
+  # theta = two states
+  # h1 = small relative to h2
+  cdbbox<-function(k=1,lik,theta, h1="s")
+  { 
+    # K=1...6
+    # xtable is a library which has functions useful for latex output
+    library(xtable)
+    
+    # rename the first and second components of the likelihood
+    lik1<-lik[1]
+    lik2<-lik[2]
+    
+    # We will now make a prior that has the desired characteristics
+    # See if you can prove the following
+    # if h1 small "s" then ... else ...
+    ifelse(h1=="s",
+           pi1<-k/6*lik2/(lik1+k/6*lik2), 
+           pi1<-lik2/(lik2+k/6*lik1)
+    )
+    
+    # sum of probs is 1
+    prior=c(pi1,1-pi1)
+    
+    #lik<-c(lik1,lik2)
+    h<-prior*lik
+    
+    # Bayes
+    post=h/sum(h)
+    
+    # Make a matrix for the Bayes box
+    mat<-cbind(theta,prior,lik,h,post)
+    rownames(mat)<-1:length(lik)
+    Totals=c(NA,sum(prior),NA,sum(h),sum(post))
+    mat2=rbind(mat,Totals)
+    
+    # Now make some plots useful in explaining the procedure
+    # graphics.off()
+    # dev.new(noRStudioGD = TRUE)
+    layout(matrix(c(1,2),nr=1,nc=2,byrow=TRUE))
+    barplot(matrix(c(0.5,0.5),nc=2,nr=1,byrow=TRUE,dimnames=list(c("Coin"),theta)),
+            ylim=c(0,1),las=1,main="Proposal\n Uniform")
+    barplot(matrix(h,nc=2,nr=1,byrow=TRUE,dimnames=list(c("Coin"),theta)),
+            ylim=c(0,max(h)+0.5*max(h)),las=1,main="Proportional to target\n h")
+    # Return a list of useful objects
+    return(list(bbox=mat2,latex=xtable(mat2,digits=6),mat=mat,h=h,h1=h1,k=k))
+  }
+  
+  # Call function
+  cdbbox(k=2,lik=dbinom(x=4,size=10,prob=c(0.4,0.8)),theta=c(0.4,0.8),h1="s")->ans 
+  
+  # Get the bayes box and knit using kable for aesthetics
+  knitr::kable(ans$bbox)
+```
+
+### `1.1b. iii`
+Accept it with a probability. Need an acceptance and rejection set. 
+Anything lower than the probability can be in the acceptance set. For Example, 
+if 4/6, then can accept {1,2,3,4}
+
+```{r 1b, echo=TRUE, message=FALSE}
+  ## Impoved Graphic
+  cdbbox2<-function(k=1,lik,theta, h1="s")
+  { 
+    # K=1...6
+    # xtable is a library which has functions useful for latex output
+    library(xtable)
+    
+    # rename the first and second components of the likelihood
+    lik1<-lik[1]
+    lik2<-lik[2]
+    
+    # We will now make a prior that has the desired characteristics
+    # See if you can prove the following
+    # if h1 small "s" then ... else ...
+    ifelse(h1=="s",
+           pi1 <- k/6 * lik2 / (lik1 + k/6 * lik2), 
+           pi1 <-       lik2 / (lik2 + k/6 * lik1)
+    )
+    
+    # sum of probs is 1
+    prior=c(pi1,1-pi1)
+    
+    #lik<-c(lik1,lik2)
+    h<-prior*lik
+    
+    # Bayes
+    post=h/sum(h)
+    
+    # Make a matrix for the Bayes box
+    mat<-cbind(theta,prior,lik,h,post)
+    rownames(mat)<-1:length(lik)
+    Totals=c(NA,sum(prior),NA,sum(h),sum(post))
+    mat2=rbind(mat,Totals)
+    
+    # Now make some plots useful in explaining the procedure
+    # graphics.off()
+    # dev.new(noRStudioGD = TRUE)
+    layout(matrix(c(1,2),nr=1,nc=2,byrow=TRUE))
+    barplot(matrix(c(0.5,0.5),nc=2,nr=1,byrow=TRUE,dimnames=list(c("Coin"),theta)),
+            ylim=c(0,1),las=1,main="Proposal Distribution\n (Uniform)",
+            col = 'grey20',
+            ylab = 'Probabilities',
+            xlab = 'Outcome')
+    barplot(matrix(h,nc=2,nr=1,byrow=TRUE,dimnames=list(c("Coin"),theta)),
+            ylim=c(0,max(h)+0.5*max(h)),las=1,main="Proportional to target\n h",
+            col = 'red',
+            ylab = 'Probabilities',
+            xlab = 'Outcome')
+    # Return a list of useful objects
+    return(list(bbox=mat2,latex=xtable(mat2,digits=6),mat=mat,h=h,h1=h1,k=k))
+  }
+  
+  # Call Function
+  outputOfCdbbox2 <- cdbbox2(k=2,lik=dbinom(x=4,size=10,prob=c(0.4,0.8)),theta=c(0.4,0.8),h1="s") 
+```
+
+### `1.2` - Derivation of Code
+
+#### `R` Code
+```r
+ifelse(h1=="s",pi1<-k/6*lik2/(lik1+k/6*lik2), pi1<-lik2/(lik2+k/6*lik1))
+```
+
+#### $\LaTeX$ Derivation:
+$$
+\text{if} \ h_1 = s \\
+\text{then} \ p_{i,1} = \frac{k}{6} \times \frac{lik_2}{lik_1 + k \times lik_2}, \\
+\text{else} \ p_{i,1} = \times \frac{lik_2}{lik_2 + k \times lik_1}
+$$
+
+---
+
+<br>
+
+## Task 2
+
+
+### `1 a-c`
+```{r 2.1, echo=TRUE, message=FALSE}
+coindie<-function(n=100, h=c(1/4,3/4),E2=c(5,6),init=1,...){
+  library(xtable)
+  dieset<-c()
+  dieset[1]<-"E1"
+  die<-function(n=1){
+  sample(1:6,size=n,replace=TRUE)
+  }
+  
+  coin<-function(n=1){
+  sample(1:2,size=n,replace=TRUE)
+  }
+  face<-c()
+  alpha<-c() # holds acceptance probs
+  alpha[1]<-1
+  post<-c()# post sample
+  prop<-c() # vec of proposed states 1s and 2s
+  prop[1]=init # initial state
+  post[1]=prop[1]
+  dice<-c()
+  dice[1]<-die()
+  
+  for(i in 2:n){ # starts at 2 because initial value given above
+  prop[i]<-coin()
+  alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+  
+  dice[i]<-die()
+  ifelse(alpha[i]==1,dieset[i]<-"E1",dieset[i]<-"E2")
+  # is x an element of set y
+  if(alpha[i]==1 | (is.element(dice[i],E2) & alpha[i]!=1)){post[i]<-prop[i]}
+  else{post[i]<-post[i-1]}
+   }  
+  res<-matrix(c(prop,round(alpha,2),dieset,dice,post ),nc=5,nr=n,byrow=FALSE,dimnames=list(1:n,c("proposal","alpha", "E","dice","post")))
+  sim<-table(post)/n
+  postexact<-h/sum(h)
+  barplot(sim,...)
+  return(list(iter=res,sim=sim,postexact=postexact,post=post,xtable=xtable(res,dig=1)) )
+}
+  
+  # Call the function
+  ans <- coindie(n=10,h=c(0.6,0.4),E2=c(2,3,4,5),
+                  
+                  # Add X Label to be more descriptive
+                  xlab = "Outcome",
+                  
+                  # Add Y Label to be more descriptive
+                  ylab = 'Probability',
+                  
+                  # Add Title  to be more descriptive
+                  main = 'Coin Die Function using MCMC\nDaniel Carpenter',
+                  
+                  # Add color to indicate post color red
+col = 'red')
+        
+```
+
+### `2` Use output of `cdbox` as input to `coindie`
+
+* Input `h` is the prior times the likelihood of the output created from the cdbbox2 function. This function estimates the prior and then applies the likelihood to get the outcome
+* Output, shows how the outcome of the experiment changes when using an updated prior beliefs.
+
+```{r 2.2, echo=TRUE, message=FALSE}
+
+# Here, get the value of h to use in this example. This objected created in previous code chunk
+# When calling outputOfCdbbox2 <- cdbbox2(k=2,lik=dbinom(x=4,size=10,prob=c(0.4,0.8)),theta=c(0.4,0.8),h1="s") 
+h = outputOfCdbbox2$h
+
+ans <- coindie(n=10,h=h,E2=c(2,3,4,5),
+               
+               # Add X Label to be more descriptive
+               xlab = "Outcome",
+               
+               # Add Y Label to be more descriptive
+               ylab = 'Probability',
+               
+               # Add Title  to be more descriptive
+               main = 'Coin Die Function using MCMC\nDaniel Carpenter',
+               
+               # Add color to indicate post color red
+               col = 'red')
+
+```
+
+---
+
+<br>
+
+## Task 3
+
+
+
+
+
+
