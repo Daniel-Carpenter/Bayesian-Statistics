@@ -11,7 +11,7 @@ output:
     toc_float: yes
 ---
 
-## Task `1`
+## Task 1
 
 ### `1.1b. i-ii`
 ```{r 1a, echo=TRUE, message=FALSE}
@@ -323,16 +323,81 @@ then accept it as the solution. Else, reject it.
                   main = paste("Histogram of Simulation Output using simR()\n",
                                "Assumes Uniform Prior dist. over ", numThetaValues, 
                                " values of theta.\nProb. ", x, 
-                               " with ", n, "bernoulli trials"),
-                  ylab = "Probability",
-                  xlab = 'Number of Theta Values',
+                               " with ", n, "bernoulli trials - Daniel Carpenter"),
+                  ylab = "Frequency",
+                  xlab = "Proposed h's",
                   col = 'lightblue'
                   )
 
 ```
 
 
+---
 
+<br>
 
+## Task 4
+
+```{r 4, echo=TRUE, message=FALSE}
+# What about different proposal distributions
+# Again for the discrete case
+simRQ<-function(n=1000,init=1, h=c(1,1),pr=c(1,1)/2,...){
+  alpha<-c() # holds transition probs
+  alpha[1]<-1
+  u<-c() # holds uniform values
+  u[1]<-1
+  post<-c()# post sample
+  prop<-c() # vec of proposed states 1s and 2s etc
+  prop[1]=init # initial state
+  post[1]=prop[1]
+  q<-function(x){pr[x]}
+  for(i in 2:n){ # starts at 2 because initial value given above
+    #make a sample from the proposal
+    sample(1:length(h),1,replace=TRUE,prob=pr)->prop[i]
+    #Calculate alpha adjusting for the proposal being non uniform
+    alpha[i]=min(1,h[prop[i]]*q(post[i-1])/(h[post[i-1]]*q(prop[i])))
+    # now choose the proposal with probability alpha
+    u[i]=runif(1)
+    if(u[i]<=alpha[i]){post[i]<-prop[i]}
+    else{post[i]=post[i-1]}
+  }
+  res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE,dimnames=list(1:n,c("prop","u","alpha","post")))
+  sim<-table(post)/n
+  postexact<-h/sum(h)
+  barplot(sim,...)
+  tmp<-c()
+  ifelse(length(res[,1])>=20,tmp<-res[1:20,],tmp<-res)
+  return(list(iter=tmp,sim=sim,post=postexact) )
+}
+
+# Inputs for getH()
+numThetaValues = 11
+
+# Function to create a peak distribution - only for odd dist
+makePeak <- function(numThetaValues) {
+  peak = round(numThetaValues / 2)  # Peak of distribution
+  beg  = 1:(peak-1)                 # up until the peak
+  end  = (peak-1):1                 # After the peak
+  return(c(beg, peak, end))         # Combine it to make mountain
+}
+  
+prInput = makePeak(numThetaValues)  # proposal input that is a peak distribution (Q)
+hInput = getH(numThetaValues, x, n) # Uniform prior
+
+# Call the function and store
+simRQOut <- simRQ(n=10000,h=hInput,pr=prInput,
+        
+        # Title
+        main = paste("Hist. Simulation Output - Assumes Uniform Prior \ndist. over ", numThetaValues, 
+                     " values of theta. Prob. ", x, 
+                     " with ", n, "bernoulli trials. \nUses Peak Proposal Dist. - Daniel Carpenter"),
+        ylab = "Frequency",
+        xlab = "Proposed h's",
+        col = 'tomato3'
+)
+
+# Show first 20 iterations
+simRQOut$iter
+```
 
 

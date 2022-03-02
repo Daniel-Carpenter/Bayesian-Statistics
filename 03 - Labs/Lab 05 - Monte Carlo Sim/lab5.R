@@ -260,3 +260,88 @@
                   )
 
   
+  
+  # Task 4 =====================================================================
+  
+  
+  # What about different proposal distributions
+  # Again for the discrete case
+  simRQ<-function(n=1000,init=1, h=c(1,1),pr=c(1,1)/2,...){
+    alpha<-c() # holds transition probs
+    alpha[1]<-1
+    u<-c() # holds uniform values
+    u[1]<-1
+    post<-c()# post sample
+    prop<-c() # vec of proposed states 1s and 2s etc
+    prop[1]=init # initial state
+    post[1]=prop[1]
+    q<-function(x){pr[x]}
+    for(i in 2:n){ # starts at 2 because initial value given above
+      #make a sample from the proposal
+      sample(1:length(h),1,replace=TRUE,prob=pr)->prop[i]
+      #Calculate alpha adjusting for the proposal being non uniform
+      alpha[i]=min(1,h[prop[i]]*q(post[i-1])/(h[post[i-1]]*q(prop[i])))
+      # now choose the proposal with probability alpha
+      u[i]=runif(1)
+      if(u[i]<=alpha[i]){post[i]<-prop[i]}
+      else{post[i]=post[i-1]}
+    }
+    res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE,dimnames=list(1:n,c("prop","u","alpha","post")))
+    sim<-table(post)/n
+    postexact<-h/sum(h)
+    dev.new(noRStudioGD = TRUE)
+    barplot(sim,...)
+    tmp<-c()
+    ifelse(length(res[,1])>=20,tmp<-res[1:20,],tmp<-res)
+    return(list(iter=tmp,sim=sim,post=postexact) )
+  }
+  
+  # Create a funciton to establish a Uniform Binomial Experiment
+  getH <- function(numThetaValues, x, n) {
+    
+    ## Form uniform probability
+    theta <- seq(0, 1, length = numThetaValues)
+    
+    ## Calculate prior assuming uniform distribution
+    prior = rep(1/numThetaValues, numThetaValues)
+    
+    ## Calculate the likelihood
+    likelihood  = dbinom(x=x, size=n, prob=theta)
+    
+    ## Calculate the Prior x the Likelihood
+    h <-  prior * likelihood
+    
+    return(h)
+  }
+  
+  
+  # Inputs for getH()
+  numThetaValues = 11
+  x = 4
+  n = 10
+  
+  # Function to create a peak distribution - only for odd dist
+  makePeak <- function(numThetaValues) {
+    peak = round(numThetaValues / 2)  # Peak of distribution
+    beg  = 1:(peak-1)                 # up until the peak
+    end  = (peak-1):1                 # After the peak
+    return(c(beg, peak, end))         # Combine it to make mountain
+  }
+    
+  prInput = makePeak(numThetaValues)  # proposal input that is a peak distribution (Q)
+  hInput = getH(numThetaValues, x, n) # Uniform prior
+  
+  simRQ(n=10000,h=hInput,pr=prInput,
+        
+        # Title
+        main = paste("Histogram of Simulation Output using simRQ()\n",
+                     "Assumes Uniform Prior dist. over ", numThetaValues, 
+                     " values of theta. Prob. ", x, 
+                     " with ", n, "bernoulli trials. Uses Peak Proposal Dist."),
+        ylab = "Frequency",
+        xlab = "Proposed h's",
+        col = 'tomato3'
+  )
+  
+  
+  
