@@ -344,4 +344,43 @@
   )
   
   
+# TASK 5 =======================================================================
+  
+  ## Now we shall look at the continuous case
+  
+  # Task 5
+  ### Using a beta proposal
+  ### You can change the proposal to whatever you require
+  ## a,b are the parameters of the Beta proposal
+  ## a=b=1 is a uniform
+  simRC<-function(n=10,init=0.5, h=function(theta){dunif(theta)*dbinom(x=4,size=10,prob=theta)},a=3,b=4){
+    #dbeta(x, shape1, shape2, ncp = 0, log = FALSE)
+    alpha<-c() # holds transition probs
+    alpha[1]<-1
+    u<-c() # holds uniform values
+    u[1]<-1
+    post<-c()# post sample
+    prop<-c() # vec of proposed states 1s and 2s
+    prop[1]=init # initial state
+    post[1]=prop[1]
+    q=function(x){dbeta(x,a,b)}
+    for(i in 2:n){ # starts at 2 because initial value given above
+      rbeta(1,a,b)->prop[i]
+      
+      alpha[i]=min(1, h[prop[i]]*q(post[i-1])/(h[post[i-1]]*q(prop[i])))
+      u[i]=runif(1)
+      ifelse(u[i]<=alpha[i],post[i]<-prop[i],post[i]<-post[i-1])
+    }
+    res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE,dimnames=list(1:n,c("prop","u","alpha","post")))
+    windows()
+    hist(post,freq=FALSE)
+    
+    return(list(matrix=res,summary=summary(post)) )
+  }
+  
+  # Need to alter to make the graphs
+  
+  # The above should answer the second part o the q
+  
+  simRC(n=10000)
   
