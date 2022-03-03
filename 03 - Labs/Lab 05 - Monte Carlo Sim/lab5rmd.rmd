@@ -14,6 +14,9 @@ output:
 ## Task 1
 
 ### `1.1b. i-ii`
+* Make a prior for a two state Bayes’ box that corresponds to an acceptance set that has 2 values in it, x=4, n=10 in a Binomial experiment. The
+parameter values are 0.4 and 0.8.
+
 ```{r 1a, echo=TRUE, message=FALSE}
 
   # 1 (i-ii)
@@ -154,10 +157,10 @@ $$
 
 <br>
 
-## Task 2
+## Task 2 
+> Coin Die MCMC Simulation
 
-
-### `1 a-c`
+### `1 a-c` 
 ```{r 2.1, echo=TRUE, message=FALSE}
 coindie<-function(n=100, h=c(1/4,3/4),E2=c(5,6),init=1,...){
   library(xtable)
@@ -196,7 +199,10 @@ coindie<-function(n=100, h=c(1/4,3/4),E2=c(5,6),init=1,...){
   barplot(sim,...)
   return(list(iter=res,sim=sim,postexact=postexact,post=post,xtable=xtable(res,dig=1)) )
 }
-  
+```
+
+#### Call the function, and add better labels to the graph
+```{r 2.2, echo=TRUE, message=FALSE}
   # Call the function
   ans <- coindie(n=10,h=c(0.6,0.4),E2=c(2,3,4,5),
                   
@@ -210,16 +216,17 @@ coindie<-function(n=100, h=c(1/4,3/4),E2=c(5,6),init=1,...){
                   main = 'Coin Die Function using MCMC\nDaniel Carpenter',
                   
                   # Add color to indicate post color red
-col = 'red')
-        
+                  col = 'red')
 ```
+
+<br>
 
 ### `2` Use output of `cdbox` as input to `coindie`
 
 * Input `h` is the prior times the likelihood of the output created from the cdbbox2 function. This function estimates the prior and then applies the likelihood to get the outcome
 * Output, shows how the outcome of the experiment changes when using an updated prior beliefs.
 
-```{r 2.2, echo=TRUE, message=FALSE}
+```{r 2.2.1, echo=TRUE, message=FALSE}
 # Here, get the value of h to use in this example. This objected created in previous code chunk
 # When calling outputOfCdbbox2 <- cdbbox2(k=2,lik=dbinom(x=4,size=10,prob=c(0.4,0.8)),theta=c(0.4,0.8),h1="s") 
 h = outputOfCdbbox2$h
@@ -245,7 +252,7 @@ ans <- coindie(n=10,h=h,E2=c(2,3,4,5),
 <br>
 
 ## Task 3
-> Discrete Simulation
+> Discrete Simulation using MCMC
 
 ### `3.1` 
 Core of `simR()`? Take a random sample from the uniform of size 1. 
@@ -338,7 +345,7 @@ then accept it as the solution. Else, reject it.
 <br>
 
 ## Task 4
-> Discrete Simulation
+> Discrete Simulation using MCMC
 
 ```{r 4, echo=TRUE, message=FALSE}
 # What about different proposal distributions
@@ -407,7 +414,7 @@ simRQOut$iter
 <br>
 
 ## Task 5
-> Continuous Similation
+> Continuous Similation using MCMC
 
 ### `Part 1-4`
 * Adjusts the output to plot Proposal, Prior, Likelihood, and the Posterior
@@ -499,7 +506,7 @@ simRQOut$iter
 
 
 ## Task 6 
-> Gibbs Sampling
+> Gibbs Sampling via MCMC
 
 ### `6.1` 
 
@@ -522,7 +529,7 @@ Assume Bivariate Normal target distribution with correlation $\rho$  <br>
 ### `6.2-3` - OpenBUGS Model and Pretty Print Output
 ![Figure: Jags Model - Daniel Carpenter](openBugsModel1.png)
 
-### `6.4-6`
+### `6.4-6` Basic SLR Model Code
 * See analysis (part `a.` and `b.`) and the trace and history plots after code execution.
 
 ```{r 6.4-6, echo=TRUE, message=FALSE}
@@ -630,8 +637,7 @@ summary(codaSamples)
 * Shrink factor evens out
 * $\sigma$'s 3 densities overlay each other, so they are superimposed. Slight skewness for $\beta$'s
 
-### `6.7`
-* Compare classical tests using the `lm()` function
+### `6.7` Compare classical tests using the `lm()` function
 
 ```{r 6.7, echo=TRUE, message=FALSE}
 # Form the linear model using SPRUCE Dataset
@@ -650,12 +656,140 @@ ciReg(est)
 #### **Analysis:** Point Estimates:
 * Classical estimated mean and standard error's for $beta$ values fall very close to the Bayesian estimates.
 
+<br>
 
-### `6.8`
+### `6.8` Adding $beta^{2}_{2}$ to Model
 
-#### Open Bugs Model using $beta^{2}_{2}$
+#### Open Bugs Model Pretty Print Output using $beta^{2}_{2}$
 ![Figure: Jags Model using $beta^{2}_{2}$ - Daniel Carpenter](openBugsModel2.png)
 
-### `6.9`
+<br>
+
+#### Jags Function and Ouptut
+```{r 6.5, echo=TRUE, message=FALSE}
+# Sampling MCMC model using SLR with squared value
+
+# Optional generic preliminaries:
+graphics.off() # This closes all of R's graphics windows.
+
+fileNameRoot="JAGS_Lab5_Task6.8_Ouput_Folder/" # For output file names.
+dir.create(fileNameRoot)
+
+# Load the data:
+# myData = read.csv("SPRUCE.csv") # Read data file; must be in curr. work. dir.
+# y = myData$Height        # The y values are in the column named y.
+# x = myData$BHDiameter        # The y values are in the column named y.
+Ntotal = length(y)  # Compute the total number of flips.
+dataList = list(    # Put the information into a list.
+  x = x,
+  y = y,
+  n = Ntotal 
+)
+
+# Define the model: (from pretty print OpenBUGS model)
+modelString = "
+model{
+	for( i in 1 : n ) {
+		y[i] ~ dnorm(mu[i], tau)
+		mu[i] <- beta0 + beta1 * x[i] + beta2 * x[i]^2
+	}
+	beta0 ~ dnorm(0.0, 1.0E-6)
+	beta1 ~ dnorm(0.0, 1.0E-6)
+	beta2 ~ dnorm(0.0, 1.0E-6)
+	sigma ~ dunif(0, 1000)
+	tau <- pow(sigma,  -2)
+}
+
+" # close quote for modelString
+writeLines( modelString , con="TEMPmodel.txt" )
+
+# Initialize the chains based on MLE of data.
+# Option: Use function that generates random values for each chain:
+initsList = list(beta0=0, beta1=0, beta2=0, sigma=10)
+
+# Run the chains:'
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+
+# Don't use the first 500 iterations
+update( jagsModel , n.iter=500 )
+
+codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "beta2", "sigma"),
+                            n.iter=33340 )
+save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+
+# PLOTS =========================================================
+
+  # Examine the chains -----------------------------------------------
+    # Beta 0
+    filename = paste0(fileNameRoot,"beta0_diagMCMC")
+    diagMCMC( codaObject = codaSamples, parName = c("beta0"))
+    saveGraph( file=filename , type="png" )
+    
+    # Beta 1
+    filename = paste0(fileNameRoot,"beta1_diagMCMC")
+    diagMCMC( codaObject = codaSamples, parName = c("beta1"))
+    saveGraph( file=filename , type="png" )
+    
+    # Beta 2
+    filename = paste0(fileNameRoot,"beta2_diagMCMC")
+    diagMCMC( codaObject = codaSamples, parName = c("beta2"))
+    saveGraph( file=filename , type="png" )
+    
+    # Sigma
+    filename = paste0(fileNameRoot,"sigma_diagMCMC")
+    diagMCMC( codaObject = codaSamples, parName = c("sigma"))
+    saveGraph( file=filename , type="png" )
+    
+  # Example the point Estimates --------------------------------------
+    # Beta 0
+    openGraph()
+    par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+    plotPost( codaSamples[,"beta0"] , main="beta0" , xlab=bquote(beta[0]) )
+    saveGraph( file=filename , type="png" )
+    
+    # Beta 1
+    openGraph()
+    par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+    plotPost( codaSamples[,"beta1"] , main="beta1" , xlab=bquote(beta[1]) )
+    saveGraph( file=paste0(fileNameRoot,"beta1_Post") , type="png" )
+    
+    # Beta 2
+    openGraph()
+    par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+    plotPost( codaSamples[,"beta2"] , main="beta2" , xlab=bquote(beta[1]) )
+    saveGraph( file=paste0(fileNameRoot,"beta2_Post") , type="png" )
+    
+    # Sigma
+    openGraph()
+    par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+    plotPost( codaSamples[,"sigma"] , main="sigma" , xlab=bquote(sigma) )
+    saveGraph( file=paste0(fileNameRoot,"sigma_Post") , type="png" )
+    
+
+# Summary of all the models (Bayesian Point interval estimates)
+summary(codaSamples)
+```
 
 
+<br>
+
+#### Clasical Methods using `lm()`
+```{r 6.8.2, echo=TRUE, message=FALSE}
+# Form the linear model using SPRUCE Dataset
+est2 <- lm(Height ~ BHDiameter + I(BHDiameter^2), data = myData)
+
+# Get point estimates
+summary(est2)
+
+# Confidence Intervals
+ciReg(est2)
+```
+
+<br>
+
+### `6.9` Comparison of results
+* Both the classical and the Bayesian estimate are very close to each other 
+when comparing mean and standard deviation estimations.
+* Interestingly, the new model including $beta^{2}_{2}$, sees that the Bayesian estimate 
+experiences a high level of autocorrelation with both $beta_{1}$ and $beta^{2}_{2}$. 
