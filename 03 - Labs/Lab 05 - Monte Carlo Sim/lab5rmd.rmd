@@ -520,7 +520,7 @@ Assume Bivariate Normal target distribution with correlation $\rho$  <br>
 5. Return to Step 2, etc.
 
 ### `6.2-3` - OpenBUGS Model and Pretty Print Output
-![Jags Model - Daniel Carpenter](openBugsModel1.png)
+![Figure: Jags Model - Daniel Carpenter](openBugsModel1.png)
 
 ### `6.4-6`
 * See analysis (part `a.` and `b.`) and the trace and history plots after code execution.
@@ -653,6 +653,8 @@ ciReg(est)
 
 ### `6.8`
 
+#### Open Bugs Model using $beta^{2}_{2}$
+![Figure: Jags Model using $beta^{2}_{2}$ - Daniel Carpenter](openBugsModel2.png)
 
 ### `6.9`
 
