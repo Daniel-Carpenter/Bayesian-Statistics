@@ -384,7 +384,6 @@
       thisH = h(prop[i])
       
       # Store the prior and liklihood for plotting later
-      prior[i]   = thisH['prior']
       lik[i]     = thisH['lik']
       hOfProp[i] = thisH['h']
       
@@ -411,12 +410,8 @@
     
     # Plot the Estimated Prior
     nameOnGraph = 'Estimated Prior'
-    color       = 'grey40'
-    curve(dunif(x, 0,1), xlim = c(0,1), ylab = 'Density', 
-          main = nameOnGraph, col = color)
-    axis(1, 0.7, expression(alpha))
-    segments(0.7,0,0.7, lwd=3, col = color)
-    polygon(c(0,0,0.7,0.7),c(0,1,1,0),col=color)
+    color       = 'grey90'
+    myHist(data=u, nameOnGraph=nameOnGraph, color=color)
     
     # Plot the Estimated Likelihood
     nameOnGraph = 'Estimated Likelihood'
