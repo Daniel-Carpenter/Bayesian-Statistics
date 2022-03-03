@@ -245,6 +245,7 @@ ans <- coindie(n=10,h=h,E2=c(2,3,4,5),
 <br>
 
 ## Task 3
+> Discrete Simulation
 
 ### `3.1` 
 Core of `simR()`? Take a random sample from the uniform of size 1. 
@@ -337,6 +338,7 @@ then accept it as the solution. Else, reject it.
 <br>
 
 ## Task 4
+> Discrete Simulation
 
 ```{r 4, echo=TRUE, message=FALSE}
 # What about different proposal distributions
@@ -400,4 +402,98 @@ simRQOut <- simRQ(n=10000,h=hInput,pr=prInput,
 simRQOut$iter
 ```
 
+---
+
+<br>
+
+## Task 5
+> Continuous Similation
+
+### `Part 1-4`
+* Adjusts the output to plot Proposal, Prior, Likelihood, and the Posterior
+* Default parameters set to problem for ease
+
+```{r 5, echo=TRUE, message=FALSE}
+  ### Using a beta proposal
+  ### You can change the proposal to whatever you require
+  ## a,b are the parameters of the Beta proposal
+  ## a=b=1 is a uniform
+  simRC<-function(n=10,init=0.5,a=3,b=4,
+                  h = function(theta)
+                  { prior = dunif(theta)
+                      lik = dbinom(x=4,size=10,prob=theta)
+                        h = prior * lik
+                        return(c('prior'=prior,'lik'=lik,'h'=h))}
+                  )
+  {
+    #dbeta(x, shape1, shape2, ncp = 0, log = FALSE)
+    alpha<-c() # holds transition probs
+    alpha[1]<-1
+    u<-c() # holds uniform values
+    u[1]<-1
+    lik<-c()     # liklihood sample
+    hOfProp<-c() # prior times lik sample
+    post<-c()    # post sample
+    prop<-c()    # vec of proposed states 1s and 2s
+    prop[1]=init # initial state
+    lik[1]=prop[1]
+    hOfProp[1]=prop[1]
+    post[1]=prop[1]
+
+    q = function(x){dbeta(x,a,b)}
+    
+    for(i in 2:n){ # starts at 2 because initial value given above
+      rbeta(1,a,b)->prop[i]
+      
+      thisH = h(prop[i])
+      
+      # Store the prior and liklihood for plotting later
+      lik[i]     = thisH['lik']
+      hOfProp[i] = thisH['h']
+      
+      alpha[i]=min(1,hOfProp[i] * q(post[i-1]) / (hOfProp[i-1] * q(prop[i])))
+      u[i]=runif(1)
+      ifelse(u[i]<=alpha[i],post[i]<-prop[i],post[i]<-post[i-1])
+    }
+    
+    res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE,
+                dimnames=list(1:n,c("prop","u","alpha","post")))
+    
+    
+    # Function to generally plot a histogram
+    myHist <- function(data, nameOnGraph, color, useFreq=FALSE) {
+      hist(data, freq=useFreq, 
+           main = paste(nameOnGraph, '\nDaniel Carpenter'), 
+           xlab = nameOnGraph, col = color)
+    }
+    
+    # Plot the Proposal
+    nameOnGraph = 'Proposal'
+    color       = 'darkseagreen3'
+    myHist(data=prop, nameOnGraph=nameOnGraph, color=color)
+    
+    # Plot the Estimated Prior
+    nameOnGraph = 'Estimated Prior'
+    color       = 'grey90'
+    myHist(data=u, nameOnGraph=nameOnGraph, color=color)
+    
+    # Plot the Estimated Likelihood
+    nameOnGraph = 'Estimated Likelihood'
+    color       = 'lightblue'
+    myHist(data=lik, nameOnGraph=nameOnGraph, color=color)
+    
+    # Plot the Posterior
+    nameOnGraph = 'Posterior'
+    color       = 'tomato3'
+    myHist(data=post, nameOnGraph=nameOnGraph, color=color)
+    
+    return(list(matrix=res,summary=summary(post)) )
+  }
+  
+  # Call the function - Default parameters adjusted for part 3 (FYI)
+  simRCOut <- simRC(n=10000)
+  
+  # Show the summary output
+  simRCOut$summary
+```
 

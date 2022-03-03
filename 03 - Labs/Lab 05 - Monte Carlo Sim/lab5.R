@@ -345,7 +345,6 @@
   
   
 # TASK 5 =======================================================================
-  
   ## Now we shall look at the continuous case
   
   # Task 5
@@ -353,34 +352,84 @@
   ### You can change the proposal to whatever you require
   ## a,b are the parameters of the Beta proposal
   ## a=b=1 is a uniform
-  simRC<-function(n=10,init=0.5, h=function(theta){dunif(theta)*dbinom(x=4,size=10,prob=theta)},a=3,b=4){
+  simRC<-function(n=10,init=0.5,a=3,b=4,
+                  h = function(theta)
+                  { prior = dunif(theta)
+                      lik = dbinom(x=4,size=12,prob=theta)
+                        h = prior * lik
+                        return(c('prior'=prior,'lik'=lik,'h'=h))}
+                  )
+  {
     #dbeta(x, shape1, shape2, ncp = 0, log = FALSE)
     alpha<-c() # holds transition probs
     alpha[1]<-1
     u<-c() # holds uniform values
     u[1]<-1
-    post<-c()# post sample
-    prop<-c() # vec of proposed states 1s and 2s
+    prior<-c()   # prior sample
+    lik<-c()     # liklihood sample
+    hOfProp<-c() # prior times lik sample
+    post<-c()    # post sample
+    prop<-c()    # vec of proposed states 1s and 2s
     prop[1]=init # initial state
+    prior[1]=prop[1]
+    lik[1]=prop[1]
+    hOfProp[1]=prop[1]
     post[1]=prop[1]
-    q=function(x){dbeta(x,a,b)}
+
+    q = function(x){dbeta(x,a,b)}
+    
     for(i in 2:n){ # starts at 2 because initial value given above
       rbeta(1,a,b)->prop[i]
       
-      alpha[i]=min(1, h[prop[i]]*q(post[i-1])/(h[post[i-1]]*q(prop[i])))
+      thisH = h(prop[i])
+      
+      # Store the prior and liklihood for plotting later
+      prior[i]   = thisH['prior']
+      lik[i]     = thisH['lik']
+      hOfProp[i] = thisH['h']
+      
+      alpha[i]=min(1,hOfProp[i] * q(post[i-1]) / (hOfProp[i-1] * q(prop[i])))
       u[i]=runif(1)
       ifelse(u[i]<=alpha[i],post[i]<-prop[i],post[i]<-post[i-1])
     }
-    res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE,dimnames=list(1:n,c("prop","u","alpha","post")))
-    windows()
-    hist(post,freq=FALSE)
+    
+    res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE,
+                dimnames=list(1:n,c("prop","u","alpha","post")))
+    
+    
+    # Function to generally plot a histogram
+    myHist <- function(data, nameOnGraph, color, useFreq=FALSE) {
+      print(hist(data, freq=useFreq, 
+                 main = paste(nameOnGraph, '\nDaniel Carpenter'), 
+                              xlab = nameOnGraph, col = color))
+    }
+    
+    # Plot the Proposal
+    nameOnGraph = 'Proposal'
+    color       = 'darkseagreen3'
+    myHist(data=prop, nameOnGraph=nameOnGraph, color=color)
+    
+    # Plot the Estimated Prior
+    nameOnGraph = 'Estimated Prior'
+    color       = 'grey40'
+    curve(dunif(x, 0,1), xlim = c(0,1), ylab = 'Density', 
+          main = nameOnGraph, col = color)
+    axis(1, 0.7, expression(alpha))
+    segments(0.7,0,0.7, lwd=3, col = color)
+    polygon(c(0,0,0.7,0.7),c(0,1,1,0),col=color)
+    
+    # Plot the Estimated Likelihood
+    nameOnGraph = 'Estimated Likelihood'
+    color       = 'lightblue'
+    myHist(data=lik, nameOnGraph=nameOnGraph, color=color)
+    
+    # Plot the Posterior
+    nameOnGraph = 'Posterior'
+    color       = 'tomato3'
+    myHist(data=post, nameOnGraph=nameOnGraph, color=color)
     
     return(list(matrix=res,summary=summary(post)) )
   }
-  
-  # Need to alter to make the graphs
-  
-  # The above should answer the second part o the q
   
   simRC(n=10000)
   
