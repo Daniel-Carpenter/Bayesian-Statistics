@@ -1,0 +1,16 @@
+---
+title:    "Lab 6 - Gibbs Sampling (MCMC)"
+subtitle: "Bayesian Statistics"
+author:   "Daniel Carpenter"
+date:     "March 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+## Task 1
+```{r 1, echo=TRUE, message=FALSE}
+```
