@@ -231,6 +231,8 @@ head(mydmcmcOutput$post)
 ## Task 2 - Bivariate GIBBS Sampler
 > Make a GIBBS sampler for a Bivariate Normal
 
+* Adapted from [A simple Gibbs sampler](http://www.mas.ncl.ac.uk/~ndjw1/teaching/sim/gibbs/gibbs.html)
+
 ```{r 2, echo=TRUE, message=FALSE}
 # FUNCTION - Make a GIBBS sampler for a Bivariate Normal ----------------------- 
   myngibbs <- function(n, mu_x, sd_x, mu_y, sd_y, rho) {
