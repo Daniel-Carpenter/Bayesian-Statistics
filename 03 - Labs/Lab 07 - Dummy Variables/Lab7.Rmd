@@ -1,0 +1,142 @@
+---
+title: 'Laboratory 7: Dummy Variables'
+author: "Wayne Stewart"
+date: "March 2, 2018"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Categorical Variables
+
+Please see the introductory video and then fill out this Rmd document - knit and submit all files.
+
+In many applications we will need to incorporate categorical variables into our regression.
+How is this to be done?
+
+```{r cars}
+data(mtcars)
+head(mtcars)
+dim(mtcars)[1]
+```
+
+We will define some variables to be factors
+
+```{r}
+mycars = within(mtcars, {
+  cylF<-factor(cyl)
+  vsF <- factor(vs)
+  amF <- factor(am)
+  gearF <- factor(gear)
+  carbF <- factor(carb)
+})
+
+head(mycars)
+table(mycars$carbF)
+```
+
+
+
+# Using classical methods
+
+```{r classical}
+mpglm = lm(mpg~disp + carbF, data =mycars )
+summary(mpglm)
+```
+
+
+# Look at the Dummy Variables
+
+
+We can extract the design matrix by using the following:
+
+```{r model}
+mm=model.matrix(mpglm)
+df = as.data.frame(mm)
+
+lst = as.list(df)
+df
+
+```
+
+Also the data used in the model
+
+```{r frame}
+df2=model.frame(mpglm)
+head(df2)
+dput(df2)
+```
+
+# The expression of the model
+
+$$ y = \beta_0 + \beta_1 x + \beta_2 carbF2 + \beta_3 carbF3 + \beta_4 carbF4 + \beta_5 carbF6 + \beta_6 carbF8 + \epsilon$$ 
+
+# Use a Bayesian approach 
+
+## Task 1: Make up the model file by using OpenBUGS and creating a doodle in the doodle editor. The model will be a regression (just modify the SLR model to include the dummy variables). Take a picture of the doodle once it checks out and place here using `![](jpeg){width=60%}`
+
+## Task 2: Use `pretty print` (this will only work once the model is checked - use the menu!) and paste the model code into the modelString below: Fill in all other needed parameters and summarize the `codaSamples` using summary() -- to run the chunk you will need to remove `eval=FALSE`
+
+```{r}
+dput(df[,-1])
+```
+
+```{r jags,eval=FALSE}
+require(rjags)               # Must have previously installed package rjags.
+
+
+Ntotal = dim(mtcars)[1]
+fileNameRoot="categotical" # For output file names.
+dataList=list(mpg = c(21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 
+24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 
+30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 
+19.7, 15, 21.4),disp = c(160, 160, 108, 258, 360, 225, 360, 146.7, 
+140.8, 167.6, 167.6, 275.8, 275.8, 275.8, 472, 460, 440, 78.7,
+75.7, 71.1, 120.1, 318, 304, 350, 400, 79, 120.3, 95.1, 351,
+145, 301, 121), carbF2 = c(0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1),
+    carbF3 = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), carbF4 = c(1,
+    1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
+    0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0), carbF6 = c(0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 1, 0, 0), carbF8 = c(0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 1, 0), Ntotal = Ntotal)
+
+
+#Define the model:
+modelString = "
+model{
+for(i in 1:Ntotal)
+{
+
+
+}
+" # close quote for modelString
+writeLines( modelString , con="TEMPmodel.txt" )
+
+# Initialize the chains based on MLE of data.
+# Option: Use single initial value for all chains:
+#  thetaInit = sum(y)/length(y)
+#  initsList = list( theta=thetaInit )
+
+initsList = list(beta0 = 0, beta1 = 0, beta2=0, beta3=0, beta4=0, betaq5=0, beta6=0, sigma =10)
+
+# Run the chains:
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+update( jagsModel , n.iter=500 )
+codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "beta2" ,"sigma") ,
+                            n.iter=33340 )
+save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+
+summary(codaSamples)
+```
+

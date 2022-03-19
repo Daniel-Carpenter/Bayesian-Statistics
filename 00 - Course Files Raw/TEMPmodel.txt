@@ -1,8 +1,10 @@
 
-model {
-  for ( i in 1:Ntotal ) {
-    y[i] ~ dbern( theta )
+  model {
+    for ( i in 1:Ntotal ) {
+      y[i] ~ dbern( theta[s[i]] ) # notice nested indexing
+    }
+    for ( s in 1:Nsubj ) {
+      theta[s] ~ dbeta(2,2)
+    }
   }
-  theta ~ dbeta( 1 , 1 )
-}
-
+  

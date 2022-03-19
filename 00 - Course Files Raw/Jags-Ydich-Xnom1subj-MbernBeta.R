@@ -9,27 +9,29 @@ genMCMC = function( data , numSavedSteps=50000 , saveName=NULL ) {
   require(rjags)
   #-----------------------------------------------------------------------------
   # THE DATA.
-  if ( class(data)=="data.frame" ) {  # If data is a data.frame
     y = myData$y                      # then pull out the column named y
-  } else {                            # else
-    y = data                          # rename the data as y.
-  }
+    s = as.numeric(myData$s) # converts character to consecutive integer levels
   # Do some checking that data make sense:
   if ( any( y!=0 & y!=1 ) ) { stop("All y values must be 0 or 1.") }
   Ntotal = length(y)
+  Nsubj = length(s)
   # Specify the data in a list, for later shipment to JAGS:
   dataList = list(
     y = y ,
-    Ntotal = Ntotal 
+    s=s,
+    Ntotal = Ntotal,
+    Nsubj = Nsubj 
   )
   #-----------------------------------------------------------------------------
   # THE MODEL.
   modelString = "
   model {
     for ( i in 1:Ntotal ) {
-      y[i] ~ dbern( theta )
+      y[i] ~ dbern( theta[s[i]] ) # notice nested indexing
     }
-    theta ~ dbeta( 1 , 1 )
+    for ( s in 1:Nsubj ) {
+      theta[s] ~ dbeta(2,2)
+    }
   }
   " # close quote for modelString
   writeLines( modelString , con="TEMPmodel.txt" )

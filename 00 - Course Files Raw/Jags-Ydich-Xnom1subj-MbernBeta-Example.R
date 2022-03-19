@@ -5,7 +5,7 @@ graphics.off() # This closes all of R's graphics windows.
 rm(list=ls())  # Careful! This clears all of R's memory!
 #------------------------------------------------------------------------------- 
 # Load The data 
-myData = read.csv("z15N50.csv")
+myData = read.csv("z6N8z2N7.csv")
 #------------------------------------------------------------------------------- 
 # Load the functions genMCMC, smryMCMC, and plotMCMC:
 source("Jags-Ydich-Xnom1subj-MbernBeta.R")
@@ -13,7 +13,7 @@ source("Jags-Ydich-Xnom1subj-MbernBeta.R")
 # Optional: Specify filename root and graphical format for saving output.
 # Otherwise specify as NULL or leave saveName and saveType arguments 
 # out of function calls.
-fileNameRoot = "Jags-Ydich-Xnom1subj-MbernBeta-" 
+fileNameRoot = "Jags-Ydich-Xnom1subj-MbernBeta/" 
 graphFileType = "eps" 
 #------------------------------------------------------------------------------- 
 # Generate the MCMC chain:
