@@ -1,17 +1,22 @@
 ---
-title: 'Laboratory 7: Dummy Variables'
-author: "Wayne Stewart"
-date: "March 2, 2018"
+title: 'Laboratory 7 - Dummy Variables'
+subtitle: "Bayesian Statistics"
+author:   "Daniel Carpenter"
+date:     "March 2022"
+fontsize: 12pt
+geometry: margin=1in
 output:
-  pdf_document:
-    toc: yes
   html_document:
     toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+> **Goal**: Use Bayesian approach with MCMC to estimate linear model using dummy variables.  
+> Useful techniques in setting up dummy variable via `model.matrix()`
+
 
 # Categorical Variables
 
@@ -21,14 +26,18 @@ In many applications we will need to incorporate categorical variables into our 
 How is this to be done?
 
 ```{r cars}
+# Show the Data
 data(mtcars)
 head(mtcars)
+
+# Show the number of rows in mtcars
 dim(mtcars)[1]
 ```
 
 We will define some variables to be factors
 
 ```{r}
+# Convert categorical variables to factor class, store in `mycars`
 mycars = within(mtcars, {
   cylF<-factor(cyl)
   vsF <- factor(vs)
@@ -37,7 +46,10 @@ mycars = within(mtcars, {
   carbF <- factor(carb)
 })
 
+# See mycars after converting to factor class on cat. vars.
 head(mycars)
+
+# Notice how many cars in sample have x number of carbs
 table(mycars$carbF)
 ```
 
@@ -46,6 +58,8 @@ table(mycars$carbF)
 # Using classical methods
 
 ```{r classical}
+# Create a linear model: How does displacement and the number of carborators effect mpg
+# Store in new var
 mpglm = lm(mpg~disp + carbF, data =mycars )
 summary(mpglm)
 ```
@@ -57,19 +71,27 @@ summary(mpglm)
 We can extract the design matrix by using the following:
 
 ```{r model}
+# Create a model matrix, which converts the linear model object
+# into a form which outlines the dummy variables for each factor in carborator
+# IOnterpret as:
+  # if 1, then it has x number of carborators,
+  # Else if all 0, then the base (1 carborators, notice not in the file) is present in car
 mm=model.matrix(mpglm)
 df = as.data.frame(mm)
 
 lst = as.list(df)
 df
-
 ```
 
 Also the data used in the model
 
 ```{r frame}
+# See that you can also remake the original data frame
 df2=model.frame(mpglm)
 head(df2)
+
+# Use dput to output the df in the form for JAGS model
+# Can use this to encapsulate data and reproduce the data frame
 dput(df2)
 ```
 
@@ -79,20 +101,25 @@ $$ y = \beta_0 + \beta_1 x + \beta_2 carbF2 + \beta_3 carbF3 + \beta_4 carbF4 + 
 
 # Use a Bayesian approach 
 
-## Task 1: Make up the model file by using OpenBUGS and creating a doodle in the doodle editor. The model will be a regression (just modify the SLR model to include the dummy variables). Take a picture of the doodle once it checks out and place here using `![](jpeg){width=60%}`
+## Task 1: Make up the model file by using OpenBUGS and creating a doodle in the doodle editor. The model will be a regression (just modify the SLR model to include the dummy variables). Take a picture of the doodle once it checks out and place here using `![](.png){width=80%}`
+
+![](openBugsModel.png){width=80%}
+
 
 ## Task 2: Use `pretty print` (this will only work once the model is checked - use the menu!) and paste the model code into the modelString below: Fill in all other needed parameters and summarize the `codaSamples` using summary() -- to run the chunk you will need to remove `eval=FALSE`
 
 ```{r}
+# Get rid of the intercept
 dput(df[,-1])
 ```
 
-```{r jags,eval=FALSE}
+```{r jags,eval=TRUE}
+# BE SURE TO GET RID OF EVAL=FALSE
 require(rjags)               # Must have previously installed package rjags.
 
 
 Ntotal = dim(mtcars)[1]
-fileNameRoot="categotical" # For output file names.
+fileNameRoot="categotical" # For output file names. (from using dput)
 dataList=list(mpg = c(21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 
 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 
 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 
@@ -111,13 +138,22 @@ dataList=list(mpg = c(21, 21, 22.8, 21.4, 18.7, 18.1, 14.3,
     0, 0, 0, 0, 0, 0, 1, 0), Ntotal = Ntotal)
 
 
-#Define the model:
+#Define the model: -- >> define this using OPENBUGS <<
 modelString = "
 model{
-for(i in 1:Ntotal)
-{
-
-
+	for( i in 1 : Ntotal ) {
+		mpg[i] ~ dnorm(mu[i], tau)
+		mu[i] <- beta0 + beta1 * disp[i] + beta2 * carbF2[i] + beta3 * carbF3[i] + beta4 * carbF4[i] + beta5 * carbF6[i] + beta6 * carbF8[i]
+	}
+	beta0 ~ dnorm(0.0, 1.0E-6)
+	beta1 ~ dnorm(0.0, 1.0E-6)
+	beta2 ~ dnorm(0.0, 1.0E-6)
+	beta3 ~ dnorm(0.0, 1.0E-6)
+	beta4 ~ dnorm(0.0, 1.0E-6)
+	beta5 ~ dnorm(0.0, 1.0E-6)
+	beta6 ~ dnorm(0.0, 1.0E-6)
+	sigma ~ dunif(0, 1000)
+	tau <- pow(sigma,  -2)
 }
 " # close quote for modelString
 writeLines( modelString , con="TEMPmodel.txt" )
@@ -127,16 +163,20 @@ writeLines( modelString , con="TEMPmodel.txt" )
 #  thetaInit = sum(y)/length(y)
 #  initsList = list( theta=thetaInit )
 
+# >> Make sure that initial values are good <<
 initsList = list(beta0 = 0, beta1 = 0, beta2=0, beta3=0, beta4=0, betaq5=0, beta6=0, sigma =10)
 
 # Run the chains:
 jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
                         n.chains=3 , n.adapt=500 )
 update( jagsModel , n.iter=500 )
-codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "beta2" ,"sigma") ,
+codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "beta2", 
+                                                         "beta3", "beta4", "beta5", "beta6" ,"sigma") ,
                             n.iter=33340 )
 save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 summary(codaSamples)
 ```
 
+### Interpretation of MCMC Results:
+* Note that the results of the MCMC output result in a very similar outcome as the classical methods, as seen in the output of `mpglm` object
