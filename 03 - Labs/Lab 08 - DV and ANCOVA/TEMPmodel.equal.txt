@@ -1,0 +1,17 @@
+
+model{
+  for(i in 1:Ntotal)
+  {
+    mu[i]<- beta0 + beta1*years[i] + beta2*GM[i] + beta3*years[i]*GM[i]
+    salary[i] ~ dnorm(mu[i], tau)
+  }
+  
+  beta0 ~ dnorm(0.0, 1.0E-6)
+  beta1 ~ dnorm(0.0, 1.0E-6)
+  beta2 ~ dnorm(0.0, 1.0E-6)
+  beta3 ~ dnorm(0.0, 1.0E-6)
+  sigma ~ dunif(0, 1000)
+  tau <- pow(sigma,  -2)
+}
+
+

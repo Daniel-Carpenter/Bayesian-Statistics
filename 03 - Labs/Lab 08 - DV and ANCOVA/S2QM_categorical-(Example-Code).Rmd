@@ -1,0 +1,288 @@
+---
+title: "Dummies"
+author: "Wayne Stewart"
+date: "March 2, 2018"
+output:
+  # pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Categorical Variables
+
+In many applications we will need to incorporate categorical variables into our regression.
+How is this to be done?
+
+```{r cars}
+data(mtcars)
+head(mtcars)
+dim(mtcars)[1]
+```
+
+We will define some variables to be factors
+
+```{r}
+mycars = within(mtcars, {
+  cylF<-factor(cyl)
+  vsF <- factor(vs)
+  amF <- factor(am)
+  gearF <- factor(gear)
+  carbF <- factor(carb)
+})
+
+head(mycars)
+table(mycars$carbF)
+```
+
+
+
+# Using classical methods
+
+```{r classical}
+mpglm = lm(mpg~disp + carbF, data =mycars )
+summary(mpglm)
+```
+
+
+# Look at the Dummy Variables
+
+
+We can extract the design matrix by using the following:
+
+```{r model}
+mm=model.matrix(mpglm)
+df = as.data.frame(mm)
+
+lst = as.list(df)
+df
+
+```
+
+Also the data used in the model
+
+```{r frame}
+df2=model.frame(mpglm)
+head(df2)
+dput(df2)
+```
+
+# The expression of the model
+
+$$ y = \beta_0 + \beta_1 x + \beta_2 carbF2 + \beta_3 carbF3 + \beta_4 carbF4 + \beta_5 carbF6 + \beta_6 carbF8 + \epsilon$$ 
+
+# How to interpret dummy variables
+
+## We will use the same data set and plot parallel lines
+
+Below is the code used to make a visual of the model estimation
+
+```{r}
+library(ggplot2)
+pred = predict(mpglm)
+
+cf=coef(mpglm) # obtain the coefficients
+
+int = cf[1]+c(0,cf[-c(1,2)]) # intercepts (6)
+
+gg = ggplot(mycars, aes(x = disp, y =mpg, group = carbF, color = carbF, shape = carbF)) + geom_point()  + 
+  geom_abline(intercept =int, slope = cf[2], aes(colour = carbF)) + xlim(0,500)
+
+gg
+
+cf
+
+```
+
+## Interpretation
+All carburetor groups are relative to the reference group (1 carb.). The intercept for each line is calculated by adding the coefficient of each Dummy variable to the base or reference level intercept. If the coefficient is negative it will indicate a group below the reference. If it is positive then above the reference group.
+
+# Use a Bayesian approach 
+
+## Make up the model file either by adjusting slr or starting from scratch.
+
+Data as a list
+
+```{r}
+dput(df[,-1])
+```
+
+```{r jags,eval=FALSE}
+require(rjags)               # Must have previously installed package rjags.
+
+
+Ntotal = dim(mtcars)[1]
+fileNameRoot="categotical" # For output file names.
+dataList=list(mpg = c(21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 
+24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 
+30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 
+19.7, 15, 21.4),disp = c(160, 160, 108, 258, 360, 225, 360, 146.7, 
+140.8, 167.6, 167.6, 275.8, 275.8, 275.8, 472, 460, 440, 78.7,
+75.7, 71.1, 120.1, 318, 304, 350, 400, 79, 120.3, 95.1, 351,
+145, 301, 121), carbF2 = c(0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1),
+    carbF3 = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), carbF4 = c(1,
+    1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
+    0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0), carbF6 = c(0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 1, 0, 0), carbF8 = c(0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 1, 0), Ntotal = Ntotal)
+
+
+#Define the model:
+modelString = "
+model{
+for(i in 1:Ntotal)
+{
+
+
+}
+" # close quote for modelString
+writeLines( modelString , con="TEMPmodel.txt" )
+
+# Initialize the chains based on MLE of data.
+# Option: Use single initial value for all chains:
+#  thetaInit = sum(y)/length(y)
+#  initsList = list( theta=thetaInit )
+
+initsList = list(beta0 = 0, beta1 = 0, beta2=0, beta3=0, beta4=0, betaq5=0, beta6=0, sigma =10)
+
+# Run the chains:
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+update( jagsModel , n.iter=500 )
+codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "beta2" ,"sigma") ,
+                            n.iter=33340 )
+save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+
+summary(codaSamples)
+```
+
+# Part B of Categorical Data
+
+## Some artificial data 
+
+Suppose `y` is the length of plants and `x` is the age.
+
+```{r}
+x1 = 1:40
+set.seed(33)
+y1=10+8*x1 + rnorm(40,0,12)
+set.seed(44)
+y2 = 125+8*x1 + rnorm(40,0,12)
+y = c(y1,y2)
+x = c(x1,x1)
+plant = rep(c("A","B"), c(40,40))
+
+y.lm = lm(y ~ x + plant)
+summary(y.lm)
+head(model.matrix(y.lm))
+cf=coef(y.lm)
+```
+
+Lets plot the graphs
+
+```{r}
+plot(y~x)
+abline(coef=cf[1:2], lwd =3, col = "Blue")
+abline(coef =c(cf[1] +cf[3],cf[2]),lwd =3, col = "Red")
+legend("topleft",legend = c("Ref: A","B"),fill =c("Blue","Red"), title = "Plants")
+
+```
+
+
+## Interpretation 
+
+Plants A and B grow at the same rate (slope) but plant A the reference is always smaller for a given age `x`
+
+# Interaction 
+
+## The data 
+
+```{r}
+x1 = 1:40
+set.seed(33)
+y1=10+8*x1 + rnorm(40,0,12) #A
+set.seed(44)
+y2 = 125+20*x1 + rnorm(40,0,12) # B
+y = c(y1,y2)
+x = c(x1,x1)
+plant = rep(c("A","B"), c(40,40))
+
+
+
+
+```
+
+
+
+
+```{r}
+yy.lm = lm(y ~ x + plant + x:plant)
+summary(yy.lm)
+
+plot(y~x)
+cf2 = coef(yy.lm)
+cf2
+abline(coef = c(cf2[1],cf2[2]), col="Blue", lwd =3)
+abline(coef = c(cf2[1]+cf2[3], cf2[2]+cf2[4]), col = "Red", lwd = 3)
+legend("topleft",legend = c("Ref: A","B"),fill =c("Blue","Red"), title = "Plants")
+```
+
+Notice:
+  1) that for the difference in length depends on the age -- this means that the age and type of plant interact
+  2) that the interaction term is easily interpreted -- put the dummy variable for plantb equal 0 (this is equivalent to the slope of A)
+  
+```{r}
+model.matrix(yy.lm)
+```
+  
+# The model
+
+$$y=\beta_0 + \beta_1 x + \beta_2 plantB + \beta_3 x plantB +\epsilon $$
+
+Note that `plantB` is  a dummy variable (Takes 0,1) and 
+
+$$\epsilon\sim N(0,\sigma^2)$$
+
+That is to say using subscripts
+
+$$y_i \stackrel{iid}{\sim} N(\mu_i, \sigma^2)$$
+
+Where $\mu_i$ is defined below as a linear predictor $\eta_i$
+
+$$\mu_i=\eta_i = \beta_0 + \beta_1 x_i + \beta_2 plantB_i + \beta_3 x_i plantB_i$$
+
+
+## Interpretation
+
+If $plantB_i = 0$ then
+
+$$\mu_i =  \beta_0 + \beta_1 x_i $$ 
+
+
+This will be the part of the model explaining the Blue  line.
+
+If $plantB_i = 1$ then
+
+$$\beta_0 + \beta_1 x_i + \beta_2 *1  + \beta_3 x_i *1$$
+So collecting terms:
+
+$$\mu_i = (\beta_0+ \beta_2) + (\beta_1+\beta_3)x_i $$
+This will expalin the red line.
+
+# Make a Bayesian model
+
+## Use OpenBUGS and make a model for the interaction above. Put everything into this RMD document
+
+  1) Place a picture here `![](){}`
+  2) Create a JAGS script run the model with priors that you justify (USE THE SAME DATA AS ABOVE)
+  3) Diagnose the MCMC with JK's plots
+  4) Estimate  the parameters -- give point and interval estimates. These must be interpreted.
+  5) Use ggmcmc and improve the plots (see documentation for the package)
+  
+  
