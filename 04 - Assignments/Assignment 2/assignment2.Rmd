@@ -1,0 +1,203 @@
+---
+title:    "Assignment 2"
+subtitle: "Bayesian Statistics"
+author:   "Daniel Carpenter"
+date:     "March 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  html_document: 
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+---
+
+# Task `1`
+
+## `a` Bayes Thereom
+$$
+\underbrace{p(\theta \mid D)}_{\text {posterior }}
+=\underbrace{p(D \mid \theta)}_{\text {likelihood}} \times
+\underbrace{p(\theta)}_{\text {prior}} 
+/ \underbrace{p(D)}_{\text {evidence }}
+$$
+
+## `b` General Posterior
+> Derive the general posterior result for a Beta prior and Binomial likelihood  
+
+*Taken from JK's book - page 132 Doing Bayesian Data Analysis:* <br>
+
+#### Bayes' rule
+$p(\theta \mid z, N)=p(z, N \mid \theta) p(\theta) / p(z, N)$ <br>
+
+#### Define Bernoulli and beta distributions
+$=\theta^{z}(1-\theta)^{(N-z)} \frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a, b)} / p(z, N)$ <br>
+
+#### Rearrange factors
+$=\theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)} /[B(a, b) p(z, N)] \quad$ <br>
+
+#### Collect Powers
+$=\theta^{((z+a)-1)}(1-\theta)^{((N-z+b)-1)} /[B(a, b) p(z, N)] \quad$ <br>
+$=\theta^{((z+a)-1)}(1-\theta)^{((N-z+b)-1)} / B(z+a, N-z+b)$ <br>
+
+
+## `c` Plot Prior, Likelihood, and Posterior
+* Given uniform prior (for a Beta prior and Binomial likelihood)
+```{r 1c, message=FALSE, warning=FALSE}
+source("DBDA2E-utilities.R")  # Load definitions of graphics functions etc.
+source("BernBeta.R")          # Load the definition of the BernBeta function
+
+# Specify the prior:
+t = 4              # Specify the prior MODE.
+n = 10               # Specify the effective prior sample size.
+a = 1                # Convert to beta shape parameter a.
+b = 1                # Convert to beta shape parameter b.
+
+Prior = c(a,b)       # Specify Prior as vector with the two shape parameters.
+
+# Specify the data:
+N = 10                         # The total number of flips.
+z = 4                         # The number of heads.
+Data = c(rep(0,N-z),rep(1,z))  # Convert N and z into vector of 0's and 1's.
+
+
+# Plot the three graphs
+posterior = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" , 
+                      showCentTend="Mode" , showHDI=TRUE , showpD=FALSE )
+```
+
+## `d` `Mybeta()` 
+* Function to Plot Prior, Likelihood, and Posterior
+* Beta prior and Binomial likelihood  
+```{r 1d, message=FALSE, warning=FALSE}
+
+# Create flexible function that plots the Prior, Likelihood, and Posterior
+# Given a Beta prior and Binomial likelihood   
+Mybeta <- function(alpha = 1, beta = 1, n, x) {
+
+  source("DBDA2E-utilities.R")  # Load definitions of graphics functions etc.
+  source("BernBeta.R")          # Load the definition of the BernBeta function
+  
+  # Specify the prior:
+  t = x                          # Specify the prior MODE.
+  
+  Prior = c(alpha,beta)          # Specify Prior as vector with the two shape parameters.
+  
+  # Specify the data:
+  N = n                          # The total number of flips.
+  z = x                          # The number of heads.
+  Data = c(rep(0,N-z),rep(1,z))  # Convert N and z into vector of 0's and 1's.
+  
+  # Make plots for prior, lik, and post  
+  posterior = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" , 
+                        showCentTend="Mode" , showHDI=TRUE , showpD=FALSE )
+}
+```
+
+
+## `e` Call `Mybeta()` given various paramters
+```{r 1e, message=FALSE, warning=FALSE}
+  Mybeta(alpha=2, beta=2, n=10, x=6)
+  Mybeta(alpha=4, beta=2, n=10, x=6)
+  Mybeta(alpha=2, beta=4, n=10, x=6)
+  Mybeta(alpha=20, beta=20, n=10, x=6)
+```
+
+## `f` `Mybeta2()`
+* Adjusted function `Mybeta2()` that produces the same plots as `mybeta()` 
+* but releases command line Bayesian point estimates and BCI’s of whatever equal tail size
+we wish – all estimating `p`
+```{r 1f, message=FALSE, warning=FALSE}
+Mybeta2 <- function(alpha = 1, beta = 1, n, x, alphalevel=0.05) {
+
+  source("DBDA2E-utilities.R")  # Load definitions of graphics functions etc.
+  source("BernBeta.R")          # Load the definition of the BernBeta function
+  
+  # Specify the prior:
+  t = x                          # Specify the prior MODE.
+  
+  Prior = c(alpha,beta)          # Specify Prior as vector with the two shape parameters.
+  
+  # Specify the data:
+  N = n                          # The total number of flips.
+  z = x                          # The number of heads.
+  Data = c(rep(0,N-z),rep(1,z))  # Convert N and z into vector of 0's and 1's.
+  
+  # Make plots for prior, lik, and post  
+  posterior = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" , 
+                        showCentTend="Mode" , showHDI=TRUE , showpD=FALSE )
+  
+  # Get alpha and beta used to form the posterior distribution
+  postAlpha = posterior[1]
+  postBeta  = posterior[2]
+  
+  # Calculate the HDI Tails
+  lowerLevel = (alphalevel / 2)
+  upperLevel = (1 - alphalevel / 2)
+  HDI = qbeta(c(lowerLevel, upperLevel), postAlpha, postBeta)
+  
+  # Return the Lower and Upper HDI at the given level of alpha
+  return(list('lowerHDI' = HDI[1],
+              'upperHDI' = HDI[2]))
+}
+```
+
+
+* *Note that that R Markdown will not recreate the graphs since they are the same, but the `CMD` output is shown*
+```{r 1fCall, message=FALSE, warning=FALSE}
+# Call the above function under various parameter scenarios
+Mybeta2(alpha = 2, beta=2, n=10, x=4, alphalevel=0.05) 
+Mybeta2(alpha = 2, beta=2, n=10, x=4, alphalevel=0.10) 
+Mybeta2(alpha = 2, beta=2, n=10, x=3, alphalevel=0.05)
+Mybeta2(alpha = 2, beta=2, n=10, x=3, alphalevel=0.01)
+```
+
+
+# Task `2`
+
+## `a` Show that mixbeta satisfies the first 2/3 properties of a density. The three properties are:   
+i.   
+ii.   
+iii.   
+
+## `b` `mixbeta()`
+* Make an R function that will create the mixture density using `mixbeta()`
+```{r 2b, message=FALSE, warning=FALSE}
+myymix<- function(x, w, a1,b1, a2,b2) {
+    w*dbeta(x, a1, b1) +(1-w)*dbeta(x, a2,b2)
+  }
+```
+
+## `c` `Mymixplot()`
+* Make a function that will plot the mixture
+```{r 2c, message=FALSE, warning=FALSE}
+Mymixplot <- function(w, a1,b1, a2,b2) {
+  
+  # Using mymix() to estimate mixed beta
+  myymix<- function(x, w, a1,b1, a2,b2) {
+    w*dbeta(x, a1, b1) +(1-w)*dbeta(x, a2,b2)
+  }
+  
+  # Plot the curve and area with a title
+  polygon(curve(myymix(x, w, a1,b1, a2,b2)), col = "skyblue3")
+  title('Mixed Beta Plot\nDaniel Carpenter')
+}
+
+# Call the above function over various scenarios
+Mymixplot(w=0.3, a1=2,b1=4, a2=4,b2=2) 
+Mymixplot(w=0.5, a1=2,b1=4, a2=4,b2=2) 
+Mymixplot(w=0.7, a1=2,b1=4, a2=4,b2=2)
+Mymixplot(w=0.9, a1=2,b1=4, a2=4,b2=2)
+
+```
+
+
