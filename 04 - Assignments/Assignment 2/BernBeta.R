@@ -51,7 +51,7 @@ BernBeta = function( priorBetaAB , Data , plotType=c("Points","Bars")[2] ,
         xlim=c(0,1) , ylim=yLim , cex.axis=cexAxis ,
         xlab=bquote(theta) , ylab=bquote(dbeta(theta*"|"*.(a),.(b))) , 
         cex.lab=cexLab ,
-        main="Prior (beta)" , cex.main=1.5 , col="skyblue" )
+        main="Prior (beta) - Daniel Carpenter" , cex.main=1.5 , col="skyblue" )
   
   if ( showCentTend != "None" ) {
     if ( showCentTend == "Mean" ) {

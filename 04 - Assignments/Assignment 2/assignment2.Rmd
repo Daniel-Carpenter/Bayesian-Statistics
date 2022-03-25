@@ -164,31 +164,50 @@ Mybeta2(alpha = 2, beta=2, n=10, x=3, alphalevel=0.01)
 
 # Task `2`
 
-## `a` Show that mixbeta satisfies the first 2/3 properties of a density. The three properties are:   
-i.   
-ii.   
-iii.   
+## `a` Show that mixbeta satisfies the first 2/3 properties of a density. 
+
+### Assume the following:
+
+#### 1. Two beta distributions with two shape parameters
+$$
+dbeta1 = dbeta(x, a1, b1) \\
+dbeta2 = dbeta(x, a2, b2)
+$$
+
+#### 2. The sum of w is 1
+$$
+\sum_{-\infty}^{+\infty} w = 1
+$$
+
+### Explanation
+i. $f(x) \geq 0$
+  * Answer: The area under a beta distribution is from 0 to 1. Since the sum of the weight $w$ is 1, the area of both weighted betas will be 1.
+ii. $\int_{-\infty}^{+\infty} f(x) d x=1$
+  * Answer: If the sum of the weight $w$ is 1, and the area under a beta distribution must always be 1, then the area from -$\infty$ to +$\infty$ will cover that interval and sum to 1, making $\int_{-\infty}^{+\infty} f(x) d x=1$
+
 
 ## `b` `mixbeta()`
-* Make an R function that will create the mixture density using `mixbeta()`
+> Make an R function that will create the mixture density using `mixbeta()`
+
 ```{r 2b, message=FALSE, warning=FALSE}
-myymix<- function(x, w, a1,b1, a2,b2) {
+mymix<- function(x, w, a1,b1, a2,b2) {
     w*dbeta(x, a1, b1) +(1-w)*dbeta(x, a2,b2)
   }
 ```
 
 ## `c` `Mymixplot()`
-* Make a function that will plot the mixture
+> Make a function that will plot the mixture
+
 ```{r 2c, message=FALSE, warning=FALSE}
 Mymixplot <- function(w, a1,b1, a2,b2) {
   
   # Using mymix() to estimate mixed beta
-  myymix<- function(x, w, a1,b1, a2,b2) {
+  mymix<- function(x, w, a1,b1, a2,b2) {
     w*dbeta(x, a1, b1) +(1-w)*dbeta(x, a2,b2)
   }
   
   # Plot the curve and area with a title
-  polygon(curve(myymix(x, w, a1,b1, a2,b2)), col = "skyblue3")
+  polygon(curve(mymix(x, w, a1,b1, a2,b2)), col = "skyblue3")
   title('Mixed Beta Plot\nDaniel Carpenter')
 }
 
@@ -200,4 +219,78 @@ Mymixplot(w=0.9, a1=2,b1=4, a2=4,b2=2)
 
 ```
 
+## `d`
 
+### `i` Analytical Posterior
+$$
+\underbrace{\frac{z+a}{N+a+b}}_{\text{posterior}} = \underbrace{\frac{z}{N}}_{\text{data}} \underbrace{\frac{N}{N+a+b}}_{\text{weight}} + \underbrace{\frac{a}{a+b}}_{\text{prior}} \underbrace{\frac{a+b}{N+a+b}}_{\text{weight}} .
+$$
+
+### `ii` Posterior Mixing Weight
+* Posterior Mixing Weight is the weights applied to the two beta distributions to mix them
+
+### `iii` Use a mixed beta as the prior  
+
+*Note that the code below is adapted from JK's `BernBeta()` function - adjusted to take mixed beta priors*
+
+```{r 2d, message=FALSE, warning=FALSE}
+Mymixbeta <- function(w=0.5, n=10, x, a1=1, a2=1, b1=1, b2=1) {
+  # Specify the prior:
+  t = x                          # Specify the prior MODE.
+  
+  # Specify the data:
+  N = n                          # The total number of flips.
+  z = x                          # The number of heads.
+  Data = c(rep(0,N-z),rep(1,z))  # Convert N and z into vector of 0's and 1's.
+  
+  # Create summary values of Data:
+  z = sum( Data ) # number of 1's in Data
+  N = length( Data ) 
+  
+  Theta = seq(0.001,0.999,by=0.001)                                                 # points for plotting
+  pTheta = w*dbeta(Theta,a1,b1) +(1-w)*dbeta(Theta,a2,b2)                           # prior for plotting
+  pThetaGivenData = w*dbeta(Theta, a1+z, b1+N-z) + (1-w)*dbeta(Theta, a2+z, b2+N-z) # posterior for plotting
+  pDataGivenTheta = Theta^z * (1-Theta)^(N-z)                                       # likelihood for plotting
+  
+  
+  # Plot Layout
+  layout( matrix( c( 1,2,3 ) ,nrow=3 ,ncol=1 ,byrow=FALSE ) ) # 3x1 panels
+  par( mar=c(3,3,1,0) , mgp=c(2,0.7,0) , mai=c(0.5,0.5,0.3,0.1) ) # margins
+  cexAxis = 1.33
+  cexLab = 1.75
+  # convert plotType to notation used by plot:
+  plotType="h"
+  dotsize = 5 # how big to make the plotted dots
+  barsize = 5 # how wide to make the bar lines    
+  # y limits for prior and posterior:
+  yLim = c(0,1.1*max(c(pTheta,pThetaGivenData)))
+  
+  
+  # Plot the Prior
+  plot( Theta , pTheta , type=plotType , 
+        pch="." , cex=dotsize , lwd=barsize ,
+        xlim=c(0,1) , ylim=yLim , cex.axis=cexAxis ,
+        xlab=bquote(theta) , ylab='Mixed Beta' , 
+        cex.lab=cexLab ,
+        main="Prior (beta) - Daniel Carpenter" , cex.main=1.5 , col="skyblue")
+  
+  # Plot the likelihood
+  plot( Theta , pDataGivenTheta , type=plotType , 
+        pch="." , cex=dotsize , lwd=barsize ,
+        xlim=c(0,1) , ylim=c(0,1.1*max(pDataGivenTheta)) , cex.axis=cexAxis ,
+        xlab=bquote(theta) , ylab=bquote( "p(D|" * theta * ")" ) , 
+        cex.lab=cexLab ,
+        main="Likelihood (Bernoulli)" , cex.main=1.5 , col="skyblue" )
+  
+  # Plot the posterior.
+  plot( Theta , pThetaGivenData , type=plotType , 
+        pch="." , cex=dotsize , lwd=barsize ,
+        xlim=c(0,1) , ylim=yLim , cex.axis=cexAxis ,
+        xlab=bquote(theta) , ylab='Mixed Beta Posterior' , 
+        cex.lab=cexLab ,
+        main="Posterior (beta)" , cex.main=1.5 , col="skyblue" )
+}
+
+# Call the function and print the prior (mixed beta), likelihood and posterior)
+Mymixbeta(w=0.5, n=10, x=4, a1=2, a2=2, b1=4, b2=4)
+```
