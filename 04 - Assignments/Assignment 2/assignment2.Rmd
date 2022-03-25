@@ -161,6 +161,9 @@ Mybeta2(alpha = 2, beta=2, n=10, x=3, alphalevel=0.05)
 Mybeta2(alpha = 2, beta=2, n=10, x=3, alphalevel=0.01)
 ```
 
+---
+
+<br>
 
 # Task `2`
 
@@ -182,8 +185,23 @@ $$
 ### Explanation
 i. $f(x) \geq 0$
   * Answer: The area under a beta distribution is from 0 to 1. Since the sum of the weight $w$ is 1, the area of both weighted betas will be 1.
+  
+$$
+dbeta(x, a, b)=\frac{x^{a-1}(1-x)^{b-1}}{B(a, b)} \geq 0
+$$
+
 ii. $\int_{-\infty}^{+\infty} f(x) d x=1$
   * Answer: If the sum of the weight $w$ is 1, and the area under a beta distribution must always be 1, then the area from -$\infty$ to +$\infty$ will cover that interval and sum to 1, making $\int_{-\infty}^{+\infty} f(x) d x=1$
+
+$$
+\begin{gathered}
+\text { If, } \int_{-\infty}^{\infty} dbeta(x, a, b) d x = \int_{-\infty}^{\infty} \frac{x^{a-1}(1-x)^{b-1}}{B(a, b)} d x=1 \\
+\text { Then, } \int_{-\infty}^{\infty} dbeta(x, a 1, b 1) d x=1 \\
+\text { and } \int_{-\infty}^{\infty} dbeta(x, a 2, b 2) d x=1 \\
+\text { Therefore, } \int_{-\infty}^{\infty} w * dbeta(x, a 1, b 1) d x=w * 1 \\
+\text { and } \int_{-\infty}^{\infty}(1-w) * dbeta(x, a 2, b 2) d x=(1-w) * 1
+\end{gathered}
+$$
 
 
 ## `b` `mixbeta()`
@@ -294,3 +312,101 @@ Mymixbeta <- function(w=0.5, n=10, x, a1=1, a2=1, b1=1, b2=1) {
 # Call the function and print the prior (mixed beta), likelihood and posterior)
 Mymixbeta(w=0.5, n=10, x=4, a1=2, a2=2, b1=4, b2=4)
 ```
+
+---
+
+<br> 
+
+# Task `3`
+
+## `a` `dcat()`
+* `dcat()` calculates the categorical likelihood given a categorical event vector `x` and the categorical event matrix `prob`
+
+*  Suppose a coin is either “unbiased” or “biased”. In which case the chance of a “head” is unknown and is given a uniform prior distribution. We assess a prior probability of 0.9 that it is “unbiased”, and then observe 15 heads out of 20 tosses.
+
+
+## `b-e`
+```{r 3, message=FALSE, warning=FALSE}
+mypriormix <- function() {
+
+  # Optional generic preliminaries:
+  graphics.off() # This closes all of R's graphics windows.
+  rm(list=ls())  # Careful! This clears all of R's memory!
+  
+  
+  # Load the functions used below:
+  source("DBDA2E-utilities.R") # Must be in R's current working directory.
+  require(rjags)               # Must have previously installed package rjags.
+  
+  fileNameRoot="Assn2Jags/" # For output file names.
+  dir.create(fileNameRoot)
+  
+  # Load the data:
+  Ntotal = 10  # Compute the total number of flips.
+  dataList = list(x = 15, n = 20)
+  
+  # Define the model:
+  modelString = "
+  model {
+    x ~ dbin( p, n ) p <- theta[pick] 
+    
+    # pick is 2 if biased 1 unbiased 
+    pick ~ dcat(q[]) # categorical 1 produced prob q[1], etc 
+    
+    q[1]<-0.9 
+    q[2]<-0.1 
+    theta[1] <-0.5        # unbiased 
+    theta[2] ~ dunif(0,1) # biased
+    biased <- pick - 1
+  }
+  " # close quote for modelString
+  writeLines( modelString , con="TEMPmodel.txt" )
+  
+  # Initialize the chains based on MLE of data.
+  initsList = list( pick = 1)
+  
+  # Run the chains:
+  jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                          n.chains=3 , n.adapt=500 )
+  update( jagsModel , n.iter=500 )
+  codaSamples = coda.samples( jagsModel , variable.names=c("theta[2]","biased","theta[1]") ,
+                              n.iter=3334 )
+  save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+  
+  # Examine the chains ----------------------------------------------------------
+    
+    # Convergence diagnostics:
+    filename1 <- paste0(fileNameRoot,"Theta[2]Diag")
+    diagMCMC( codaObject=codaSamples , parName="theta[2]" )
+    saveGraph( file= filename1, type="jpg" )
+    
+    
+    # Posterior descriptives:
+    filename2 <- paste0(fileNameRoot,"Theta[2]Post")
+    openGraph(height=3,width=4)
+    par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+    plotPost( codaSamples[,"theta[2]"] , main="theta[2]" , xlab=bquote(theta[2]) )
+    saveGraph( file=filename2, type="jpg" )
+    graphics.off() # this is done to prevent very last graph being displyed in RMD out
+
+    
+  # Summary Statistics/Point Estimates
+  return(list(su = summary(codaSamples), codaSamples = codaSamples,
+              diagGraph = paste0(filename1, '.jpg'), postGraph = paste0(filename2, '.jpg')))
+}
+
+mypriormix() -> ans
+
+# Show Diagnostic graph
+knitr::include_graphics(ans$diagGraph)
+
+# Show Posterior
+knitr::include_graphics(ans$postGraph)
+
+# Point Estimates
+ans$su
+head(ans$codaSamples)
+```
+
+## `f`
+* The coin has a probability of 100% that it is biased

@@ -1,0 +1,14 @@
+
+  model {
+    x ~ dbin( p, n ) p <- theta[pick] 
+    
+    # pick is 2 if biased 1 unbiased 
+    pick ~ dcat(q[]) # categorical 1 produced prob q[1], etc 
+    
+    q[1]<-0.9 
+    q[2]<-0.1 
+    theta[1] <-0.5        # unbiased 
+    theta[2] ~ dunif(0,1) # biased
+    biased <- pick - 1
+  }
+  
