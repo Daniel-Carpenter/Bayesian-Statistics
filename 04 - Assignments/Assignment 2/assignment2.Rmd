@@ -478,3 +478,30 @@ ggplot(mcmcT, aes(x = `theta[2]`)) +
 ```
 
 `vii.` The above plot has the shape because it includes both pick 1 and pick 2, which we instead could sample on the posterior to get a more informed prior for an additional sample.
+
+---
+
+<br>
+
+# Task `5`  
+
+## `a` Derivation
+
+* See JK's *Inferring a Binomial Probability via Exact Mathematical Analysis, page 131*  
+* For a beta density with mean $\mu$ and standard deviation $\sigma$, the shape parameters are:  
+
+$$a=\mu\left(\frac{\mu(1-\mu)}{\sigma^{2}}-1\right)$$
+$$b=(1-\mu)\left(\frac{\mu(1-\mu)}{\sigma^{2}}-1\right)$$  
+
+Derivation  
+
+$$\text { Given } \mu=\frac{a}{a+b}, \sigma^{2}=\frac{\mu(1-\mu)}{a+b+1}, a=\mu \kappa, b=(1-\mu) \kappa \text {, and } \kappa=a+b$$
+
+## `b-d` `pseudobin()`
+
+```{r 5, message=FALSE, warning=FALSE}
+
+```
+
+
+
