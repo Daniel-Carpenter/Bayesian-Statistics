@@ -204,7 +204,7 @@ $$
 $$
 
 
-## `b` `mixbeta()`
+## `b` `mymix()`
 > Make an R function that will create the mixture density using `mixbeta()`
 
 ```{r 2b, message=FALSE, warning=FALSE}
@@ -409,7 +409,7 @@ head(ans$codaSamples)
 ```
 
 ## `f`
-* The coin has a probability of 100% that it is biased
+* The coin has a probability of 96.82% that it is biased
 
 ---
 
@@ -604,9 +604,9 @@ pseudobin <- function(lastPick) {
       mcmcT = rbind.data.frame(mcmc1,mcmc2,mcmc3)
       
       # Get pick 2 and view
-      pick2 = subset(mcmcT, biased == 1) # COMMENT OUT LATER      
-      plot(codaSamples[ ,"theta[2]"])    # COMMENT OUT LATER  
-      with(pick2, hist(`theta[2]`))      # COMMENT OUT LATER
+      # pick2 = subset(mcmcT, biased == 1) # COMMENT OUT LATER      
+      # plot(codaSamples[ ,"theta[2]"])    # COMMENT OUT LATER  
+      # with(pick2, hist(`theta[2]`))      # COMMENT OUT LATER
       
       require(ggplot2)
       
@@ -617,7 +617,7 @@ pseudobin <- function(lastPick) {
                   labs(title = 'Theta[2] Seperated by Biased and Unbiased',
                        subtitle = 'Daniel Carpenter') +
                   theme_minimal() + theme(text = element_text(color = '#666666'))
-      print(biasPlot)
+      biasPlot
       
       # Show Posterior
       postPlot <- ggplot(mcmcT, aes(x = `theta[2]`)) +
@@ -625,11 +625,18 @@ pseudobin <- function(lastPick) {
                     labs(title = 'Posterior from MCMC Sample',
                          subtitle = 'Theta[2] MCMC Sample: Gibbs Updating from a Mixture - Daniel Carpenter') +
                     theme_minimal() + theme(text = element_text(color = '#666666'))
-      print(postPlot)
+      postPlot
       
-      require(knitr)
-      return(list(hyperParams = list(alpha = shapeParamsForPseudo$a, beta  = shapeParamsForPseudo$b),
-                  su = kable(summary(codaSamples)$statistics), codaSamples = codaSamples))
+      # Save and print the plots
+      dir.create('Plots/')
+      fileName1 = 'Plots/biasPlot.png'; ggsave(biasPlot, file=fileName1)
+      fileName2 = 'Plots/postPlot.png'; ggsave(postPlot, file=fileName2)
+      
+      require(knitr) # for kable
+      
+    return(list(hyperParams = list(alpha = shapeParamsForPseudo$a, beta  = shapeParamsForPseudo$b),
+                su = kable(summary(codaSamples)$statistics),
+                plot1File = fileName1, plot2File = fileName2))
 }      
 
 # Optional plots
@@ -643,10 +650,19 @@ pick2 = subset(mcmcT, biased == 1)
 # Use pick 2 of the past model for the pseudo prior
 pseudobin(pick2) -> pseudoAns
 
-# See the summary stats
+# See the hyper parameters
 pseudoAns$hyperParams
+
+# See the summary stats also
 pseudoAns$su
+
+# Show the Plots
+knitr::include_graphics(pseudoAns$plot1File)
+knitr::include_graphics(pseudoAns$plot2File)
 ```
 
-### Interpretation for Problem `b. iii.` and 
+### Interpretation for Problem `b. iii.` and `e`
+`b. iii.` The part used is pick 2. Notice the difference between the posterior of this model vs. this first.  
+`e`       There are more counts in the first facet since the estimate is less biased and represents the model better now.
+
 
