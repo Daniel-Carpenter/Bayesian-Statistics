@@ -21,6 +21,8 @@ knitr::opts_chunk$set(
 
 ---
 
+All questions and parts done completely  
+
 # Task `1`
 
 ## `a` Bayes Thereom
