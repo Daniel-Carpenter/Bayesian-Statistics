@@ -214,7 +214,7 @@ ggplot(mcmcT, aes(x = `theta[2]`, fill = biased)) +
   labs(title = 'Theta[2] Seperated by Biased and Unbiased',
   subtitle = 'Daniel Carpenter') +
   theme_minimal() + theme(text = element_text(color = '#666666'))
-  
+
 # Problem e
 ggplot(mcmcT, aes(x = `theta[2]`)) +
   geom_histogram(color = 'skyblue4', fill = 'skyblue', alpha = 0.5) + # Create a  hist layer
@@ -226,135 +226,151 @@ ggplot(mcmcT, aes(x = `theta[2]`)) +
 
 # TASK 5 =======================================================================
 
-
-# Function to get alpha and beta from mean and sigma (for pseudo prior)
-mustoab <- function (mu, sigma) {
+# function that will create a list of the hyper-parameter estimates 
+# using the summary stats from a previous run of the MCMC sampler
+pseudobin <- function(lastPick) {
   
-  # Convert mu and sigma to shapes
-  a =     (mu) * (mu*(1 - mu) / sigma^2-1)
-  b = (1 - mu) * (mu*(1 - mu) / sigma^2-1)
-  
-  return(list(a=a, b=b))
-}
-
-# Get pick 1 and pick 2
-# pick2 = subset(mcmcT, biased == 1)
-# plot(codaSamples[ ,"theta[2]"])
-# with(pick2, hist(`theta[2]`))
-
-su = summary(ans$codaSamples) # Get summary stats of coda samples
-
-# need su and pick2 -X--------------------------------------------------------
+  # Function to get alpha and beta from mean and sigma (for pseudo prior)
+  mustoab <- function (mu, sigma) {
+    
+    # Convert mu and sigma to shapes
+    a =     (mu) * (mu*(1 - mu) / (sigma^2)-1)
+    b = (1 - mu) * (mu*(1 - mu) / (sigma^2)-1)
+    
+    return(list(a=a, b=b))
+  }
   
   # Get alpha and beta for pseudo prior
-  shapeParamsForPseudo <- mustoab(mu = su$statistics[3, 1], sigma = su$statistics[3,2])
+  mu = mean(lastPick$`theta[2]`) 
+  sd = sqrt(var(lastPick$`theta[2]`)) 
+  shapeParamsForPseudo <- mustoab(mu, sd)
   
-  # Get mu and sd for pseudo prior
-  mu = mean(pick2$`theta[2]`) 
-  sd = sqrt(var(pick2$`theta[2]`)) 
+  # JAGS model ------------------------------------------------------------------
+    
+    # Optional generic preliminaries:
+    graphics.off() # This closes all of R's graphics windows.
+    
+    # Load the functions used below:
+    source("DBDA2E-utilities.R") # Must be in R's current working directory.
+    require(rjags)               # Must have previously installed package rjags.
+    
+    fileNameRoot="Assn2JagsPseudo/" # For output file names.
+    dir.create(fileNameRoot)
+    
+    # Load the data:
+    Ntotal = 10  # Compute the total number of flips.
+    dataList = list(x = 15, n = 20,
+                    alpha = shapeParamsForPseudo$a,
+                    beta  = shapeParamsForPseudo$b
+                    )
+    
+    # Define the model:
+    modelString = "
+      model { 
+      x ~ dbin(p,n) 
+      p <- theta[pick]
+  
+      # theta[1] represents fixed unbiased value
+      theta[1] <- equals(pick,1)*fixtheta1 + equals(pick,2)*fixtheta1
+      theta[2] <- equals(pick,1)*pseudotheta2 + equals(pick,2)*theta2
+      
+      # pick is 2 if biased 1 unbiased 
+      pick ~ dcat(q[]) # categorical 1 produced prob q[1], etc
+      
+      q[1]<-0.9
+      q[2]<-0.1
+      fixtheta1 <-0.5     # unbiased; fixed probability 
+      
+      theta2 ~ dunif(0,1) # true prior of theta[2]
+      
+      # shape parameters for pseudo prior will be part of dataList
+      pseudotheta2 ~ dbeta(alpha,beta)
+      biased <- pick - 1
+    } 
+    " # close quote for modelString
+    
+    writeLines( modelString , con="TEMPmodel.txt" )
+    
+    # Initialize the chains based on MLE of data.
+    initsList = list( pick = 1)
+    
+    # Run the chains:
+    jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                            n.chains=3 , n.adapt=500 )
+    update( jagsModel , n.iter=500 )
+    codaSamples = coda.samples( jagsModel , variable.names=c("theta[2]","biased","theta[1]") ,
+                                n.iter=3334 )
+    save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+    
+    # Examine the chains ----------------------------------------------------------
+    
+      # Convergence diagnostics:
+      filename1 <- paste0(fileNameRoot,"Theta[2]Diag")
+      diagMCMC( codaObject=codaSamples , parName="theta[2]" )
+      saveGraph( file= filename1, type="jpg" )
+      
+      
+      # Posterior descriptives:
+      filename2 <- paste0(fileNameRoot,"Theta[2]Post")
+      openGraph(height=3,width=4)
+      par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+      plotPost( codaSamples[,"theta[2]"] , main="theta[2]" , xlab=bquote(theta[2]) )
+      saveGraph( file=filename2, type="jpg" )
+      graphics.off() # this is done to prevent very last graph being displyed in RMD out
+      
+    
+    # PLOTS - Example codaSamples -------------------------------------------------
+    
+      # Use codaSamples to get the Monitored Variables - show head too
+      mcmc1 = as.data.frame(codaSamples[[1]])
+      mcmc2 = as.data.frame(codaSamples[[2]])
+      mcmc3 = as.data.frame(codaSamples[[3]])
+      
+      # make mcmcT by combining above
+      mcmcT = rbind.data.frame(mcmc1,mcmc2,mcmc3)
+      
+      # Get pick 2 and view
+      pick2 = subset(mcmcT, biased == 1) # COMMENT OUT LATER      
+      plot(codaSamples[ ,"theta[2]"])    # COMMENT OUT LATER  
+      with(pick2, hist(`theta[2]`))      # COMMENT OUT LATER
+      
+      require(ggplot2)
+      
+      # Show biased and unbiased posteriors
+      biasPlot <- ggplot(mcmcT, aes(x = `theta[2]`, fill = biased)) +
+                  geom_histogram() + # Create a  hist layer
+                  facet_wrap(~biased) +
+                  labs(title = 'Theta[2] Seperated by Biased and Unbiased',
+                       subtitle = 'Daniel Carpenter') +
+                  theme_minimal() + theme(text = element_text(color = '#666666'))
+      print(biasPlot)
+      
+      # Show Posterior
+      postPlot <- ggplot(mcmcT, aes(x = `theta[2]`)) +
+                    geom_histogram(color = 'skyblue4', fill = 'skyblue', alpha = 0.5) + # Create a  hist layer
+                    labs(title = 'Posterior from MCMC Sample',
+                         subtitle = 'Theta[2] MCMC Sample: Gibbs Updating from a Mixture - Daniel Carpenter') +
+                    theme_minimal() + theme(text = element_text(color = '#666666'))
+      print(postPlot)
+      
+      require(knitr)
+      return(list(hyperParams = list(alpha = shapeParamsForPseudo$a, beta  = shapeParamsForPseudo$b),
+                  su = kable(summary(codaSamples)$statistics), codaSamples = codaSamples))
+}      
 
-# JAGS model ------------------------------------------------------------------
-  
-  # Optional generic preliminaries:
-  graphics.off() # This closes all of R's graphics windows.
-  
-  # Load the functions used below:
-  source("DBDA2E-utilities.R") # Must be in R's current working directory.
-  require(rjags)               # Must have previously installed package rjags.
-  
-  fileNameRoot="Assn2JagsPseudo/" # For output file names.
-  dir.create(fileNameRoot)
-  
-  # Load the data:
-  Ntotal = 10  # Compute the total number of flips.
-  dataList = list(x = 15, n = 20,
-                  alpha = shapeParamsForPseudo$a,
-                  beta  = shapeParamsForPseudo$b
-                  )
-  
-  # Define the model:
-  modelString = "
-    model { 
-    x ~ dbin(p,n) 
-    p <- theta[pick]
+# Optional plots
+# plot(codaSamples[ ,"theta[2]"])  # Some other plots
+# with(pick2, hist(`theta[2]`))    # Some other plots
 
-    theta[1] <- equals(pick,1)*fixtheta1 + equals(pick,2)*fixtheta1
-    theta[2] <- equals(pick,1)*pseudotheta2 + equals(pick,2)*theta2
-    
-    # pick is 2 if biased 1 unbiased 
-    pick ~ dcat(q[]) # categorical 1 produced prob q[1], etc
-    
-    q[1]<-0.9
-    q[2]<-0.1
-    
-    fixtheta1 <-0.5     # unbiased; fixed probability 
-    theta2 ~ dunif(0,1) # true prior of theta[2]
-    
-    # shape parameters for pseudo prior will be part of dataList
-    pseudotheta2 ~ dbeta(alpha,beta)
-    biased <- pick - 1
-  } 
-  " # close quote for modelString
-  
-  writeLines( modelString , con="TEMPmodel.txt" )
-  
-  # Initialize the chains based on MLE of data.
-  initsList = list( pick = 1)
-  
-  # Run the chains:
-  jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
-                          n.chains=3 , n.adapt=500 )
-  update( jagsModel , n.iter=500 )
-  codaSamples = coda.samples( jagsModel , variable.names=c("theta[2]","biased","theta[1]") ,
-                              n.iter=3334 )
-  save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
-  
-  # Examine the chains ----------------------------------------------------------
-  
-    # Convergence diagnostics:
-    filename1 <- paste0(fileNameRoot,"Theta[2]Diag")
-    diagMCMC( codaObject=codaSamples , parName="theta[2]" )
-    saveGraph( file= filename1, type="jpg" )
-    
-    
-    # Posterior descriptives:
-    filename2 <- paste0(fileNameRoot,"Theta[2]Post")
-    openGraph(height=3,width=4)
-    par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-    plotPost( codaSamples[,"theta[2]"] , main="theta[2]" , xlab=bquote(theta[2]) )
-    saveGraph( file=filename2, type="jpg" )
-    graphics.off() # this is done to prevent very last graph being displyed in RMD out
-    
-  
-  # PLOTS - Example codaSamples -------------------------------------------------
-  
-    # Use codaSamples to get the Monitored Variables - show head too
-    mcmc1 = as.data.frame(codaSamples[[1]])
-    mcmc2 = as.data.frame(codaSamples[[2]])
-    mcmc3 = as.data.frame(codaSamples[[3]])
-    
-    # make mcmcT by combining above
-    mcmcT = rbind.data.frame(mcmc1,mcmc2,mcmc3)
-    
-    # Get pick 2 and view
-    pick2 = subset(mcmcT, biased == 1) # COMMENT OUT LATER      
-    plot(codaSamples[ ,"theta[2]"])    # COMMENT OUT LATER  
-    with(pick2, hist(`theta[2]`))      # COMMENT OUT LATER
-    
-    require(ggplot2)
-    
-    # Show biased and unbiased posteriors
-    ggplot(mcmcT, aes(x = `theta[2]`, fill = biased)) +
-      geom_histogram() + # Create a  hist layer
-      facet_wrap(~biased) +
-      labs(title = 'Theta[2] Seperated by Biased and Unbiased',
-           subtitle = 'Daniel Carpenter') +
-      theme_minimal() + theme(text = element_text(color = '#666666'))
-    
-    # Show Posterior
-    ggplot(mcmcT, aes(x = `theta[2]`)) +
-      geom_histogram(color = 'skyblue4', fill = 'skyblue', alpha = 0.5) + # Create a  hist layer
-      labs(title = 'Posterior from MCMC Sample',
-           subtitle = 'Theta[2] MCMC Sample: Gibbs Updating from a Mixture - Daniel Carpenter') +
-      theme_minimal() + theme(text = element_text(color = '#666666'))
-    
+# Get pick 1 and pick 2 from past model
+pick1 = subset(mcmcT, biased == 0)
+pick2 = subset(mcmcT, biased == 1)
+
+# Use pick 2 of the past model for the pseudo prior
+pseudobin(pick2) -> pseudoAns
+
+# See the summary stats
+pseudoAns$hyperParams
+pseudoAns$su
+
+

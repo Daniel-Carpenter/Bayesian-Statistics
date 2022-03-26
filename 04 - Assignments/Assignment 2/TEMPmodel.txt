@@ -1,22 +1,23 @@
 
-    model { 
-    x ~ dbin(p,n) 
-    p <- theta[pick]
-
-    theta[1] <- equals(pick,1)*fixtheta1 + equals(pick,2)*fixtheta1
-    theta[2] <- equals(pick,1)*pseudotheta2 + equals(pick,2)*theta2
-    
-    # pick is 2 if biased 1 unbiased 
-    pick ~ dcat(q[]) # categorical 1 produced prob q[1], etc
-    
-    q[1]<-0.9
-    q[2]<-0.1
-    
-    fixtheta1 <-0.5     # unbiased; fixed probability 
-    theta2 ~ dunif(0,1) # true prior of theta[2]
-    
-    # shape parameters for pseudo prior will be part of dataList
-    pseudotheta2 ~ dbeta(alpha,beta)
-    biased <- pick - 1
-  } 
+      model { 
+      x ~ dbin(p,n) 
+      p <- theta[pick]
   
+      # theta[1] represents fixed unbiased value
+      theta[1] <- equals(pick,1)*fixtheta1 + equals(pick,2)*fixtheta1
+      theta[2] <- equals(pick,1)*pseudotheta2 + equals(pick,2)*theta2
+      
+      # pick is 2 if biased 1 unbiased 
+      pick ~ dcat(q[]) # categorical 1 produced prob q[1], etc
+      
+      q[1]<-0.9
+      q[2]<-0.1
+      fixtheta1 <-0.5     # unbiased; fixed probability 
+      
+      theta2 ~ dunif(0,1) # true prior of theta[2]
+      
+      # shape parameters for pseudo prior will be part of dataList
+      pseudotheta2 ~ dbeta(alpha,beta)
+      biased <- pick - 1
+    } 
+    
