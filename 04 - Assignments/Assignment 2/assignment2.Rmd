@@ -410,3 +410,71 @@ head(ans$codaSamples)
 
 ## `f`
 * The coin has a probability of 100% that it is biased
+
+---
+
+<br>
+
+# Task `4`
+
+## `a` Data Structure
+>  structure of the MCMC data in the file produced by the jags script
+
+```{r 4a, message=FALSE, warning=FALSE}
+class(ans$codaSamples) # Class is a list
+str(ans$codaSamples)   # Structure of the mcmc list
+```
+
+
+## `b` `mcmcT`
+> Combine estimates into a data frame
+
+```{r 4b, message=FALSE, warning=FALSE}
+# Use codaSamples to get the Monitored Variables - show head too
+mcmc1 = as.data.frame(ans$codaSamples[[1]]); head(mcmc1)
+mcmc2 = as.data.frame(ans$codaSamples[[2]]); head(mcmc2)
+mcmc3 = as.data.frame(ans$codaSamples[[3]]); head(mcmc3)
+
+# make mcmcT by combining above
+mcmcT = rbind.data.frame(mcmc1,mcmc2,mcmc3)
+```
+
+
+## `c` Plots
+> Create plots of biased and unbiased posterior *without* pseudo priors used
+
+```{r 4c, message=FALSE, warning=FALSE}
+require(ggplot2)
+
+# Show biased and unbiased posteriors
+ggplot(mcmcT, aes(x = `theta[2]`, fill = biased)) +
+  geom_histogram() + # Create a  hist layer
+  facet_wrap(~biased) +
+  labs(title = 'Theta[2] Seperated by Biased and Unbiased',
+  subtitle = 'Daniel Carpenter') +
+  theme_minimal() + theme(text = element_text(color = '#666666'))
+```  
+
+## `d` Interpretation of Pick
+`i.`  When the parameter `biased` = 0: `pick` = $1$, 
+`ii.` When the parameter `biased` = 1: `pick` = $2$, 
+
+
+## `e` Incorrect Posterior
+`i.`  When pick = 1, theta[1] will be sampled from the posterior, then `theta[2]` will be sampled from *the posterior of `theta[1]`*  
+`ii.`  When `pick` = 2, `theta[1]` will be sampled from the posterior  
+`iii.` When `pick` = 2, `theta[2]` will be sampled from the posterior of `theta[1]`  
+`iv.`  The plot above shows the unbiased and biased values of `theta[2]`. See that the unbiased (0) follows a uniform posterior and the biased (1) is shifted rightwards.  
+`v.`   The light blue plot will likely represent the true underlying posterior of theta[2]  
+`vi.`  Create a plot which represents the incorrect posterior of `theta[2]`  
+
+```{r 4e, message=FALSE, warning=FALSE}
+# Show incorrect posterior
+ggplot(mcmcT, aes(x = `theta[2]`)) +
+  geom_histogram(color = 'skyblue4', fill = 'skyblue', alpha = 0.5) + # Create a  hist layer
+  labs(title = 'Incorrect Posterior from MCMC Sample',
+  subtitle = 'Theta[2] MCMC Sample: Gibbs Updating from a Mixture - Daniel Carpenter') +
+  theme_minimal() + theme(text = element_text(color = '#666666'))
+```
+
+`vii.` The above plot has the shape because it includes both pick 1 and pick 2, which we instead could sample on the posterior to get a more informed prior for an additional sample.
