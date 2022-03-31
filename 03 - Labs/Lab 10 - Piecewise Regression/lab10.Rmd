@@ -1,12 +1,14 @@
 ---
-title: 'Lab 10: Change Point Model'
-author: "Wayne Stewart"
-date: "March 27, 2018"
+title: 'Lab 10: Piece-wise Linear Model'
+subtitle: 'Bayesian Statistics'
+author: "Daniel Carpenter"
+date: "March, 2022"
 output:
   # pdf_document:
   #   toc: yes
   html_document:
     toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -21,7 +23,7 @@ This topic can be seen as piecewise regression.
 
 You can answer the questions and carry out the lab by filling in this RMD document.
 
-# Stagnant Water: Change point model
+# Example: Stagnant Water: Change point model
 
 $y_i$ is the log flow rate down an inclined channel, and $x_i$ is the  log height of stagnant surface layers of different surfactants. The rate of decline in flow rate seems to suddenly increase around $x=0$.
 
@@ -34,8 +36,22 @@ $$\mu_i = \beta_0 + \beta_1 x_i +  \beta_2(x_i -\theta)I_{(1, x_i\ge\theta,\; 0\
 
 ```{r data}
 dataList = list(
-  y = c(1.12, 1.12, 0.99, 1.03, 0.92, 0.90, 0.81, 0.83, 0.65, 0.67, 0.60,  0.59, 0.51, 0.44, 0.43, 0.43, 0.33, 0.30, 0.25, 0.24, 0.13, -0.01, -0.13,  -0.14, -0.30, -0.33, -0.46,  -0.43, -0.65),
-  x = c(-1.39, -1.39, -1.08, -1.08, -0.94, -0.80, -0.63, -0.63, -0.25, -0.25, -0.12, -0.12, 0.01, 0.11, 0.11, 0.11,  0.25, 0.25, 0.34, 0.34, 0.44, 0.59, 0.70, 0.70, 0.85, 0.85,  0.99, 0.99, 1.19),
+  y = c(1.12, 1.12, 0.99, 1.03, 
+        0.92, 0.90, 0.81, 0.83, 
+        0.65, 0.67, 0.60,  0.59, 
+        0.51, 0.44, 0.43, 0.43, 
+        0.33, 0.30, 0.25, 0.24, 
+        0.13, -0.01, -0.13, -0.14, 
+        -0.30, -0.33, -0.46,-0.43, -0.65),
+  
+  x = c(-1.39, -1.39, -1.08, -1.08, 
+        -0.94, -0.80, -0.63, -0.63, 
+        -0.25, -0.25, -0.12, -0.12, 
+        0.01, 0.11, 0.11, 0.11,  
+        0.25, 0.25, 0.34, 0.34, 
+        0.44, 0.59, 0.70, 0.70, 
+        0.85, 0.85,  0.99, 0.99, 1.19),
+  
   N = 29)
 
 ```
@@ -44,20 +60,20 @@ dataList = list(
 
 ## Plot the data using ggplot
 
-```{r plotdata}
+```{r plotdata, warning=FALSE}
 
 df = data.frame(x = dataList$x, y=dataList$y)
 
 head(df)
 
 library(ggplot2)
-ggplot(df, aes(x=x, y=y)) +
-  geom_point() +
-  geom_smooth(method = 'loess', se = TRUE) + 
-  theme_minimal() +
-  labs(title = 'Plot of Data',
-       subtitle = 'Daniel Carpenter')
-
+basePlot <- ggplot(df, aes(x=x, y=y)) +
+              geom_point() +
+              geom_smooth(method = 'loess', se = TRUE) + 
+              theme_minimal() +
+              labs(title = 'Plot of Data',
+                   subtitle = 'Daniel Carpenter')
+basePlot
 ```
 
 ## Comment on the plot
@@ -71,16 +87,20 @@ ggplot(df, aes(x=x, y=y)) +
 model {
   for (i in 1:N) {
     y[i]    ~ dnorm(mu[i], tau)
-    mu[i]  <- alpha + beta[1]*x[i] + beta[2]*(x[i] - theta)
+    mu[i]  <- beta0 + beta[1]*x[i] + beta[2]*(x[i] - theta)
             * step(x[i] - theta)
   }
   tau       ~ dgamma(0.001, 0.001)
-  alpha     ~ dnorm(0.0, 1.0E-6)
+  beta0     ~ dnorm(0.0, 1.0E-6)
+  
   for (j in 1:2) {
     beta[j] ~ dnorm(0.0, 1.0E-6)
   }
   sigma    <- 1/sqrt(tau)
   theta     ~ dunif(-1.3, 1.1)
+  
+  int2 <- beta0 - beta[1]*theta
+  slope2 <- beta[1] + beta[2]
 }
 ```
 
@@ -114,7 +134,7 @@ title(main = 'Daniel Carpenter')
 
 Make a complete Jags script to run the model. You can use the script below and alter it to fit.
 
-```{r jagscript, eval=TRUE}
+```{r jagscript, eval=TRUE, message=FALSE, warning=FALSE}
 library(rjags)
 #Define the model:
 modelString = "
@@ -170,9 +190,34 @@ ggs_crosscorrelation(s)
 # Task 4
 
 Run the model and make point and interval estimates.
+```{r su}
+su = summary(codaSamples)
+su
+```
 
-Interpret these estimates.
+
+### Interpret these estimates:  
+* The mean and standard deviation for each monitored variable can be shown above. For example, the mean $\mu$ of $\beta_1$ is around -0.42 and its standard deviation $\sigma$ is around 1.499e-02  
+* We can also analyze the credibility intervals for each variable. For example, there is a 95% probability that $\beta_1$'s mean will approximately fall between -0.449 and -0.389.   
+* Above values rounded since each MCMC run varies in results (since it is an estimation)
 
 # Task 5 
 
 Plot the estimating lines onto the data
+```{r task5Plot, echo=TRUE, message=FALSE, warning=FALSE}
+# Create objects using summary stats
+beta0  = su$statistics[,'Mean']['beta0']
+beta1  = su$statistics[,'Mean']['beta[1]']
+beta2  = su$statistics[,'Mean']['beta[2]']
+int2   = su$statistics[,'Mean']['int2']
+slope2 = su$statistics[,'Mean']['slope2']
+theta  = su$statistics[,'Mean']['theta']
+
+# Plot the two estimated linear pieces with the cuttoff point
+basePlot + 
+  geom_abline(intercept = beta0, slope = beta1)  + # Piece 1  
+  geom_abline(intercept = int2,  slope = slope2) + # Piece 2
+  geom_vline(xintercept = theta)                 + # Intersection 
+  labs(title = 'Plot of data with Piece-Wise Linear Regression Estimates using MCMC')
+```
+
