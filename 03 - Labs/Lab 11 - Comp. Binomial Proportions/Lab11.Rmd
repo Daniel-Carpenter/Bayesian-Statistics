@@ -1,24 +1,24 @@
 ---
 title: 'Lab 11: Comparing Binomial Proportions'
-author: "Wayne Stewart"
-date: "April 6, 2018"
+subtitle: 'Bayesian Statitics'
+author: "Daniel Carpenter"
+date: "April 2022"
 output:
   html_document:
     toc: yes
-  pdf_document:
-    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# A good reference book
+# Reference Book
 The following problem is taken from page 105 `Bayesian Ideas and Data Analysis: An Introduction for Scientists and Statisticians` 
 
 
 
-# The story
+# Story of the Data
 
 534 medflies that lived at least 34 days. These are cross classified by two factors:
 
@@ -191,3 +191,75 @@ Run your function with the same data as given and $a = c(1,2), b= c(1,2)\; and\;
 
 How will you change the model code? 
 There are many ways to do this -- one way is to break the model "text" into parts and rejoin them after changing values. You can use `paste()`
+
+```{r jagsFunction, echo=TRUE, message=FALSE, warning=FALSE}
+mybibin = function(y=c(54, 224), n=c(134, 400), alpha=0.05, 
+                   a=c(1, 2), b=c(1,2) ) {
+  require(ggmcmc)
+  require(rjags)
+  
+  # JAGS MODEL ----------------------------------------------------------------
+    dataList = list(n=n, y=y, a=a, b=b) # Put variables into model's data list
+    
+    modelString = "
+    model{
+      for(i in 1:2){
+      y[i] ~ dbin(theta[i], n[i])
+    
+      theta[i] ~ dbeta(a[i],b[i])             # beta distribution with hyper params a and b
+      odds[i] <- theta[i]/(1-theta[i])  # Prob of success / prob of failure
+      }
+      
+      RD   <- theta[2]-theta[1] # Risk difference
+      RR   <- theta[2]/theta[1] # Relative risk
+      test <- step(RD)          # Probability that RD is positive
+    }
+    "# close quote for modelString
+    
+    writeLines( modelString , con="TEMPmodel.txt" )
+    
+    initsList = list(theta = c(0.4,0.5))
+    
+    # Run the chains:
+    jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                            n.chains=3 , n.adapt=500 )
+    
+    # Show how the model is ran - realSlicer is slow. Conjugate is fast
+    list.samplers(jagsModel)
+    
+    update( jagsModel , n.iter=500 )
+    codaSamples = coda.samples( jagsModel , variable.names=c('theta', 'RR', 'RD', 'test'),
+                                n.iter=33340 )
+    save( codaSamples , file=paste0("lab11","Mcmc.Rdata") )
+    
+    
+    # Plot the model output
+    
+      s = ggs(codaSamples)
+      
+      # Create a density plot
+      d = ggs_density(s); print(d)
+      
+      # Create a Cross Correlation plot
+      cr = ggs_crosscorrelation(s); print(cr)
+      
+      # Create a trace plot
+      t = ggs_traceplot(s); print(t)
+      
+  # Return summary of sampling, the data you inputted, and the density plot
+  return(list(
+   summary = summary(codaSamples, quantiles = c(alpha/2, 1-alpha/2)),
+   data    = dataList,
+   density = d
+  ))
+}
+
+# Call the function
+mcmcOutput <- mybibin(alpha = 0.20, a=c(1,1), b=c(1,1))
+
+mcmcOutput$summary # Summary Output    
+mcmcOutput$data    # The original data used as inputs for jag model
+mcmcOutput$density # The density summary plot
+
+```
+
