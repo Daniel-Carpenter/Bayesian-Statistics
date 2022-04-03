@@ -46,6 +46,14 @@ The data can then be obtained from the above table:
 
 Find the conjugate solution -- that is find the *analytical* posteriors for $\theta_1|y_1$ and $\theta_2|y_2$ using $\theta_i\sim Beta(a_i,b_i)$ where $i\in \{1,2\}$
 
+$$
+\begin{aligned}
+&p\left(\theta_{1} \mid y_{1}\right)=\operatorname{Beta}\left(a_{1}+y_{1}, b_{1}+n_{1}-y_{1}\right) \\
+&p\left(\theta_{2} \mid y_{2}\right)=\operatorname{Beta}\left(a_{2}+y_{2}, b_{2}+n_{2}-y_{2}\right)
+\end{aligned}
+$$
+
+
 # Task 2
 Make plots of the two posteriors in R using
 
@@ -53,6 +61,26 @@ Make plots of the two posteriors in R using
 * $a_i = 4, b_i =1$
 * $a_i = 1, b_i =4$
 * $a_i = 3, b_i =3$
+
+```{r postPlots, echo=TRUE, message=FALSE, warning=FALSE}
+a = c(1, 4, 1, 3)
+b = c(1, 1, 4, 3)
+n = c(134, 400)
+y = c(54, 224)
+
+par(mfrow=c(length(n),length(a))) # layout of plots
+
+# Plot each beta distribution
+for (i in 1:length(n)) {
+  for (j in 1:length(a)) {
+    curve(dbeta(x, a[j]+y[i], b[j]+n[i]-y[i]),
+                xlim = c(0,1), lwd=2, col = c('tomato3', 'steelblue3')[i],
+                ylab = 'density')
+    text(0.1, 6, paste('a=', a[j], 'b=',b[j]))
+  }
+}
+```
+
 
 # Task 3
 
@@ -63,13 +91,13 @@ model{
   for(i in 1:2){
   y[i] ~ dbin(theta[i], n[i])
 
-  theta[i] ~ ...
-  odds[i] <- theta[i]/(1-theta[i]) 
+  theta[i] ~ dbeta(1,1)             # Uniform prior now, but change to a and b params
+  odds[i] <- theta[i]/(1-theta[i])  # Prob of success / prob of failure
   }
   
-  RD <- theta[2]-theta[1] # Risk difference
-  RR <-theta[2]/theta[1] #Relative risk
-  test<- step(RD) # What does this test?
+  RD   <- theta[2]-theta[1] # Risk difference
+  RR   <-theta[2]/theta[1]  # Relative risk
+  test <- step(RD)          # Probability that RD is positive
 }
 ```
 
@@ -88,10 +116,71 @@ b[i]<-1
 
 
 Make sure you monitor `theta`, `RR`, `OR` and `test`.
+```{r rJags, echo=TRUE, message=FALSE, warning=FALSE}
+require(rjags)
+
+# alpha and beta
+a = 1 
+b = 1 
+
+dataList = list(n=n, y=y, a=a, b=b) # Put variables into model's data list
+
+modelString = "
+model{
+  for(i in 1:2){
+  y[i] ~ dbin(theta[i], n[i])
+
+  theta[i] ~ dbeta(a,b)             # beta distribution with hyper params a and b
+  odds[i] <- theta[i]/(1-theta[i])  # Prob of success / prob of failure
+  }
+  
+  RD   <- theta[2]-theta[1] # Risk difference
+  RR   <-theta[2]/theta[1]  # Relative risk
+  test <- step(RD)          # Probability that RD is positive
+}
+"# close quote for modelString
+
+writeLines( modelString , con="TEMPmodel.txt" )
+
+initsList = list(theta = c(0.4,0.5))
+
+# Run the chains:
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+
+# Show how the model is ran - realSlicer is slow. Conjugate is fast
+list.samplers(jagsModel)
+
+update( jagsModel , n.iter=500 )
+codaSamples = coda.samples( jagsModel , variable.names=c('theta', 'RR', 'RD', 'test'),
+                            n.iter=33340 )
+save( codaSamples , file=paste0("lab11","Mcmc.Rdata") )
+
+
+# Plot the model output
+require(ggmcmc)
+s = ggs(codaSamples)
+d = ggs_density(s); print(d)
+
+cr = ggs_crosscorrelation(s); print(cr)
+```
+
+
+
 
 # Task 5
 
 Please give point and interval estimates for the above nodes. Interpret them.
+```{r sumOut, echo=TRUE, message=FALSE, warning=FALSE}
+# Output of model
+summary(codaSamples)
+```
+
+### Interpretation:
+* Mean value of `RD` is around 0.16 with a standard deviation of around 0.049
+* There is a probability of 95% that `RD` will be between around 0.06 and 0.25
+* Each variable can be interpreted like I have for `RD`
+* All values rounded and stated as approximately since each MCMC run will generate a slightly different estimate.
 
 # Task 6
 
