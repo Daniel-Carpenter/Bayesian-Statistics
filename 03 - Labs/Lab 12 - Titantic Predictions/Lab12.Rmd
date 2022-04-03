@@ -1,11 +1,12 @@
 ---
 title: 'Lab 12: Titanic data'
-author: "Wayne Stewart"
-date: "`r Sys.time()`"
+subtitle: 'Bayesian Statitics'
+author: "Daniel Carpenter"
+date: "April 2022"
 output:
   html_document: 
     toc: yes
-  pdf_document: default
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -28,7 +29,15 @@ We will now start to analyze the Titanic data set and you will perfect this in A
 
 ## Summarize the Titanic story by reading the following web page: (https://www.history.com/this-day-in-history/unsinkable-titanic-sinks)
 
-You only need a paragraph!!
+In 1912, the Titanic, the largest and fastest boat in the world that carried 2,200 passengers, sank in the Atlantic. 
+The boat had 16 compartments; if the ship hit an iceberg, the incision must rupture 4 of the 16 
+compartments to sink the ship. Propaganda followed, and many assumed the largest and fastest 
+ship was unsinkable. One night, the ship soared across the Atlantic and met an iceberg head-on, 
+breaching 5 or more of the compartments, which caused the boat to sink. The bow submerged first, then 
+the boat broke in half and fully sank over 13,000 feet to the ocean floor. 700 of the 2,200 passengers died due to insufficient 
+lifeboats and other precautionary measures. Lifeboats prioritized women and children, who made up most 
+of the surviving members.
+
 
 # Task 1: The Titanic data set
 We will use the data set as prepared in the `vcdExtra` package. We will aslo use the `gpairs` package.
@@ -36,11 +45,14 @@ Please install.
 
 ##  Make a pairs plot of the data using `gpairs()`
 ```{r data, message = FALSE, warning=FALSE}
-library(vcdExtra)
-library(gpairs)
+require(vcdExtra) # Titanic passenger data
+require(gpairs)   # Use the data frame below and use the function gpairs()
+
 data("Titanicp")
 head(Titanicp)
 
+# Huge summary of the dataset
+gpairs(Titanicp)
 ```
 
 Notice that there are a number of categorical variables and a continuous variable `age`.
@@ -53,14 +65,32 @@ Notice that there are a number of categorical variables and a continuous variabl
 
 ```{r ggplots}
 library(ggplot2)
-g = ggplot(Titanicp, aes(x = age, y=as.numeric(survived =="survived"),color = sex)) + ylab("Survived") + theme_bw() 
 
-g = g + geom_point(position = position_jitter(height = 0.015, width =0))
+# 
+g = ggplot(Titanicp, aes(x = age, 
+                         y=as.numeric(survived =="survived"),
+                         color = sex)) + 
+  ylab("Survived") + 
+  theme_bw() 
+
+# Jitter the plot so that the points are not on top of each other
+# Mainly woman who survived, but not exact relationship
+JITTER_AMOUNT = 0.015
+g = g + geom_point(position = position_jitter(height = JITTER_AMOUNT, width =0))
 g
 
-g = g + stat_smooth(method = "glm", method.args = list(family=binomial("logit")), formula = y ~ x + I(x^2) + I(x^3), alpha = 0.25, size = 2.5, aes(fill = sex))
+# Generalized Linear Model - binomial with link logit. Also fit a cubic
+# Older woman are more likely to survive, and younger boys are more likely to survive
+# Note wide interval likely due to limited sample size
+g = g + stat_smooth(method = "glm", 
+                    method.args = list(family=binomial("logit")), 
+                    formula = y ~ x + I(x^2) + I(x^3), 
+                    alpha = 0.25, size = 2.5, 
+                    aes(fill = sex))
 g
 
+# Now break out by class of passenger
+# First class females have high likelihood of survival
 g = g + facet_wrap(~pclass)
 g
 
@@ -72,7 +102,12 @@ g
 
 # Task 3: Classical analysis using `glm()`
 
-We will perform a logistic regression using glm.
+We will perform a logistic regression using glm.  
+
+* Need maximum liklihood estimates (`Estimate`) for the MCMC using glm
+* Interaction used because the survival depends what level of age you are at or if you are male or female
+* Note very significant
+* Goes through 4 chains
 
 ```{r classicalglm, eval=TRUE}
 clglm = glm(survived ~ sex + age + sex:age,family = "binomial", data = Titanicp)
@@ -88,16 +123,21 @@ summary(clglm)
 ## Complete the code below (one line, `y=`)
 
 
-## Why not just use the original data?
+## Why not just use the original data?:
+* Get rid of the `NAs`
+* Also the model matrix is easy to handle
+* The original data uses boolean text to describe if the passenger survived, so need to convert to binary ($1$, $0$) to model in R
 
-```{r datamodel, eval=FALSE}
+```{r datamodel, eval=TRUE}
 mat1=model.matrix(clglm)
 mat2=model.frame(clglm)
 head(mat1)
 head(mat2)
 
-y = with(mat2, ifelse(survived == "survived", ..., ...))
+# Create output
+y = with(mat2, ifelse(survived == "survived", 1, 0))
 
+# Data list for MCMC model
 dataList=list(y = y, x = mat1[, "age"],sexm = mat1[,"sexmale"], sexmx = mat1[,"sexmale:age"] , n = length(y))
 
 ```
@@ -106,37 +146,32 @@ dataList=list(y = y, x = mat1[, "age"],sexm = mat1[,"sexmale"], sexmx = mat1[,"s
 
 # Task 5: Now we will use the classical estimates as initial values in a jags script
 
-
-
-
 ## Complete the Jags script below
 
 ### Warning
-
 The MCMC sampler is very sensitive to initial values. Within each gibbs iteration Jags will choose a slice sampler -- this will take some time. You may need to wait a few minutes for the sampling to complete.
 
-```{r jagscode, warning=FALSE,message=FALSE,eval = FALSE}
+```{r jagscode, warning=FALSE,message=FALSE,eval = TRUE}
 
 library(rjags)
 
 #Define the model:
 modelString = "
 model{
-  for(i in 1:n){
- ...
-  
+    for(i in 1:n) {
+      y[i] ~ dbin(theta[i], 1)
+      logit(theta[i]) <- beta[1] + beta[2]*x[i] + beta[3]*sexm[i] + beta[4]*sexmx[i]
+    }
+    
+  for(j in 1:4){
+    beta[j] ~ dnorm(0,1.0E-3)
   }
-for(j in 1:4){
-  beta[j] ~ dnorm(0,1.0E-3)
-}
 }
 "
 writeLines( modelString , con="TEMPmodel.txt" )
 
-# close quote for modelStri
-#  initsList = list( theta=thetaInit )
+initsList = list(beta = c(0.5,0.02,-1.15,-0.05)) # initial values
 
-initsList = list(beta = c(0.5,0.02,-1.15,-0.05))
 # Run the chains:
 jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
                         n.chains=3 , n.adapt=500 )
@@ -163,11 +198,28 @@ summary(codaSamples)
 ```
 
 
-# Task 6: Interpretation
+# Task 6: Interpretation of MCMC
 
 ## Interpret all the Bayesian output 
+* All values stated as approximately since each MCMC run will generate a slightly different estimate.
 
-    * Interpret the point estimates for the betas
-    * Interpret the interval estimates for the betas
-    * How do you know the MCMC  sampler converged to stationarity?
-    * Compare your results with the classical analysis estimates
+### Interpret the point estimates for the betas
+$\beta_1$: the mean value ($\mu$) for $\beta_1$ is around  0.50952 and the $\sigma$ is 0.257209. I.e., each person could either survive   
+$\beta_2$: the mean value ($\mu$) for $\beta_2$ is around  0.02229 and the $\sigma$ is 0.008631 I.e. the older you are, the less likely you are to survive.   
+$\beta_3$: the mean value ($\mu$) for $\beta_3$ is around -1.17196 and the $\sigma$ is 0.344398 I.e. a male is more likely to die than a female.   
+$\beta_4$: the mean value ($\mu$) for $\beta_4$ is around -0.04620 and the $\sigma$ is 0.011349 I.e. if you are a male, your outcomes worsen even more if as you age    
+
+### Interpret the interval estimates for the betas
+* All values stated as approximately since each MCMC run will generate a slightly different estimate.
+
+With a probability of 95%, the mean value for:
+$\beta_1$ will be between  0.006657 and 1.01637  
+$\beta_2$ will be between  0.005433 and 0.03958  
+$\beta_3$ will be between -1.860702 and -0.49767  
+$\beta_4$ will be between -0.068774 and -0.02388  
+
+### How do you know the MCMC  sampler converged to stationarity?
+It is likely that the sampler converged since each chain well represents each other.
+
+### Compare your results with the classical analysis estimates
+For each variable, the MCMC estimate represents the classical estimate nearly exactly
