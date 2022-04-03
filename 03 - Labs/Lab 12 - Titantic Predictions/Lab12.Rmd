@@ -1,0 +1,173 @@
+---
+title: 'Lab 12: Titanic data'
+author: "Wayne Stewart"
+date: "`r Sys.time()`"
+output:
+  html_document: 
+    toc: yes
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# The course
+
+As you have noticed "the Titanic" has been a theme of the course. The course has been structured into three parts:
+
+    * Distributional results and basics of R
+    * Binomial: a simple model where Bayesian methodology is learnt
+    * The GLM: A more advanced application of Bayesian theory
+
+All the skills that you have learnt in parts 1 and 2 will now be applied to a logistic regression which is a special case of the GLM.
+
+We will now start to analyze the Titanic data set and you will perfect this in Assignment 4.
+
+# Task 0: The story
+
+## Summarize the Titanic story by reading the following web page: (https://www.history.com/this-day-in-history/unsinkable-titanic-sinks)
+
+You only need a paragraph!!
+
+# Task 1: The Titanic data set
+We will use the data set as prepared in the `vcdExtra` package. We will aslo use the `gpairs` package.
+Please install.
+
+##  Make a pairs plot of the data using `gpairs()`
+```{r data, message = FALSE, warning=FALSE}
+library(vcdExtra)
+library(gpairs)
+data("Titanicp")
+head(Titanicp)
+
+```
+
+Notice that there are a number of categorical variables and a continuous variable `age`.
+
+## Using the R help for the package describe the variables in the Titanicp data set.
+
+# Task 2: Interpreting the plots
+
+## Interpret the plots below:
+
+```{r ggplots}
+library(ggplot2)
+g = ggplot(Titanicp, aes(x = age, y=as.numeric(survived =="survived"),color = sex)) + ylab("Survived") + theme_bw() 
+
+g = g + geom_point(position = position_jitter(height = 0.015, width =0))
+g
+
+g = g + stat_smooth(method = "glm", method.args = list(family=binomial("logit")), formula = y ~ x + I(x^2) + I(x^3), alpha = 0.25, size = 2.5, aes(fill = sex))
+g
+
+g = g + facet_wrap(~pclass)
+g
+
+
+```
+
+
+
+
+# Task 3: Classical analysis using `glm()`
+
+We will perform a logistic regression using glm.
+
+```{r classicalglm, eval=TRUE}
+clglm = glm(survived ~ sex + age + sex:age,family = "binomial", data = Titanicp)
+summary(clglm)
+
+```
+
+## What are the classical point estimates?
+
+
+# Task 4: Use the classical model to make data for Jags
+
+## Complete the code below (one line, `y=`)
+
+
+## Why not just use the original data?
+
+```{r datamodel, eval=FALSE}
+mat1=model.matrix(clglm)
+mat2=model.frame(clglm)
+head(mat1)
+head(mat2)
+
+y = with(mat2, ifelse(survived == "survived", ..., ...))
+
+dataList=list(y = y, x = mat1[, "age"],sexm = mat1[,"sexmale"], sexmx = mat1[,"sexmale:age"] , n = length(y))
+
+```
+
+
+
+# Task 5: Now we will use the classical estimates as initial values in a jags script
+
+
+
+
+## Complete the Jags script below
+
+### Warning
+
+The MCMC sampler is very sensitive to initial values. Within each gibbs iteration Jags will choose a slice sampler -- this will take some time. You may need to wait a few minutes for the sampling to complete.
+
+```{r jagscode, warning=FALSE,message=FALSE,eval = FALSE}
+
+library(rjags)
+
+#Define the model:
+modelString = "
+model{
+  for(i in 1:n){
+ ...
+  
+  }
+for(j in 1:4){
+  beta[j] ~ dnorm(0,1.0E-3)
+}
+}
+"
+writeLines( modelString , con="TEMPmodel.txt" )
+
+# close quote for modelStri
+#  initsList = list( theta=thetaInit )
+
+initsList = list(beta = c(0.5,0.02,-1.15,-0.05))
+# Run the chains:
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+list.samplers(jagsModel)
+
+update( jagsModel , n.iter=500 )
+codaSamples = coda.samples( jagsModel , variable.names=c("beta"),
+                            n.iter=33340 )
+save( codaSamples , file=paste0("lab12","Mcmc.Rdata") )
+
+
+
+library(ggmcmc)
+s = ggs(codaSamples)
+d=ggs_density(s)
+
+print(d)
+
+cr =  ggs_crosscorrelation(s)
+print(cr)
+
+summary(codaSamples)
+
+```
+
+
+# Task 6: Interpretation
+
+## Interpret all the Bayesian output 
+
+    * Interpret the point estimates for the betas
+    * Interpret the interval estimates for the betas
+    * How do you know the MCMC  sampler converged to stationarity?
+    * Compare your results with the classical analysis estimates
