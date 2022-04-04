@@ -1,0 +1,12 @@
+
+model{
+    for(i in 1:n) {
+      y[i] ~ dbin(theta[i], 1)
+      logit(theta[i]) <- beta[1] + beta[2]*x[i] + beta[3]*sexm[i] + beta[4]*sexmx[i]
+    }
+    
+  for(j in 1:4){
+    beta[j] ~ dnorm(0,1.0E-3)
+  }
+}
+

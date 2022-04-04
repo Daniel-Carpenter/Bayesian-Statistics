@@ -6,14 +6,14 @@ date:     "February 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
+  # github_document:
+  #   toc: yes
+  #   number_sections: yes
+  #   toc_depth: 2
   html_document:
     toc: yes
     toc_float: yes
-  pdf_document: 
-    toc: TRUE
-    number_sections: TRUE
-  github_document: default
-  md_document: default
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ---
 
-# Task `1`: 
+# Task `1`: Point Estimates (*Incorrect*)
 
 ## `a.` Classical Point Estimate for 𝜃
 ```{r 1a, echo=TRUE, message=FALSE}
@@ -68,7 +68,7 @@ print(paste0("An infinite number of samples are assumed to give this interpretat
 
 <br>
 
-# Task `2`: 
+# Task `2`: Calculate/Plot Uniform Prior, Likelihood, and Post 
 > Bayesian methods – Bayes’ rule. Assume discrete values of 𝜃 and a uniform prior on the values of 𝜃
 
 ## `a.` Suppose we take `theta = seq(0, 1, length = 20)`
@@ -182,7 +182,7 @@ lines(x = theta, y = likelihood, type = "b", pch = 19, col = blue)
 
 <br>
 
-# Task `3`: 
+# Task `3`: Bayes Box 
 
 ## `a.` Matrix in R that will hold the 5 column vectors
 ```{r 3a, echo=TRUE, message=FALSE}
@@ -355,7 +355,7 @@ mybinpost <- function(n, x, theta, alpha) {
 
 <br>
 
-# Task `5`: Run the Fun
+# Task `5`: Run `mybinpost()`
 
 ## `a.` Test #1  of `mybinpost()`
 ```{r 5a, echo=TRUE, message=FALSE}

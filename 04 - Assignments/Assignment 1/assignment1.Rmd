@@ -9,11 +9,10 @@ output:
   html_document:
     toc: yes
     toc_float: yes
-  pdf_document: 
-    toc: TRUE
-    number_sections: TRUE
-  github_document: default
-  md_document: default
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ---
 
-# Task `1`: Bayes Box
+# Task `1`: Bayes Box & Pr/Lik/Post Plots Function
 
 ## `a.` Classical Point Estimate for 𝜃 (*Probability of Success*)
 ```{r 1a, echo=TRUE, message=FALSE}
@@ -197,7 +196,7 @@ mycoin(p = seq(0,1,length=40), prior = pr, n =10, x=4, alpha=0.05)
 
 <br>
 
-# Task `2`: Variance
+# Task `2`: Variance Proof
 > *THIS SHOWS AN EXAMPLE, SEE PART `ii/iii` OF `TASK 3` FOR FINAL PROOF OF $V(X)$*
   
 **Inputs**  
@@ -241,10 +240,9 @@ varMethod2(n, p)
 
 <br>
 
-# Task `3`: MGF
+# Task `3`: MGF Proof
 
-## `i` 
-Definition of The M.G.F of the Binomial Distribution:
+## `i` Definition of The M.G.F of the Binomial Distribution:
 $$
 b(x ; n, p)=\frac{n !}{x !(n-x) !} p^{x} q^{n-x} \quad \text { with } \quad q=1-p .
 $$
@@ -272,8 +270,7 @@ E(x)=n p(p+q)^{n-1}=n p .
 $$
 
 
-## `ii. / iii.`
-Find the second moment using product rule:
+## `ii. / iii.` Find the second moment using product rule:
 $$
 \frac{d u v}{d x}=u \frac{d v}{d x}+v \frac{d u}{d x}
 $$
@@ -308,7 +305,7 @@ $$
 
 <br>
 
-# Task `4`: Normal Density
+# Task `4`: Normal Density Function
 
 ## Create Normal Density Function called `mynorm()`
 ```{r mynorm, echo=TRUE, message=FALSE}
@@ -427,7 +424,7 @@ mynorm(mu=10, sigma=8,
 
 <br>
 
-# Task `5`: MLE
+# Task `5`: Maximum Likelihood Proof and Function
 
 ## `5.1.` Find  $\hat{\lambda}$ as a formula
 * Do this by first finding the likelihood function which is shown as $L(\lambda)$
@@ -503,14 +500,14 @@ myml = function(x) {
 x = c(3,4,3,5,6)
 myml(x)
 ```
-## `5.6.`
+## `5.6.` MLE Does not Account for Priors
 The maximum likelihood estimate does not account for prior information. We know the prior times the likelihood forms the posterior, which the M.L. Estimate only uses the likelihood.
 
 ---
 
 <br>
 
-# Task `6`: Un/Biased $\lambda$
+# Task `6`: Un/Biased $\lambda$ Proof
 
 Prove whether $\hat\lambda$ by proving $E(y) = \lambda$, for a random variable $Y$ ∼ $Poisson(\lambda)$, $E(Y) = \lambda$
 
@@ -533,7 +530,7 @@ Therefore, $E(Y) = \lambda$, which indicates that $\lambda$ is not biased.
 
 <br>
 
-# Task `7`: MLE for Bernoulli
+# Task `7`: Maximum Likelihood for *Bernoulli* Proof
 
 Consider $n$ Bernoulli trials with $X$ successes.
 $$
@@ -581,10 +578,10 @@ Above is  is always less than 0. Therefore $\hat\theta = \frac{X}{n}$ is the max
 
 <br>
 
-# Task `8`: Newton Raphson Fun
+# Task `8`: Newton Raphson Expression & Function
 > Estimate the root of a function and graphs it
 
-## Newton Rasphson Formula
+## Newton Rasphson Expression
 $$
 x_{n+1}=x_{n}-\frac{f\left(x_{n}\right)}{f^{\prime}\left(x_{n}\right)}
 $$
@@ -665,7 +662,7 @@ mynr(f, fdash, x0)
 
 <br>
 
-# Task `9`: MLE Using NR
+# Task `9`: Maximum Likelihood Using Newton Raphson
 
 ## Create `mynrml()` Function
 ```{r mynrmlFun, echo=TRUE, message=FALSE}

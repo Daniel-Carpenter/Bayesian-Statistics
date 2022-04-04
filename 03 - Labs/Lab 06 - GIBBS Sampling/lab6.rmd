@@ -6,6 +6,10 @@ date:     "March 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 3
   html_document:
     toc: yes
     toc_float: yes
@@ -27,12 +31,15 @@ mydmcmc <- function(n=10000, h,...){
   prop<-c() # vec of proposed states 1s and 2s
   prop[1]=1 # initial state
   post[1]=prop[1]
+  
   for(i in 2:n){ # starts at 2 because initial value given above
     # proposal state 
     prop[i]=sample(1:length(h),1,replace=TRUE)
+    
     # calculate alpha
     # notice h[prop[i]] gives the actual value of h
     alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+    
     # to calculate accepting proposal with prob alpha
     # select a random value from  a uniform (0,1)
     u[i]=runif(1)

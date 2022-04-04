@@ -6,9 +6,13 @@ date:     "March 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  html_document: 
+  html_document:
     toc: yes
     toc_float: yes
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -21,9 +25,15 @@ knitr::opts_chunk$set(
 
 ---
 
-All questions and parts done completely  
+> Goal of Assignment: 
 
-# Task `1`
+* Use `mix-beta distribution` for a prior in JAGS MCMC model  
+
+* Must use `pseudo prior`, *or the posterior from the first JAGS run*, then run model again  
+
+* Then, the posterior distribution will be correct  
+
+# Task `1` - Get `General Posterior` given `Beta Prior` and `Binomial Likelihood`
 
 ## `a` Bayes Thereom
 $$
@@ -77,7 +87,7 @@ posterior = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" ,
                       showCentTend="Mode" , showHDI=TRUE , showpD=FALSE )
 ```
 
-## `d` `Mybeta()` 
+## `d` `Mybeta()` - Plot Prior, Likelihood, and Posterior
 * Function to Plot Prior, Likelihood, and Posterior
 * Beta prior and Binomial likelihood  
 ```{r 1d, message=FALSE, warning=FALSE}
@@ -114,7 +124,7 @@ Mybeta <- function(alpha = 1, beta = 1, n, x) {
   Mybeta(alpha=20, beta=20, n=10, x=6)
 ```
 
-## `f` `Mybeta2()`
+## `f` `Mybeta2()` - Includes `CMD` Output
 * Adjusted function `Mybeta2()` that produces the same plots as `mybeta()` 
 * but releases command line Bayesian point estimates and BCI’s of whatever equal tail size
 we wish – all estimating `p`
@@ -167,11 +177,11 @@ Mybeta2(alpha = 2, beta=2, n=10, x=3, alphalevel=0.01)
 
 <br>
 
-# Task `2`
+# Task `2` - Mix 2-Beta Distributions as Prior Distribution
 
 ## `a` Show that mixbeta satisfies the first 2/3 properties of a density. 
 
-### Assume the following:
+### Analytical Assumptions about Mized Betas
 
 #### 1. Two beta distributions with two shape parameters
 $$
@@ -184,7 +194,7 @@ $$
 \sum_{-\infty}^{+\infty} w = 1
 $$
 
-### Explanation
+### Explanation of above
 i. $f(x) \geq 0$
   * Answer: The area under a beta distribution is from 0 to 1. Since the sum of the weight $w$ is 1, the area of both weighted betas will be 1.
   
@@ -206,7 +216,7 @@ $$
 $$
 
 
-## `b` `mymix()`
+## `b` `mymix()` - Function to Created Mixed Beta Distribution and Plots
 > Make an R function that will create the mixture density using `mixbeta()`
 
 ```{r 2b, message=FALSE, warning=FALSE}
@@ -239,7 +249,7 @@ Mymixplot(w=0.9, a1=2,b1=4, a2=4,b2=2)
 
 ```
 
-## `d`
+## `d` `JAGS` Function with `Mixed-Beta Prior`
 
 ### `i` Analytical Posterior
 $$
@@ -278,10 +288,12 @@ Mymixbeta <- function(w=0.5, n=10, x, a1=1, a2=1, b1=1, b2=1) {
   par( mar=c(3,3,1,0) , mgp=c(2,0.7,0) , mai=c(0.5,0.5,0.3,0.1) ) # margins
   cexAxis = 1.33
   cexLab = 1.75
+  
   # convert plotType to notation used by plot:
   plotType="h"
   dotsize = 5 # how big to make the plotted dots
-  barsize = 5 # how wide to make the bar lines    
+  barsize = 5 # how wide to make the bar lines   
+  
   # y limits for prior and posterior:
   yLim = c(0,1.1*max(c(pTheta,pThetaGivenData)))
   
@@ -319,15 +331,15 @@ Mymixbeta(w=0.5, n=10, x=4, a1=2, a2=2, b1=4, b2=4)
 
 <br> 
 
-# Task `3`
+# Task `3` - Create JAGS Model using Mix Betas as Prior
 
-## `a` `dcat()`
+## `a` `dcat()` Explained
 * `dcat()` calculates the categorical likelihood given a categorical event vector `x` and the categorical event matrix `prob`
 
 *  Suppose a coin is either “unbiased” or “biased”. In which case the chance of a “head” is unknown and is given a uniform prior distribution. We assess a prior probability of 0.9 that it is “unbiased”, and then observe 15 heads out of 20 tosses.
 
 
-## `b-e`
+## `b-e` Mixed Prior JAGS Function to Asses if Coin is Biased
 ```{r 3, message=FALSE, warning=FALSE}
 mypriormix <- function() {
 
@@ -417,7 +429,7 @@ head(ans$codaSamples)
 
 <br>
 
-# Task `4`
+# Task `4` - Note that Posterior is Incorrect 
 
 ## `a` Data Structure
 >  structure of the MCMC data in the file produced by the jags script
@@ -485,7 +497,10 @@ ggplot(mcmcT, aes(x = `theta[2]`)) +
 
 <br>
 
-# Task `5`  
+# Task `5` - Correct Posterior by using Pseudo-Priors
+
+> Must use `pseudo prior`, *or the posterior from the first JAGS run*, then run model again  
+> Then, the posterior distribution will be correct  
 
 ## `a` Derivation
 
@@ -499,7 +514,7 @@ Derivation
 
 $$\text { Given } \mu=\frac{a}{a+b}, \sigma^{2}=\frac{\mu(1-\mu)}{a+b+1}, a=\mu \kappa, b=(1-\mu) \kappa \text {, and } \kappa=a+b$$
 
-## `b-e` `pseudobin()`
+## `b-e` `pseudobin()` - Use Pseudo Priors for Prior
 
 ```{r 5, message=FALSE, warning=FALSE}
 # function that will create a list of the hyper-parameter estimates 

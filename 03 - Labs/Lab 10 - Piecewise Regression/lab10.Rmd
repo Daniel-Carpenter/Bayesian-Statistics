@@ -4,8 +4,10 @@ subtitle: 'Bayesian Statistics'
 author: "Daniel Carpenter"
 date: "March, 2022"
 output:
-  # pdf_document:
+  # github_document:
   #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 2
   html_document:
     toc: yes
     toc_float: yes
@@ -15,24 +17,25 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Change point regression models
+# Change Point Regression Models & Lab Overview
 
-In this lab we will investigate another class of models which are extremely flexible in their application. 
+## Overview and Topics
 
-This topic can be seen as piecewise regression.
+* In this lab we will investigate another class of models which are extremely flexible in their application. 
 
-You can answer the questions and carry out the lab by filling in this RMD document.
+* This topic can be seen as piecewise regression.
 
-# Example: Stagnant Water: Change point model
-
-$y_i$ is the log flow rate down an inclined channel, and $x_i$ is the  log height of stagnant surface layers of different surfactants. The rate of decline in flow rate seems to suddenly increase around $x=0$.
-
-# The change point model
+## The Change Point Model Expression
 
 $$y_i \sim N(\mu_i, \sigma^2)$$
 $$\mu_i = \beta_0 + \beta_1 x_i +  \beta_2(x_i -\theta)I_{(1, x_i\ge\theta,\; 0\; else)}$$
 
-# The data
+
+## Example: Stagnant Water: Change point model
+
+$y_i$ is the log flow rate down an inclined channel, and $x_i$ is the  log height of stagnant surface layers of different surfactants. The rate of decline in flow rate seems to suddenly increase around $x=0$.
+
+## Data Overview
 
 ```{r data}
 dataList = list(
@@ -56,7 +59,7 @@ dataList = list(
 
 ```
 
-# Task 1
+# Task 1 - Review Data and 2-Linear Pieces
 
 ## Plot the data using ggplot
 
@@ -79,9 +82,9 @@ basePlot
 ## Comment on the plot
 
 
-# Task 2
+# Task 2 - Create JAGS Model
 
-## Inspect the jags model below and answer the questions
+## JAGS Model for Piece-wise Regression
 
 ```{r model, eval=FALSE}
 model {
@@ -104,9 +107,10 @@ model {
 }
 ```
 
-### In the expression of the analytical model we used $I_{(1, x_i\ge\theta,\; 0\; else)}$
+### `step()` Function 
+* In the expression of the analytical model we used $I_{(1, x_i\ge\theta,\; 0\; else)}$
 
-What jags function is used for $I$? `step()`
+* What jags function is used for $I$? `step()`
 
 ### A prior is placed on $\tau$ 
 
@@ -128,9 +132,9 @@ title(main = 'Daniel Carpenter')
 
 
 
-# Task 3
+# Task 3 - Create Full-JAGS Scripts
 
-## Make a Jags script
+## Create JAGS Script with Piece-wise Regression
 
 Make a complete Jags script to run the model. You can use the script below and alter it to fit.
 
@@ -187,7 +191,7 @@ ggs_crosscorrelation(s)
 ```
 
 
-# Task 4
+# Task 4 - Retrieve Point Estimates from JAGS Model
 
 Run the model and make point and interval estimates.
 ```{r su}
@@ -196,12 +200,12 @@ su
 ```
 
 
-### Interpret these estimates:  
+### Interpret the estimates:  
 * The mean and standard deviation for each monitored variable can be shown above. For example, the mean $\mu$ of $\beta_1$ is around -0.42 and its standard deviation $\sigma$ is around 1.499e-02  
 * We can also analyze the credibility intervals for each variable. For example, there is a 95% probability that $\beta_1$'s mean will approximately fall between -0.449 and -0.389.   
 * Above values rounded since each MCMC run varies in results (since it is an estimation)
 
-# Task 5 
+# Task 5 - Plot Piece-Wise Estimates on Data
 
 Plot the estimating lines onto the data
 ```{r task5Plot, echo=TRUE, message=FALSE, warning=FALSE}

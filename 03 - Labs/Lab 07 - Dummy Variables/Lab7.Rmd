@@ -6,6 +6,10 @@ date:     "March 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
+  # github_document:
+  #   toc: yes
+  #   number_sections: yes
+  #   toc_depth: 3
   html_document:
     toc: yes
     toc_float: yes
@@ -14,13 +18,13 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-> **Goal**: Use Bayesian approach with MCMC to estimate linear model using dummy variables.  
+> **Goal**: Compare `Classical` and `Bayesian` approaches to estimate linear model containing dummy variables (categorical).  
 > Useful techniques in setting up dummy variable via `model.matrix()`
 
 
-# Categorical Variables
+# `Classical Estimation` with Categorical Valiables
 
-Please see the introductory video and then fill out this Rmd document - knit and submit all files.
+## Categorical Variables Overview
 
 In many applications we will need to incorporate categorical variables into our regression.
 How is this to be done?
@@ -55,7 +59,7 @@ table(mycars$carbF)
 
 
 
-# Using classical methods
+## Using classical methods for Linear Model
 
 ```{r classical}
 # Create a linear model: How does displacement and the number of carborators effect mpg
@@ -65,10 +69,9 @@ summary(mpglm)
 ```
 
 
-# Look at the Dummy Variables
+## Model Matrix and Dummy Variables
 
-
-We can extract the design matrix by using the following:
+We can extract the `design matrix` by using `model.matrix()`:
 
 ```{r model}
 # Create a model matrix, which converts the linear model object
@@ -83,7 +86,7 @@ lst = as.list(df)
 df
 ```
 
-Also the data used in the model
+Also see the data used in the model
 
 ```{r frame}
 # See that you can also remake the original data frame
@@ -95,18 +98,22 @@ head(df2)
 dput(df2)
 ```
 
-# The expression of the model
+##  Linear Model `LaTeX` Expression
 
 $$ y = \beta_0 + \beta_1 x + \beta_2 carbF2 + \beta_3 carbF3 + \beta_4 carbF4 + \beta_5 carbF6 + \beta_6 carbF8 + \epsilon$$ 
 
-# Use a Bayesian approach 
+# `Bayesian Estimation` with Categorical Valiables 
 
-## Task 1: Make up the model file by using OpenBUGS and creating a doodle in the doodle editor. The model will be a regression (just modify the SLR model to include the dummy variables). Take a picture of the doodle once it checks out and place here using `![](.png){width=80%}`
+## Task 1: `OpenBUGS` Linear Model with `mtcars` dataset
+* Make up the model file by using OpenBUGS and creating a doodle in the doodle editor. The model will be a regression (just modify the SLR model to include the dummy variables). Take a picture of the doodle once it checks out and place here using `![](.png){width=80%}`
 
 ![](openBugsModel.png){width=80%}
 
 
-## Task 2: Use `pretty print` (this will only work once the model is checked - use the menu!) and paste the model code into the modelString below: Fill in all other needed parameters and summarize the `codaSamples` using summary() -- to run the chunk you will need to remove `eval=FALSE`
+## Task 2: *Pretty Print* Model into `JAGS` Script 
+* Use `pretty print` (this will only work once the model is checked - use the menu!) and paste the model code into the modelString below: Fill in all other needed parameters and summarize the `codaSamples` using summary() -- to run the chunk you will need to remove `eval=FALSE`
+
+### JAGS Script with Pretty Printed Model
 
 ```{r}
 # Get rid of the intercept
@@ -180,3 +187,6 @@ summary(codaSamples)
 
 ### Interpretation of MCMC Results:
 * Note that the results of the MCMC output result in a very similar outcome as the classical methods, as seen in the output of `mpglm` object
+* The mean value of $\beta_1$ is -0.03484 with a standard deviation of 0.005609
+* If the car as two carburetors (`carbF2`, or $\beta_1$), the miles per gallon decreases by -0.03484 miles per gallon.
+* There is a probability of 95% that 2 carburetors will decrease a car's miles per gallon by 0.024 to 0.046 (MPG).

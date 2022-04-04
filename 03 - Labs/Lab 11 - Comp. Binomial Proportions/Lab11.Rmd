@@ -4,6 +4,10 @@ subtitle: 'Bayesian Statitics'
 author: "Daniel Carpenter"
 date: "April 2022"
 output:
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 2
   html_document:
     toc: yes
     toc_float: yes
@@ -13,12 +17,14 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Reference Book
+# Lab Overview
+
+## Reference Book
 The following problem is taken from page 105 `Bayesian Ideas and Data Analysis: An Introduction for Scientists and Statisticians` 
 
 
 
-# Story of the Data
+## Data Overview
 
 534 medflies that lived at least 34 days. These are cross classified by two factors:
 
@@ -42,7 +48,7 @@ The data can then be obtained from the above table:
     
     
     
-# Task 1
+# Task 1 - Analytical Expression of Binomial Proportions
 
 Find the conjugate solution -- that is find the *analytical* posteriors for $\theta_1|y_1$ and $\theta_2|y_2$ using $\theta_i\sim Beta(a_i,b_i)$ where $i\in \{1,2\}$
 
@@ -54,8 +60,8 @@ $$
 $$
 
 
-# Task 2
-Make plots of the two posteriors in R using
+# Task 2 - Plot both Posteriors
+> Make plots of the two posteriors in R using
 
 * $a_i = 1, b_i =1$
 * $a_i = 4, b_i =1$
@@ -82,7 +88,7 @@ for (i in 1:length(n)) {
 ```
 
 
-# Task 3
+# Task 3 - JAGS Model Overview
 
 Create a jags model for the above problem by correcting and/or completing the given code. Note that there are some useful logical nodes made. Comment on them.
 
@@ -103,19 +109,17 @@ model{
 
 
 
-# Task 4
+# Task 4 - Create Full JAGS Script
 
-Now make the complete jags code. Please include some logical constant assignments so that you can assign new priors easily
+<!-- Example of : -->
 
-Example:
-
-```{r logicalnodes, eval=FALSE}
-a[i]<-1
-b[i]<-1
-```
+<!-- ```{r logicalnodes, eval=FALSE} -->
+<!-- a[i]<-1 -->
+<!-- b[i]<-1 -->
+<!-- ``` -->
 
 
-Make sure you monitor `theta`, `RR`, `OR` and `test`.
+Note monitoring `theta`, `RR`, `OR` and `test`.
 ```{r rJags, echo=TRUE, message=FALSE, warning=FALSE}
 require(rjags)
 
@@ -168,7 +172,7 @@ cr = ggs_crosscorrelation(s); print(cr)
 
 
 
-# Task 5
+# Task 5 - Interpretation of Results
 
 Please give point and interval estimates for the above nodes. Interpret them.
 ```{r sumOut, echo=TRUE, message=FALSE, warning=FALSE}
@@ -182,7 +186,7 @@ summary(codaSamples)
 * Each variable can be interpreted like I have for `RD`
 * All values rounded and stated as approximately since each MCMC run will generate a slightly different estimate.
 
-# Task 6
+# Task 6 - Function for all above Calculations
 
 Make a function `mybibin()` that will solve the same type of problem where the data inputs will be a vector of y's and a vector of n's. The priors will be beta's and will therefore need a vector of a's and b's. 
 The command line output should be a list of point and interval estimates for a given $\alpha$.

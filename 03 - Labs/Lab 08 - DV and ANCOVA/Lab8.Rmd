@@ -6,6 +6,10 @@ date:     "March 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 3
   html_document:
     toc: yes
     toc_float: yes
@@ -16,15 +20,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-> Use an interaction model to predict salary based on wage and gender  
+> Use an `interaction` model to predict salary based on wage and gender  
 > Goal could be to identify discrepencies in linear models, which magnify changes over time.
 
-The data was taken from:
+# Data Overview
 
-[https://onlinecourses.science.psu.edu/stat502/node/188](https://onlinecourses.science.psu.edu/stat502/node/188)
+Source of Data:  
 
+* [https://onlinecourses.science.psu.edu/stat502/node/188](https://onlinecourses.science.psu.edu/stat502/node/188)  
 
-[https://onlinecourses.science.psu.edu/stat502/node/187](https://onlinecourses.science.psu.edu/stat502/node/187)
+* [https://onlinecourses.science.psu.edu/stat502/node/187](https://onlinecourses.science.psu.edu/stat502/node/187)
 
 ```{r}
 df = read.csv("salary-unequal.csv")
@@ -35,15 +40,13 @@ head(df2)
 ```
 
 
-We can analyze the unequal slopes by adjusting and then using the following jags script
-
 <br> 
 
 ---
 
-# Task 1: (Unequal)
+# Task 1: Model - (Unequal Salary Dataset)
 
-  Remember to take the `eval=FALSE` off the chunk once you are ready. Please fill in the following Jags script and then run it.
+>  Analyze Slopes via `Interaction` Variables
 
 ```{r jags,warning=FALSE, message=FALSE, eval=TRUE}
 require(rjags)               # Must have previously installed package rjags.
@@ -111,7 +114,8 @@ ggs_crosscorrelation(s)
 
 ```
 
-# Task 2: (Unequal)
+# Task 2: Interpretation - (Unequal Salary Dataset)
+
 
   Find parameter point and interval estimates. Interpret them!
 ```{r 2, eval=TRUE}
@@ -120,27 +124,27 @@ summary(est.lm)
 ```
   
   
-## Use these questions to help you in making interpretations in this lab:
+## Interpretation of Interaction Results:
 
 #### 1. If `x` is increased by one unit what happens to the  mean value of `y`?
 a. For each year increased, a male is paid the value of $beta3$ (which on the iteration before this was 10.098, it changes since it is MCMC) more than a female (thousand dollars? units not known since link is broken to data).
   b. E.g., in year 2, a male will make 10.098 $\times$ 2 more than the female on average. 
   
-#### 2. Will the lines ever intersect over the range of the data?
+#### 2. Will the lines ever `intersect` over the range of the data?
 a. No, the lines will never intersect
   
-#### 3. What meaning does the slope have?
+#### 3. Interpret the slope:
 a. The slope of the interaction term means the amount more that is paid to males than females, given years of experience. 
 b. The slope of years is the amount paid to males, given years of experience.
 c. This should hover around 10. See $beta3$ normal density plot to get a sense of the potential variation.
   
-#### 4. You can answer Q.1 using point and interval estimates.
+#### 4. Use `point interval estimation` (classical medthods) to answer question 1:
 a. For each year increased, a male is paid 10.00 more than a female.
   
-#### 5. Make sure you know how to interpret BCI's (Bayesian credible intervals) -- these are probability intervals and NOT Confidence Intervals.
+#### 5. Interpret `Bayesian Credibility Intervals`
 a. There is a 95% probability that a male is paid 14.210 or less than a female (since MCMC likely to vary from above output).
 
-# Task 3: (Unequal)
+# Task 3: Plot Model (Unequal Salary Dataset)
 
   Plot the data and the estimating lines
 ```{r 3, eval=TRUE}
@@ -163,13 +167,12 @@ title("Male vs. Female Salaries - Unequal Dataset | Daniel Carpenter")
 
 ---
 
-# Task 4: (Equal)
+# Task 4: Repeat Task 1-3 on *Equal* Dataset
 
-Repeat task 1 - 3 for the ***equal*** slopes data and interpret the output. How should you change the model?
+## Task 1: Model - (Equal Salary Dataset)
 
-## Task 1: (Equal)
+>  Analyze Slopes via `Interaction` Variables
 
-  Remember to take the `eval=FALSE` off the chunk once you are ready. Please fill in the following Jags script and then run it.
 
 ```{r jags2,warning=FALSE, message=FALSE, eval=TRUE}
 fileNameRoot="tut12" # For output file names.
@@ -236,7 +239,7 @@ ggs_crosscorrelation(s)
 
 ```
 
-## Task 2 (Equal)
+## Task 2: Interpretation - (Equal Salary Dataset)
 
   Find parameter point and interval estimates. Interpret them!
 ```{r 2b, eval=TRUE}
@@ -245,7 +248,7 @@ summary(est.lm.equal)
 ```
   
   
-### Use these questions to help you in making interpretations in this lab:
+### Interpretation of Interaction Results:
 
 #### 1. If `x` is increased by one unit what happens to the  mean value of `y`?
 a. For each year increased, a male is paid $beta3$ (which on the iteration before this was 0.1916, it changes since it is MCMC) more than a female (thousand dollars? units not known since link is broken to data).
@@ -259,13 +262,13 @@ a. No, the lines will never intersect, but they run nearly parallel, hence "equa
 a. The slope of the interaction term means the amount more that is paid to males than females, given years of experience. 
 b. The slope of years is the amount paid to males, given years of experience.
   
-#### 4. You can answer Q.1 using point and interval estimates.
+#### 4. Use `point interval estimation` (classical medthods) to answer question 1:
 a. For each year increased, a male is paid 0.200 more than a female.
   
-#### 5. Make sure you know how to interpret BCI's (Bayesian credible intervals) -- these are probability intervals and NOT Confidence Intervals.
+#### 5. Interpret BCI's (Bayesian credible intervals) -- these are probability intervals and NOT Confidence Intervals.
 a. There is a 95% probability that a male is paid 0.9383 or less than a female  (since MCMC likely to vary from above output).
 
-## Task 3 (Equal)
+## Task 3 Plot Model (Equal Salary Dataset
 
   Plot the data and the estimating lines
 ```{r 3b, eval=TRUE}

@@ -1,23 +1,19 @@
 ---
-title:  "Lab 2 - Bayesian Statistics - Distributional Theory"
+title:  "Lab 2 - Distributional Theory"
+subtitle:  "Bayesian Statistics"
 author: "Daniel Carpenter"
 date:   "January 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  md_document: default
-     
-  github_document: default
+  # github_document:
+  #   toc: yes
+  #   number_sections: yes
+  #   toc_depth: 2
   html_document:
     toc: yes
     toc_float: yes
     number_sections: yes
-  pdf_document: 
-    toc: TRUE
-    number_sections: TRUE
-  word_document:
-    toc: TRUE
-    number_sections: TRUE    
 ---
 
 ```{r setup, include=FALSE}

@@ -4,7 +4,11 @@ subtitle: 'Bayesian Statitics'
 author: "Daniel Carpenter"
 date: "April 2022"
 output:
-  html_document: 
+    # github_document:
+    # toc: yes
+    # # number_sections: yes
+    # toc_depth: 2
+  html_document:
     toc: yes
     toc_float: yes
 ---
@@ -13,7 +17,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# The course
+# Overview of Course so Far
 
 As you have noticed "the Titanic" has been a theme of the course. The course has been structured into three parts:
 
@@ -21,11 +25,13 @@ As you have noticed "the Titanic" has been a theme of the course. The course has
     * Binomial: a simple model where Bayesian methodology is learnt
     * The GLM: A more advanced application of Bayesian theory
 
-All the skills that you have learnt in parts 1 and 2 will now be applied to a logistic regression which is a special case of the GLM.
+All the skills that you have learnt in pa`rts 1 and 2 will now be applied to a logistic regression which is a special case of the GLM.
 
 We will now start to analyze the Titanic data set and you will perfect this in Assignment 4.
 
-# Task 0: The story
+# Lab Overview
+
+## Overview of the Titanic Story
 
 ## Summarize the Titanic story by reading the following web page: (https://www.history.com/this-day-in-history/unsinkable-titanic-sinks)
 
@@ -39,27 +45,28 @@ lifeboats and other precautionary measures. Lifeboats prioritized women and chil
 of the surviving members.
 
 
-# Task 1: The Titanic data set
+## Overview of the Titanic dataset
 We will use the data set as prepared in the `vcdExtra` package. We will aslo use the `gpairs` package.
 Please install.
 
-##  Make a pairs plot of the data using `gpairs()`
+### Summary of Dataset using `gpairs()`
 ```{r data, message = FALSE, warning=FALSE}
 require(vcdExtra) # Titanic passenger data
 require(gpairs)   # Use the data frame below and use the function gpairs()
-
+require(GGally)
 data("Titanicp")
 head(Titanicp)
 
 # Huge summary of the dataset
 gpairs(Titanicp)
+ggpairs(Titanicp)
 ```
 
 Notice that there are a number of categorical variables and a continuous variable `age`.
 
-## Using the R help for the package describe the variables in the Titanicp data set.
+<!-- ## Using the R help for the package describe the variables in the Titanicp data set. -->
 
-# Task 2: Interpreting the plots
+# Task 2: Interpreting the Data
 
 ## Interpret the plots below:
 
@@ -93,11 +100,19 @@ g
 # First class females have high likelihood of survival
 g = g + facet_wrap(~pclass)
 g
-
-
 ```
 
+### Interpretation of Plots
 
+* Most of the individuals who died were older males. However, some females died too.  
+
+* Young individuals regardless of age have similar survival rates, but males plummit quickly  
+
+* Without consideration of class, females have higher likelihood of survival with incraesed age  
+
+* Limited sample size with wider tails in older age groups
+
+* It appears that 1st class had highest priority for life boats (see slope and intercept). Third class had low priority regardless of age, but age still negatively impacted likelihood of survival. 
 
 
 # Task 3: Classical analysis using `glm()`
@@ -118,7 +133,7 @@ summary(clglm)
 ## What are the classical point estimates?
 
 
-# Task 4: Use the classical model to make data for Jags
+# Task 4: Use the classical model to make data for JAGS
 
 ## Complete the code below (one line, `y=`)
 
@@ -144,7 +159,7 @@ dataList=list(y = y, x = mat1[, "age"],sexm = mat1[,"sexmale"], sexmx = mat1[,"s
 
 
 
-# Task 5: Now we will use the classical estimates as initial values in a jags script
+# Task 5: Use Classical Estimates as Initial Values in JAGS
 
 ## Complete the Jags script below
 
@@ -198,7 +213,7 @@ summary(codaSamples)
 ```
 
 
-# Task 6: Interpretation of MCMC
+# Task 6: Interpretation of JAGS MCMC Results
 
 ## Interpret all the Bayesian output 
 * All values stated as approximately since each MCMC run will generate a slightly different estimate.

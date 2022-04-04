@@ -1,10 +1,11 @@
 
 model {
-  for ( i in 1:Ntotal ) {
-    y[i] ~ dbern( theta[s[i]] ) # notice nested indexing
-  }
-  for ( s in 1:Nsubj ) {
-    theta[s] ~ dbeta(2,2)
-  }
+  y[1:2] ~ dmnorm.vcov(mu[1:2],Sigma[1:2,1:2])
+Sigma[1,1]<- 4
+Sigma[2,2]<- 16
+Sigma[1,2]<- 0.2*2*4
+Sigma[2,1]<- 0.2*2*4
+mu[1]<-10
+mu[2]<-5
 }
 

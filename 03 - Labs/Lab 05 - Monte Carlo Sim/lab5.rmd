@@ -6,14 +6,18 @@ date:     "February 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 3
   html_document:
     toc: yes
     toc_float: yes
 ---
 
-## Task 1
+## Task `1` Two-State Bayes Box & Coin-Die Experiment
 
-### `1.1b. i-ii`
+### `1.1b. i-ii` Prior for two state Bayes’ box Binomial Experiment
 * Make a prior for a two state Bayes’ box that corresponds to an acceptance set that has 2 values in it, x=4, n=10 in a Binomial experiment. The
 parameter values are 0.4 and 0.8.
 
@@ -77,7 +81,7 @@ parameter values are 0.4 and 0.8.
   knitr::kable(ans$bbox)
 ```
 
-### `1.1b. iii`
+### `1.1b. iii` Acceptance and rejection set
 Accept it with a probability. Need an acceptance and rejection set. 
 Anything lower than the probability can be in the acceptance set. For Example, 
 if 4/6, then can accept {1,2,3,4}
@@ -139,7 +143,7 @@ if 4/6, then can accept {1,2,3,4}
   outputOfCdbbox2 <- cdbbox2(k=2,lik=dbinom(x=4,size=10,prob=c(0.4,0.8)),theta=c(0.4,0.8),h1="s") 
 ```
 
-### `1.2` - Derivation of Code
+### `1.2` - Derivation of Algorithm for Coin-Die Bayes Box
 
 #### `R` Code
 ```r
@@ -148,7 +152,6 @@ ifelse(h1=="s",pi1<-k/6*lik2/(lik1+k/6*lik2), pi1<-lik2/(lik2+k/6*lik1))
 
 #### $\LaTeX$ Derivation:
 $$
-\text{if} \ h_1 = s \\
 \text{then} \ p_{i,1} = \frac{k}{6} \times \frac{lik_2}{lik_1 + k \times lik_2}, \\
 \text{else} \ p_{i,1} = \times \frac{lik_2}{lik_2 + k \times lik_1}
 $$
@@ -157,10 +160,9 @@ $$
 
 <br>
 
-## Task 2 
-> Coin Die MCMC Simulation
+## Task `2` Coin Die MCMC Simulation
 
-### `1 a-c` 
+### `1 a-c` Create Function
 ```{r 2.1, echo=TRUE, message=FALSE}
 coindie<-function(n=100, h=c(1/4,3/4),E2=c(5,6),init=1,...){
   library(xtable)
@@ -251,15 +253,14 @@ ans <- coindie(n=10,h=h,E2=c(2,3,4,5),
 
 <br>
 
-## Task 3
-> Discrete Simulation using MCMC
+## Task `3` Discrete Simulation using MCMC
 
-### `3.1` 
+### `3.1` Overview of Algorithm
 Core of `simR()`? Take a random sample from the uniform of size 1. 
 If the proposed value is less than or equal to alpha (or the area at `i`, `j`), 
 then accept it as the solution. Else, reject it.
 
-### `3.2` 
+### `3.2`  Create the Function
 ```{r 3.2, echo=TRUE, message=FALSE}
 
   # This function makes discrete simulations from a posterior with any number of h values
@@ -344,13 +345,13 @@ then accept it as the solution. Else, reject it.
 
 <br>
 
-## Task 4
-> Discrete Simulation using MCMC
+## Task `4` Discrete Simulation using MCMC
 
 ```{r 4, echo=TRUE, message=FALSE}
 # What about different proposal distributions
 # Again for the discrete case
-simRQ<-function(n=1000,init=1, h=c(1,1),pr=c(1,1)/2,...){
+simRQ<-function(n=1000,init=1, h=c(1,1),pr=c(1,1)/2,...) {
+  
   alpha<-c() # holds transition probs
   alpha[1]<-1
   u<-c() # holds uniform values
@@ -359,12 +360,17 @@ simRQ<-function(n=1000,init=1, h=c(1,1),pr=c(1,1)/2,...){
   prop<-c() # vec of proposed states 1s and 2s etc
   prop[1]=init # initial state
   post[1]=prop[1]
+  
   q<-function(x){pr[x]}
+  
   for(i in 2:n){ # starts at 2 because initial value given above
+    
     #make a sample from the proposal
     sample(1:length(h),1,replace=TRUE,prob=pr)->prop[i]
+    
     #Calculate alpha adjusting for the proposal being non uniform
     alpha[i]=min(1,h[prop[i]]*q(post[i-1])/(h[post[i-1]]*q(prop[i])))
+    
     # now choose the proposal with probability alpha
     u[i]=runif(1)
     if(u[i]<=alpha[i]){post[i]<-prop[i]}
@@ -376,6 +382,7 @@ simRQ<-function(n=1000,init=1, h=c(1,1),pr=c(1,1)/2,...){
   barplot(sim,...)
   tmp<-c()
   ifelse(length(res[,1])>=20,tmp<-res[1:20,],tmp<-res)
+  
   return(list(iter=tmp,sim=sim,post=postexact) )
 }
 
@@ -413,10 +420,9 @@ simRQOut$iter
 
 <br>
 
-## Task 5
-> Continuous Similation using MCMC
+## Task `5` Continuous Similation using MCMC
 
-### `Part 1-4`
+### `Part 1-4` Create Function with Beta Proposal
 * Adjusts the output to plot Proposal, Prior, Likelihood, and the Posterior
 * Default parameters set to problem for ease
 
@@ -505,10 +511,9 @@ simRQOut$iter
 ```
 
 
-## Task 6 
-> Gibbs Sampling via MCMC
+## Task `6` Gibbs Sampling via MCMC
 
-### `6.1` 
+### `6.1` Gibbs Sampling MCMC and `OpenBUGS`
 
 #### What is Gibbs Sampling?
 Gibbs sampling is the most popular MCMC algorithm. It allows us to get a MCMC 
@@ -529,7 +534,7 @@ Assume Bivariate Normal target distribution with correlation $\rho$  <br>
 ### `6.2-3` - OpenBUGS Model and Pretty Print Output
 ![Figure: Jags Model - Daniel Carpenter](openBugsModel1.png)
 
-### `6.4-6` Basic SLR Model Code
+### `6.4-6` Basic SLR Model using JAGS
 * See analysis (part `a.` and `b.`) and the trace and history plots after code execution.
 
 ```{r 6.4-6, echo=TRUE, message=FALSE}
