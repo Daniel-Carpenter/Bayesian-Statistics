@@ -355,3 +355,102 @@ where $\alpha_{i, j}$ is the probability of accepting state $j$ given that the s
 <br> 
 
 ## SLR in Jags and OpenBUGS 
+
+### SLR OpenBUGS Model
+* Make a DAG using the doodle bug editor in `OpenBUGS` for the simple linear regression model.
+![](openBugsSLR.png){ width=60% }
+
+```{r jagsModel, echo=TRUE, message=FALSE, warning=FALSE}
+require(rjags)               # Must have previously installed package rjags.
+
+fileNameRoot="Exam1" # For output file names.
+x=-20:19
+set.seed(33)
+y=10+20*x + rnorm(40,0,15)
+
+Ntotal = length(y)  # Compute the total number of x,y pairs.
+dataList = list(    # Put the information into a list.
+  x = x,
+  y = y ,
+  Ntotal = Ntotal 
+)
+
+# Define the model:
+modelString = "
+model{
+    for( i in 1 : Ntotal ) {
+        y[i] ~ dnorm(mu[i], tau)
+        mu[i] <- beta0 + beta1 * x[i]
+    }
+    beta0 ~ dnorm(0.0, 1.0E-6)
+    beta1 ~ dnorm(0.0, 1.0E-6)
+    sigma ~ dunif(0, 1000)
+    tau <- pow(sigma,  -2)
+}
+" # close quote for modelString
+writeLines( modelString , con="TEMPmodel.txt" )
+
+# Initialize the chains based on MLE of data.
+initsList = list(beta0 = 0, beta1 = 0, sigma =10)
+
+# Run the chains:
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+update( jagsModel , n.iter=500 )
+codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "sigma") ,
+                            n.iter=33340 )
+save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+```
+
+### Summarize the MCMC Estimation:
+```{r summary, echo=TRUE, message=FALSE, warning=FALSE}
+su = summary(codaSamples)
+su
+```
+
+### Give a 95% Bayesian credible interval for $\beta_1$ and interpret it:
+* There is 95% probability that $\beta_1$ is between 19.69 and 20.43
+* You could also interpret as: There is a 95% probability that a one-unit increase in $\beta_1$ (or `x`) will increase `y` by a range between 19.69 and 20.43.
+* The above estimates for $\beta_1$ will change on each MCMC run, so I have rounded them for approximate values
+
+The following is the data used in the above SLR analysis.
+```{r theData}
+x=-20:19
+set.seed(33)
+y=10+20*x + rnorm(40,0,15)
+y=round(y,1)
+df = data.frame(x=x,y=y)
+head(df)
+```
+
+
+### Plot the MCMC SLR Estimation (Slope, Intercept, and Original Data)
+* Using the simulated data in the above code chunk and the `ggplot2` package, 
+* make a plot of the points `y` vs `x`, and
+* add the estimating line from the point estimates you found from the Bayesian model.
+
+```{r mcmcPlot}
+beta0  = su$statistics[,'Mean']['beta0']
+beta1  = su$statistics[,'Mean']['beta1']
+
+require(ggplot2)
+# This code needs to be changed to take the estimating intercept and slope
+ggplot(df, aes(x=x,y=y)) + 
+  
+  # Add points from the original dataset
+  geom_point() + 
+  
+  # Now plot the estimation from the MCMC using beta0 (intercept) and beta1 (slope)
+  geom_abline(intercept = beta0, slope= beta1, color = 'steelblue2') +
+  
+  # Labels and Theme
+  labs(title    = "Plot the MCMC SLR Estimation (Slope, Intercept, and Original Data)",
+       subtitle = 'Daniel Carpenter') +
+  theme_minimal()
+```
+
+
+
+
+
+
