@@ -248,29 +248,64 @@ div.tocify {
 </div>
 
 
-<div id="task-2.2.1-proof-of-bern-beta-posterior" class="section level2">
-<h2>Task 2.2.1 (Proof of Bern-Beta Posterior)</h2>
-<p><em>Adapted from JK’s book - page 132 Doing Bayesian Data Analysis:</em> <br></p>
-<p>If <span class="math inline">\(\theta \sim \operatorname{Beta}(\alpha, \beta)\)</span> and <span class="math inline">\(X \sim \operatorname{Bin}(n, \theta)\)</span>, prove that <span class="math inline">\(\theta \mid X \sim \operatorname{Beta}(x+\alpha, n-x+\beta)\)</span> through proof below:</p>
-<p><span class="math inline">\(p(\theta \mid x) \propto p(\theta) p(x \mid \theta) = \frac{1}{B(\alpha, \beta)} \theta^{\alpha-1}(1-\theta)^{\beta-1}\left(\begin{array}{l}n \\ x\end{array}\right) \theta^{x}(1-\theta)^{n-x}\)</span></p>
-<div id="note-bayes-rule" class="section level4">
-<h4>Note Bayes’ rule</h4>
-<p><span class="math inline">\(\underbrace{p(\theta \mid x)}_{Posterior} \propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid \theta)}_{Lik.} = \frac{p(z, N \mid \theta) p(\theta)}{p(z, N)} = p(\theta \mid z, N)\)</span> <br></p>
+<div id="section" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> </h1>
 </div>
-<div id="define-bernoulli-and-beta-distributions" class="section level4">
-<h4>Define Bernoulli and beta distributions</h4>
-<p><span class="math inline">\(=\underbrace{\theta^{z}(1-\theta)^{(N-z)}}_{Bernoulli \ Lik.} \underbrace{\frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a, b)}}_{Beta \ Prior} / p(z, N)\)</span> <br></p>
+<div id="see-answers-to-questions-below" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> See Answers to Questions Below:</h1>
+<hr />
+<p><br></p>
+<div id="basic-distributional-properties" class="section level2" number="2.1">
+<h2 number="2.1"><span class="header-section-number">2.1</span> Basic Distributional Properties</h2>
+<blockquote>
+<p>Suppose that X∼Pois(λ=4) where λ is the average number of particles leaving an unstable nucleus per second.</p>
+</blockquote>
+<div id="find-px8-using-an-r-function" class="section level3" number="2.1.1">
+<h3 number="2.1.1"><span class="header-section-number">2.1.1</span> Find P(X≥8) using an R function</h3>
 </div>
-<div id="rearrange-factors" class="section level4">
-<h4>Rearrange factors</h4>
-<p><span class="math inline">\(=\frac{1}{B(a, b) p(z, N)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}\)</span> <br><br />
-<span class="math inline">\(=\frac{1}{p(z, N)} \times \frac{1}{B(a, b)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}\)</span> <br></p>
+<div id="find-px2" class="section level3" number="2.1.2">
+<h3 number="2.1.2"><span class="header-section-number">2.1.2</span> Find P(X=2)</h3>
+</div>
+<div id="make-a-plot-of-the-distribution-of-x-for-x0-up-to-x30" class="section level3" number="2.1.3">
+<h3 number="2.1.3"><span class="header-section-number">2.1.3</span> Make a plot of the distribution of X for X=0 up to X=30</h3>
+<p>The following is for the case where Y∼N(μ=6,σ=10)</p>
+</div>
+<div id="find-py3-using-an-r-function" class="section level3" number="2.1.4">
+<h3 number="2.1.4"><span class="header-section-number">2.1.4</span> Find P(Y≤3) using an R function</h3>
+</div>
+<div id="find-p5y8-using-r" class="section level3" number="2.1.5">
+<h3 number="2.1.5"><span class="header-section-number">2.1.5</span> Find P(5≤Y&lt;8) using R</h3>
+</div>
+<div id="make-an-r-function-mynormab-mu" class="section level3" number="2.1.6">
+<h3 number="2.1.6"><span class="header-section-number">2.1.6</span> Make an R function mynorm(a,b, mu)</h3>
+<blockquote>
+<p>Plot the area between a and b where b&gt;a and below the density curve when Y is distributed as follows, Y∼N(μ,σ=10) and display a 4 dec estimate of the area. Make sure your name appears on the plot.</p>
+</blockquote>
+<div id="call-your-function-with-the-following-parameters-mynorm3255-mynorm0205-mynorm-610-5" class="section level4" number="2.1.6.1">
+<h4 number="2.1.6.1"><span class="header-section-number">2.1.6.1</span> Call your function with the following parameters <code>mynorm(3,25,5)</code>, <code>mynorm(0,20,5)</code>, <code>mynorm(-6,10, 5)</code></h4>
 <hr />
 <p><br></p>
 </div>
 </div>
-<div id="task-2.2.1-proof-of-bayes-rule-w2-discrete-events" class="section level2">
-<h2>Task 2.2.1 (Proof of Bayes Rule w/2 Discrete Events)</h2>
+</div>
+<div id="bayes-rules-proofs" class="section level2" number="2.2">
+<h2 number="2.2"><span class="header-section-number">2.2</span> Bayes Rules Proofs</h2>
+<div id="proof-of-beta-posterior" class="section level3" number="2.2.1">
+<h3 number="2.2.1"><span class="header-section-number">2.2.1</span> Proof of Beta Posterior</h3>
+<p><em>Adapted from JK’s book - page 132 Doing Bayesian Data Analysis:</em> <br></p>
+<p>If <span class="math inline">\(\theta \sim \operatorname{Beta}(\alpha, \beta)\)</span> and <span class="math inline">\(X \sim \operatorname{Bin}(n, \theta)\)</span>, prove that <span class="math inline">\(\theta \mid X \sim \operatorname{Beta}(x+\alpha, n-x+\beta)\)</span> through proof below:</p>
+<p><span class="math inline">\(p(\theta \mid x) \propto p(\theta) p(x \mid \theta) = \frac{1}{B(\alpha, \beta)} \theta^{\alpha-1}(1-\theta)^{\beta-1}\left(\begin{array}{l}n \\ x\end{array}\right) \theta^{x}(1-\theta)^{n-x}\)</span></p>
+<p>Note Bayes’ rule<br />
+<span class="math inline">\(\underbrace{p(\theta \mid x)}_{Posterior} \propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid \theta)}_{Lik.} = \frac{p(z, N \mid \theta) p(\theta)}{p(z, N)} = p(\theta \mid z, N)\)</span> <br></p>
+<p>Define Bernoulli and beta distributions<br />
+<span class="math inline">\(=\underbrace{\theta^{z}(1-\theta)^{(N-z)}}_{Bernoulli \ Lik.} \underbrace{\frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a, b)}}_{Beta \ Prior} / p(z, N)\)</span> <br></p>
+<p>Rearrange factors<br />
+<span class="math inline">\(=\frac{1}{B(a, b) p(z, N)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}\)</span> <br><br />
+<span class="math inline">\(=\frac{1}{p(z, N)} \times \frac{1}{B(a, b)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}\)</span> <br></p>
+<hr />
+</div>
+<div id="proof-of-bayes-rule-w2-discrete-events" class="section level3" number="2.2.2">
+<h3 number="2.2.2"><span class="header-section-number">2.2.2</span> Proof of Bayes Rule w/2 Discrete Events</h3>
 <p>Prove Bayes Rule for the case of two discrete events: <span class="math inline">\(p(A \mid B)=\frac{p(A) p(B \mid A)}{p(B)}\)</span>, assuming: <span class="math inline">\(p(A \mid B)=\frac{p(A \cap B)}{p(B)}\)</span></p>
 <p>Below framework taken from pg. 101 from JK’s <em>Doing Bayesian Data Analysis</em>:</p>
 <ol style="list-style-type: decimal">
@@ -288,6 +323,18 @@ div.tocify {
 <span class="math inline">\(p(A \mid B)=\frac{p(B \mid A) p(A)}{\sum_{A^{*}} p\left(B \mid A^{*}\right) p\left(A^{*}\right)}\)</span></p></li>
 </ol>
 <p>Note that steps 5 and 6 are equivalent to <code>Bayes Theorem</code>. Therefore, <span class="math inline">\(P(A \mid B)=\frac{P(A, B)}{P(B)} \equiv \frac{P(A \text { and } B)}{P(B)} \equiv \frac{P(A \cap B)}{P(B)} = \frac{P(B \mid A) P(A)}{P(B)}\)</span>, or Bayes Theorem</p>
+<hr />
+<p><br></p>
+</div>
+</div>
+<div id="coin-die-simululation" class="section level2" number="2.3">
+<h2 number="2.3"><span class="header-section-number">2.3</span> Coin Die Simululation</h2>
+<hr />
+<p><br></p>
+</div>
+<div id="slr-in-jags-and-openbugs" class="section level2" number="2.4">
+<h2 number="2.4"><span class="header-section-number">2.4</span> SLR in Jags and OpenBUGS</h2>
+</div>
 </div>
 
 
@@ -339,7 +386,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
