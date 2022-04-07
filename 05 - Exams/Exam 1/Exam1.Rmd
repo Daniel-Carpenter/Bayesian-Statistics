@@ -206,6 +206,9 @@ $=\frac{1}{p(z, N)} \times \frac{1}{B(a, b)} \theta^{z}(1-\theta)^{(N-z)} \theta
 
 ---
 
+<br>
+
+
 ### Proof of Bayes Rule w/2 Discrete Events
 
 Prove Bayes Rule for the case of two discrete events: $p(A \mid B)=\frac{p(A) p(B \mid A)}{p(B)}$, assuming: $p(A \mid B)=\frac{p(A \cap B)}{p(B)}$
