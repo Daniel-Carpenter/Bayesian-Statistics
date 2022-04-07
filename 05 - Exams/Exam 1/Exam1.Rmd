@@ -1,0 +1,53 @@
+---
+title:    "Exam 1"
+subtitle: "Bayesian Statistics"
+author:   "Daniel Carpenter"
+date:     "April 2022"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 2
+---
+
+
+
+
+## Task 2.2.1 (Proof of Bern-Beta Posterior)
+
+---
+<br>
+
+
+## Task 2.2.1 (Proof of Bayes Rule w/2 Discrete Events)
+
+Prove Bayes Rule for the case of two discrete events: $p(A \mid B)=\frac{p(A) p(B \mid A)}{p(B)}$, assuming: $p(A \mid B)=\frac{p(A \cap B)}{p(B)}$
+
+Below framework taken from pg. 101 from JK's *Doing Bayesian Data Analysis*:  
+
+1. From the definition of conditional probability (*JK pg. 92*):  
+$p(A \mid B)=\frac{p(B, A)}{p(B)}$
+
+2. Do some algebra - Multiply both sides by $p(B)$:  
+$p(A \mid B) p(B)=p(B, A)$
+
+3. With definition: $p(B \mid A)=\frac{p(B, A)}{p(A)}$, we get:  
+$p(B \mid A) p(A)=p(B, A)$
+
+4. Since steps (2) and (3) are equal to $p(B, A)$, we can assume:  
+$p(A \mid B) p(B)=p(B \mid A) p(A)$
+
+5. Divide by $p(B)$ to get:  
+$p(A \mid B)=\frac{p(B \mid A) p(A)}{p(B)}$
+
+6. You could also show a solution where the denominator is in terms of $p(B|A)$:  
+$p(A \mid B)=\frac{p(B \mid A) p(A)}{\sum_{A^{*}} p\left(B \mid A^{*}\right) p\left(A^{*}\right)}$
+
+Note that steps 5 and 6 are equivalent to `Bayes Theorem`. Therefore, 
+$P(A \mid B)=\frac{P(A, B)}{P(B)} \equiv \frac{P(A \text { and } B)}{P(B)} \equiv \frac{P(A \cap B)}{P(B)} = \frac{P(B \mid A) P(A)}{P(B)}$, or Bayes Theorem
+
