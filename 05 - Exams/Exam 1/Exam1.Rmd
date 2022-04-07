@@ -240,7 +240,114 @@ $P(A \mid B)=\frac{P(A, B)}{P(B)} \equiv \frac{P(A \text { and } B)}{P(B)} \equi
 
 <br> 
 
+
 ## Coin Die Simululation
+
+Code for Coin Die Simulation:
+```{r coinDie, echo=TRUE, message=FALSE, warning=FALSE}
+coindie<-function(n=100, h=c(1/4,3/4),E2=c(5,6),init=1,...) {
+  if(!require(xtable)) install.packages(xtable)
+  dieset<-c()
+  dieset[1]<-"E1"
+  
+  die<-function(n=1) {
+    sample(1:6,size=n,replace=TRUE)
+  }
+  
+  coin<-function(n=1) {
+    sample(1:2,size=n,replace=TRUE)
+  }
+  
+  face<-c()
+  alpha<-c() # holds acceptance probs
+  alpha[1]<-1
+  post<-c()# post sample
+  prop<-c() # vec of proposed states 1s and 2s
+  prop[1]=init # initial state
+  post[1]=prop[1]
+  dice<-c()
+  dice[1]<-die()
+  
+  for(i in 2:n) { # starts at 2 because initial value given above
+    prop[i]<-coin()
+    alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+    
+    dice[i]<-die()
+    
+    ifelse(alpha[i]==1,dieset[i]<-"E1",dieset[i]<-"E2")
+    
+    # is x an element of set y
+    if(alpha[i]==1 | (is.element(dice[i],E2) & alpha[i]!=1)){post[i]<-prop[i]}
+    else { post[i]<-post[i-1] }
+  }  
+  res<-matrix(c(prop,round(alpha,2),dieset,dice,post ),nc=5,nr=n,byrow=FALSE,dimnames=list(1:n,c("proposal","alpha", "E","dice","post")))
+  sim<-table(post)/n
+  postexact<-h/sum(h)
+  
+  # Plots
+  layout(matrix(1:2, nr=1,nc=2))
+  plot(post,type ="l",...)
+  names(h)=c("1", "2")
+  barplot(h)
+  
+  # Return the iterations, simulation, posterior exact and the estimate, and a table of the res
+  return(list(iter=res,sim=sim,postexact=postexact,post=post,xtable=xtable(res,dig=1)) )
+}
+
+set.seed(25) # Set seed
+
+# Call the function
+coindie(n=10,h=c(0.6,0.4),E2=c(3,4,5,6)) ->ans
+
+# Shoe the Results
+ans$it
+```
+### When the `coindie` function is called above what is the acceptance set?
+* The initial acceptance set is E1, and it finishes at E1.
+
+### There are 10 iterations above. From the table of output `ans$it` how many times does the sampler move from state 1 to 2?
+
+```{r fromStateToState, echo=TRUE}
+POST_COLUMN = 1 # Column number that the post are in
+post <- ans$it[,POST_COLUMN] # Get the states from the iterations
+
+from1to2 = 0 # track the state changes from 1 to 2
+for (i in 1:(length(post) - 1)) {
+  
+  # If the proposal changes from 1 to 2 (not 2 to 1), then count it
+  if ((post[i] == 1) & (post[i+1] == 2)) {
+    from1to2 = from1to2 + 1
+  } 
+}
+
+paste('Specifically, the sampler moves from *state one* to *state two*', from1to2, 'times')
+
+countOfChanges  = 0 # track the total number of changes
+for (i in 1:(length(post) - 1)) {
+  
+  # If any state change occurs, then count it
+  if (post[i] != post[i+1]) {
+    countOfChanges = countOfChanges + 1
+  } 
+}
+
+paste('The total number of times the sampler changes states is', countOfChanges, 'times')
+
+```
+
+
+
+
+
+### Write down the formula for the acceptance probability.
+
+Note below is from page 33 of *Teaching MCMC* by Stewart & Stewart:
+
+$$
+\alpha_{i, j}=\min \left\{1, \frac{h_{j}}{h_{i}}\right\}
+$$
+
+where $\alpha_{i, j}$ is the probability of accepting state $j$ given that the sampler is at state $i$. 
 
 
 ---
