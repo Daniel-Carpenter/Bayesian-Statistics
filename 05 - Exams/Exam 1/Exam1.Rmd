@@ -28,16 +28,155 @@ output:
 > Suppose that X∼Pois(λ=4) where λ is the average number of particles leaving an unstable nucleus per second.
 
 ### Find P(X≥8) using an R function
+```{r 2.1.1, echo=TRUE}
+x = 8
+1-ppois(x-1, lambda = 4) # x - 1 since discrete
+```
+```{r include=FALSE}
+rm(x) # get rid of x just in case of confusion later on
+```
+
+
 ### Find P(X=2)
+```{r 2.1.2, echo=TRUE}
+dpois(2, lambda = 4) # dpois() since exact probability
+```
+
 ### Make a plot of the distribution of X for X=0 up to X=30
+```{r 2.1.3, echo=TRUE, message=FALSE, warning=FALSE}
+# Function to plot the poisson distribution (discrete)
+myPoisPlot <- function(x, lambdaValue) {
+  theTitle = paste('Poisson Distribution: Lambda = ', lambdaValue, 'Over Discrete Values of x\nDaniel Carpenter')
+  
+  probx <- dpois(x, lambda = lambdaValue)
+  names(probx) <- x
+  
+  barplot(probx, col = paste0("lightsteelblue", floor(runif(1, min=1, max=4))), 
+          main = theTitle, xlab ='Discrete Values of x', ylab ='Probability given Lambda')
+}
+
+myPoisPlot(x=0:30, lambdaValue=4)
+```
 The following is for the case where Y∼N(μ=6,σ=10)
 
+```{r 2.1.4_Assumptions, echo=TRUE}
+mu    = 6
+sigma = 10
+```
+
+
 ### Find P(Y≤3) using an R function
+```{r 2.1.5, echo=TRUE}
+pnorm(3, mu, sigma)
+```
+
 ### Find P(5≤Y<8) using R
-### Make an R function mynorm(a,b, mu) 
+```{r 2.1.6, echo=TRUE}
+# Inputs for upper and lower bound when calculating the area
+upperBound = 8
+lowerBound = 5
+
+# Calculate the area in between the two bounds
+pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma)
+```
+
+### Make an R function `mynorm(a, b, mu) `
 > Plot the area between a and b where b>a and below the density curve when Y is distributed as follows, Y∼N(μ,σ=10) and display a 4 dec estimate of the area. Make sure your name appears on the plot.
 
+```{r 2.1.7, echo=TRUE}
+mynorm <- function(lowerBound = NA, upperBound = NA, mu, sigma=10)
+{
+  # Round to this many decimal places on the plot
+  roundTo = 4
+  
+  # Color of the plot
+  color = paste0("lightsteelblue", floor(runif(1, min=1, max=4)))
+  
+  # Calculate the "xlim" lower and upper bound for the Normal PDF Curve
+  curveLowerBound <- mu - 3*sigma
+  curveUpperBound <- mu + 3*sigma
+  
+  # Initialize variables related to output and graph
+  title <- ""   # Title of graph
+  exactProb = 0 # The exact probability of the questions
+  
+  # If no provided LOWER AND UPPER Bound (NA as parameter value) then assume none
+  if (!(is.na(lowerBound)) & !(is.na(upperBound))) {
+    title <- paste0(", P(", lowerBound, " <= X < ",upperBound,")")
+    exactProb = pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma) # calculate prob 
+    
+  # If no provided LOWER Bound (NA as parameter value) then assume none
+  } else if (is.na(lowerBound)) {
+    lowerBound = curveLowerBound
+    title <- paste0(", P(X < ",upperBound,")") # Set a dynamic title
+    exactProb = pnorm(upperBound, mu, sigma) # calculate prob 
+    
+  # If no provided UPPER Bound (NA as parameter value) then assume none
+  } else if(is.na(upperBound)) {
+    upperBound = curveUpperBound
+    title <- paste0(", P(X >= ",lowerBound,")")
+    exactProb = 1 - pnorm(lowerBound, mu, sigma) # calculate prob 
+  }
+  
+  # Create the line that displays the bell curve (between the CURVE bounds defined above)
+  curve(
+    
+    ## Normally Distributed
+    dnorm(x,mu,sigma), 
+    
+    ## Normally Distributed
+    xlim=c(curveLowerBound, curveUpperBound), 
+    
+    ## Line width
+    lwd =2, 
+    
+    ## Title with descriptive characteristics about function parameters
+    main = paste0("Probability Distribution (by Daniel Carpenter)\n",
+                  "X ~ N(",mu,", ",sigma,")", title),
+    
+    ## X and Y labels
+    ylab = 'Probability Density',
+    xlab = 'Value of X',
+  )
+
+  
+  # Add the AREA of between the lower and upper bound P(lowerBound<X<=upperBound)
+  
+    ## X-Axis curve (length does not matter)
+    xcurve = seq(lowerBound,upperBound, length=1000)
+    
+    ## Y-Axis Curve
+    ycurve = dnorm(xcurve, mu,sigma)
+    
+    ## Combine the X and Y curve to form the area (in green)
+    polygon(c(lowerBound, xcurve, upperBound), 
+            c(0, ycurve, 0), 
+            col=color) 
+    
+    ## Legend
+    legend("topleft", legend="Area (of Prob. Density)", 
+           fill=color, bty = "n")
+  
+  # Add the probability as text
+    
+    ## Calculate the area (probability)
+    area = exactProb
+    areaRounded = format(round(area, roundTo), nsmall=roundTo)
+    
+    ## Place this on the above plot
+    text(12,0.02,substitute(paste("Probability = ", areaRounded), 
+                            list(areaRounded = areaRounded)))
+}
+```
+
+
 #### Call your function with the following parameters `mynorm(3,25,5)`, `mynorm(0,20,5)`, `mynorm(-6,10, 5)`  
+```{r 2.1.6.1_runFun}
+mynorm( 3, 25, 5)
+mynorm( 0, 20, 5)
+mynorm(-6, 10, 5)
+```
+
 
 ---
 
