@@ -197,14 +197,18 @@ $p(\theta \mid x) \propto p(\theta) p(x \mid \theta) = \frac{1}{B(\alpha, \beta)
 
 
 Note Bayes' rule  
-$\underbrace{p(\theta \mid x)}_{Posterior} \propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid \theta)}_{Lik.} = \frac{p(z, N \mid \theta) p(\theta)}{p(z, N)} = p(\theta \mid z, N)$ <br>  
+$\underbrace{p(\theta \mid x)}_{Posterior} \propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid \theta)}_{Lik.} = \frac{p(x, n \mid \theta) p(\theta)}{p(x, n)} = p(\theta \mid x, n)$ <br>  
 
 Define Bernoulli and beta distributions  
-$=\underbrace{\theta^{z}(1-\theta)^{(N-z)}}_{Bernoulli \ Lik.} \underbrace{\frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a, b)}}_{Beta \ Prior} / p(z, N)$ <br>  
+$=\underbrace{\theta^{x}(1-\theta)^{(n-x)}}_{Bernoulli \ Lik.} \underbrace{\frac{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}{B(\alpha, \beta)}}_{Beta \ Prior} / p(x, n)$ <br>  
 
 Rearrange factors  
-$=\frac{1}{B(a, b) p(z, N)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}$ <br>  
-$=\frac{1}{p(z, N)} \times \frac{1}{B(a, b)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}$ <br>
+$=\frac{1}{B(\alpha, \beta) p(x, n)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \theta^{x}(1-\theta)^{(n-x)}$ <br>
+
+$=\frac{1}{B(\alpha, \beta)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \left(\begin{array}{l}\frac{1}{p(x, n)}\end{array}\right)\theta^{x}(1-\theta)^{(n-x)}$ <br>
+
+By definition of the binomial coefficient, which we arrive at the solution:  
+$=\frac{1}{B(\alpha, \beta)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \left(\begin{array}{l}n \\ x\end{array}\right) \theta^{x}(1-\theta)^{(n-x)}$ <br>
 
 
 ---
