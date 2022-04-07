@@ -250,8 +250,24 @@ div.tocify {
 
 <div id="task-2.2.1-proof-of-bern-beta-posterior" class="section level2">
 <h2>Task 2.2.1 (Proof of Bern-Beta Posterior)</h2>
+<p><em>Adapted from JK’s book - page 132 Doing Bayesian Data Analysis:</em> <br></p>
+<p>If <span class="math inline">\(\theta \sim \operatorname{Beta}(\alpha, \beta)\)</span> and <span class="math inline">\(X \sim \operatorname{Bin}(n, \theta)\)</span>, prove that <span class="math inline">\(\theta \mid X \sim \operatorname{Beta}(x+\alpha, n-x+\beta)\)</span> through proof below:</p>
+<p><span class="math inline">\(p(\theta \mid x) \propto p(\theta) p(x \mid \theta) = \frac{1}{B(\alpha, \beta)} \theta^{\alpha-1}(1-\theta)^{\beta-1}\left(\begin{array}{l}n \\ x\end{array}\right) \theta^{x}(1-\theta)^{n-x}\)</span></p>
+<div id="note-bayes-rule" class="section level4">
+<h4>Note Bayes’ rule</h4>
+<p><span class="math inline">\(\underbrace{p(\theta \mid x)}_{Posterior} \propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid \theta)}_{Lik.} = \frac{p(z, N \mid \theta) p(\theta)}{p(z, N)} = p(\theta \mid z, N)\)</span> <br></p>
+</div>
+<div id="define-bernoulli-and-beta-distributions" class="section level4">
+<h4>Define Bernoulli and beta distributions</h4>
+<p><span class="math inline">\(=\underbrace{\theta^{z}(1-\theta)^{(N-z)}}_{Bernoulli \ Lik.} \underbrace{\frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a, b)}}_{Beta \ Prior} / p(z, N)\)</span> <br></p>
+</div>
+<div id="rearrange-factors" class="section level4">
+<h4>Rearrange factors</h4>
+<p><span class="math inline">\(=\frac{1}{B(a, b) p(z, N)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}\)</span> <br><br />
+<span class="math inline">\(=\frac{1}{p(z, N)} \times \frac{1}{B(a, b)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}\)</span> <br></p>
 <hr />
 <p><br></p>
+</div>
 </div>
 <div id="task-2.2.1-proof-of-bayes-rule-w2-discrete-events" class="section level2">
 <h2>Task 2.2.1 (Proof of Bayes Rule w/2 Discrete Events)</h2>

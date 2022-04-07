@@ -18,13 +18,32 @@ output:
 
 
 
-## Task 2.2.1 (Proof of Bern-Beta Posterior)
+## Task 2.2.1 - Proof of Bern-Beta Posterior
+
+
+*Adapted from JK's book - page 132 Doing Bayesian Data Analysis:* <br>
+
+If $\theta \sim \operatorname{Beta}(\alpha, \beta)$ and $X \sim \operatorname{Bin}(n, \theta)$, prove that $\theta \mid X \sim \operatorname{Beta}(x+\alpha, n-x+\beta)$ through proof below:  
+
+$p(\theta \mid x) \propto p(\theta) p(x \mid \theta) = \frac{1}{B(\alpha, \beta)} \theta^{\alpha-1}(1-\theta)^{\beta-1}\left(\begin{array}{l}n \\ x\end{array}\right) \theta^{x}(1-\theta)^{n-x}$  
+
+
+#### Note Bayes' rule
+$\underbrace{p(\theta \mid x)}_{Posterior} \propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid \theta)}_{Lik.} = \frac{p(z, N \mid \theta) p(\theta)}{p(z, N)} = p(\theta \mid z, N)$ <br>  
+
+#### Define Bernoulli and beta distributions
+$=\underbrace{\theta^{z}(1-\theta)^{(N-z)}}_{Bernoulli \ Lik.} \underbrace{\frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a, b)}}_{Beta \ Prior} / p(z, N)$ <br>  
+
+#### Rearrange factors
+$=\frac{1}{B(a, b) p(z, N)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}$ <br>  
+$=\frac{1}{p(z, N)} \times \frac{1}{B(a, b)} \theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)}$ <br>
+
 
 ---
 <br>
 
 
-## Task 2.2.1 (Proof of Bayes Rule w/2 Discrete Events)
+## Task 2.2.1 - Proof of Bayes Rule w/2 Discrete Events
 
 Prove Bayes Rule for the case of two discrete events: $p(A \mid B)=\frac{p(A) p(B \mid A)}{p(B)}$, assuming: $p(A \mid B)=\frac{p(A \cap B)}{p(B)}$
 
