@@ -57,7 +57,10 @@ myPoisPlot <- function(x, lambdaValue) {
 
 myPoisPlot(x=0:30, lambdaValue=4)
 ```
+
+
 The following is for the case where Y∼N(μ=6,σ=10)
+* Normally distributed with mean of 6 and standard deviation of 10
 
 ```{r 2.1.4_Assumptions, echo=TRUE}
 mu    = 6
@@ -360,6 +363,8 @@ where $\alpha_{i, j}$ is the probability of accepting state $j$ given that the s
 * Make a DAG using the doodle bug editor in `OpenBUGS` for the simple linear regression model.
 ![](openBugsSLR.png){ width=60% }
 
+### Check model in OpenBUGS, then use pretty print and place the code in model below
+
 ```{r jagsModel, echo=TRUE, message=FALSE, warning=FALSE}
 require(rjags)               # Must have previously installed package rjags.
 
@@ -430,11 +435,12 @@ head(df)
 * add the estimating line from the point estimates you found from the Bayesian model.
 
 ```{r mcmcPlot}
-beta0  = su$statistics[,'Mean']['beta0']
-beta1  = su$statistics[,'Mean']['beta1']
+beta0  = su$statistics[,'Mean']['beta0'] # Get the slope     from the summary estimates
+beta1  = su$statistics[,'Mean']['beta1'] # Get the intercept from the summary estimates
 
 require(ggplot2)
-# This code needs to be changed to take the estimating intercept and slope
+
+# Plot the slope and intercept (from MCMC estimates) over the original data
 ggplot(df, aes(x=x,y=y)) + 
   
   # Add points from the original dataset
