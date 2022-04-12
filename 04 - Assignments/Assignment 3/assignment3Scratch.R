@@ -73,3 +73,34 @@ lines( densCurve$x , densCurve$y , type="l" , lwd=2.5 , col='darkseagreen4' , bt
 
 
 graphics.off() # This closes all of R's graphics windows.
+
+
+# ==============================================================================
+# TASK 2
+# ==============================================================================
+
+y_s1 = c(1,0,0,0); paste('Proportion of Heads for y[s[1]]:', sum(y_s1) / sum(y_s1>=0)) # for y_s1
+y_s2 = c(1,1,0,0); paste('Proportion of Heads for y[s[2]]:', sum(y_s2) / sum(y_s2>=0)) # for y_s2
+y_s3 = c(1,1,0,0); paste('Proportion of Heads for y[s[3]]:', sum(y_s3) / sum(y_s3>=0)) # for y_s3
+y_s4 = c(1,1,1,0); paste('Proportion of Heads for y[s[4]]:', sum(y_s4) / sum(y_s4>=0)) # for y_s4
+
+# Function to estimate the liklihood from the MLE
+likFromMLE <- function(N, z, omega, kappa, theta) {
+  alpha = omega * (kappa-2) + 1 
+  beta = (1-omega) * (kappa-2) + 1
+  mleProb = theta^z * (1-theta)^(N-z) * dbeta(theta, alpha, beta)
+  lik = prod(mleProb) 
+  
+  return(lik) # Return the likelihood
+}
+
+# Inputs 
+N     = rep(4,4) 
+omega = 0.5 
+kappa = 2 
+theta = c(0.25, 0.50, 0.50, 0.75) 
+z = sum(y_s1, y_s2, y_s3, y_s4) # Sum of the heads
+
+
+# Call the function
+likFromMLE(N, z, omega, kappa, theta)

@@ -134,3 +134,97 @@ iii. `main = 'Daniel Carpenter'`
 ## `i` Lines()
 * You can use `showCurve = TRUE` but it does not plot both the histogram and the line, so I manually added the line.
 
+
+
+---
+
+<br>
+
+# Task 2 Shrinkage
+
+## `a` Latex Explanation
+* Understand shrinkage (consquence to heirarchical model).
+* Use the MLE approach
+* Goal is to find the values of the parameters in the formula that will maximize the probability of the data.
+
+$$
+\begin{aligned}
+&p\left(\left\{y_{i \mid s}\right\} \mid\left\{\theta_{s}\right\}, \omega, \kappa\right) \\
+&=\prod_{s} \prod_{i \mid s} p\left(y_{i \mid s} \mid \theta_{s}, \omega, \kappa\right) \\
+&=\prod_{s} \prod_{i \mid s} \operatorname{bern}\left(y_{i \mid s} \mid \theta_{s}\right) \cdot \operatorname{beta}\left(\theta_{s} \mid \omega(\kappa-2)+1,(1-\omega)(\kappa-2)+1\right)
+\end{aligned}
+$$
+
+## `b` Proportions of Heads
+```{r propHead}
+y_s1 = c(1,0,0,0); paste('Proportion of Heads for y[s[1]]:', sum(y_s1) / sum(y_s1>=0)) # for y_s1
+y_s2 = c(1,1,0,0); paste('Proportion of Heads for y[s[2]]:', sum(y_s2) / sum(y_s2>=0)) # for y_s2
+y_s3 = c(1,1,0,0); paste('Proportion of Heads for y[s[3]]:', sum(y_s3) / sum(y_s3>=0)) # for y_s3
+y_s4 = c(1,1,1,0); paste('Proportion of Heads for y[s[4]]:', sum(y_s4) / sum(y_s4>=0)) # for y_s4
+```
+
+## `c-e` Shrinkage Param. Set 1
+```{r likFun}
+# Function to estimate the liklihood from the MLE
+likFromMLE <- function(N, z, omega, kappa, theta) {
+  alpha = omega * (kappa-2) + 1 
+  beta = (1-omega) * (kappa-2) + 1
+  mleProb = theta^z * (1-theta)^(N-z) * dbeta(theta, alpha, beta)
+  lik = prod(mleProb) 
+  
+  # Create a plot
+  plot(x=seq(1/length(theta),1,1/length(theta)), y=dbeta(theta, alpha, beta), 
+       main = 'Beta in Likelihood Function - Daniel Carpenter', 
+       xlab=expression(theta),
+       type = "b", pch = 19, col = 'steelblue3')
+  
+  paste('Likelihood Estimate:', lik)
+  return(lik) # Return the likelihood
+}
+```
+> Likelihood when 𝜔=0.5, 𝜅=2, 𝜃1=0.25, 𝜃2=0.50, 𝜃3=0.50, and 𝜃4=0.75?  
+
+* `c` See output below  
+* `d` These parameters do not since it is uniform  
+* `e` The shape is flat (see output below)  
+
+```{r 2c_e}
+# Inputs 
+N     = rep(4,4) 
+omega = 0.5 
+kappa = 2 
+theta = c(0.25, 0.50, 0.50, 0.75) 
+z = sum(y_s1, y_s2, y_s3, y_s4) # Sum of the heads
+
+# Call the function
+likFromMLE(N, z, omega, kappa, theta)
+```
+
+## `f`-`i` Shrinkage Param. Set 2
+> Likelihood when 𝜔=0.5, 𝜅=2, 𝜃1=0.35, 𝜃2=0.50, 𝜃3=0.50, and 𝜃4=0.65?  
+
+* `c` See output below  
+* `d` These parameters do increase the likelihood (see the summary distribution below compared to the previous problem)
+* `e` The shape is curved (see output below)  
+
+```{r 2f_i}
+# Inputs 
+N     = rep(4,4) 
+omega = 0.5 
+kappa = 20 
+theta = c(0.35, 0.50, 0.50, 0.65) 
+z = sum(y_s1, y_s2, y_s3, y_s4) # Sum of the heads
+
+# Call the function
+likFromMLE(N, z, omega, kappa, theta)
+```
+
+## `j` Shrinkage affect on Liklihood
+> What does shrinkage do to likelihood?
+
+* Shrinkage occurs because the estimate of each low-level parameter is influenced from two
+sources:
+1. the subset of data that are directly dependent on the low-level parameter, and
+2. the higher-level parameters on which the low-level parameter depends.
+
+* Shrinkage improves the likelihood estimate drastically if the parameters in the formula do so.
