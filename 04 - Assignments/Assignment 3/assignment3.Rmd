@@ -236,34 +236,72 @@ sources:
 
 # Task 3 Fair Coins
 
-## `a` What is the two-tailed p value?
+## `a` What is the two-tailed p value?  
+The two-tailed p-value is simply two times the one-tailed `p` value. See one-tailed description in part `c`
 
-## `b` Explain each line of the script
-```{r 1b}
+### Fix `N`:  
+$$
+p(z \mid N, \theta)=
+\left(\begin{array}{c}  N \\ z  \end{array}\right) 
+\theta^{z}(1-\theta)^{N-z}
+$$
+
+
+```{r 1a}
 N = 45 ; z = 3 ; theta = 1/6 
 
 lowTailZ = 0:z
+paste('Two tailed p-value:', 2 * sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) ) )
+```
+
+
+## `b` Explain each line of the script (one-tail)
+```{r 1b, eval=FALSE}
+N = 45 ; z = 3 ; theta = 1/6 # Inputs as defined in problem 3 description
+
+lowTailZ = 0:z # Create a vector from 0 to z (3) to represent the successes
+
+# Calculates the probability of getting z success out of N trials is
 sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) )
 ```
 
+
 ## `c` Why does it consider the low tail and not the high tail?
+* Since $(z / N)_{\text {actual }} < E\left[(z / N)_{\theta, I}\right]$, we use lower tail. 
+* If $(z / N)_{\text {actual }} > E\left[(z / N)_{\theta, I}\right]$, then we would use the upper tail.
 
 ## `d` Explain the meaning of the final result.
-```{r 1d}
-# Call function
-```
-
+* The final results gives the probability `p` of getting `z` heads out of `N` flips
+* I.e., the probability `p` of getting `z` heads out of `N` flips is 0.04460167
+* Above result is for a one tailed experiment
 
 ## `e`-`f`
 
-### Explain each line
-
+### Explain the code
 ```{r 1e}
 sum( (lowTailZ/N) * choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) )
 ```
 
-### Explain the results
-```{r 1f}
-# Call function
-```
+### Fix `z`:  
+$$
+\begin{aligned}
+p(N \mid z, \theta) &=\left(\begin{array}{c}
+N-1 \\
+z-1
+\end{array}\right) \theta^{z-1}(1-\theta)^{N-z} \cdot \theta \\
+&=\left(\begin{array}{c}
+N-1 \\
+z-1
+\end{array}\right) \theta^{z}(1-\theta)^{N-z} \\
+&=\frac{z}{N}\left(\begin{array}{c}
+N \\
+z
+\end{array}\right) \theta^{z}(1-\theta)^{N-z}
+\end{aligned}
+$$
 
+* `z` is fixed in advance and `N` is the random variable. 
+* Interpret as the probability of taking `N` flips to get `z` heads
+
+### Explain the results
+the probability `p` of getting `z` heads out of `N` flips is 0.002605228
