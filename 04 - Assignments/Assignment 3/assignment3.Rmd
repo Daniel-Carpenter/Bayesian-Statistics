@@ -384,7 +384,9 @@ for ( theta in seq( 0.005, 0.020, 0.001) ) {
 # Task 5
 
 `a` Explain Graph
+
 * Overview: start with the actual or idealized data and then use Bayes’ rule to generate the corresponding distribution on parameter values
+
 1. Real or hypothetical world creates an actual or an idealized data set
 2. Bayes’ rule is the applied, which creates a posterior distribution
 3. Posterior distribution is used as the hypothetical distribution of parameter values for power analysis
