@@ -127,7 +127,6 @@ theFill   = c('darkseagreen', 'skyblue')
 theBorder = c('darkseagreen4', 'skyblue4')
 
 # c ----------------------------------------------------------------------------
-
 # Create a bar plot given the output of a myprop function
 createBarPlot <- function(myprop) {
   
@@ -135,7 +134,7 @@ createBarPlot <- function(myprop) {
   barplot(table(myprop), 
           main = 'Proposal Distribution from myprop(n,p)\nHead=0.6, Tail=0.3 | Daniel Carpenter',
           col  = theFill, border = theBorder,
-          xlab = 'Head=0.6, Tail=0.3', ylab = 'Frequency')
+          xlab = expression(theta), ylab = 'Frequency')
   
   # Create the legend
   legend('topleft', legend=c("Heads", "Tails"), 
