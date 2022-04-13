@@ -101,6 +101,5 @@ kappa = 2
 theta = c(0.25, 0.50, 0.50, 0.75) 
 z = sum(y_s1, y_s2, y_s3, y_s4) # Sum of the heads
 
-
 # Call the function
 likFromMLE(N, z, omega, kappa, theta)

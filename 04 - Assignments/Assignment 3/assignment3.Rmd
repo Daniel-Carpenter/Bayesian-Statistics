@@ -313,34 +313,83 @@ the probability `p` of getting `z` heads out of `N` flips is 0.002605228
 
 
 # Task 4 Dicotomous Outcome
-> COntinuing from `Task 3` with a dichotomous outcome  with `N` = 45 and `z` = 3. 
+> Continuing from `Task 3` with a dichotomous outcome  with `N` = 45 and `z` = 3. 
 
 ## `a` Stop when `N` = 45. What is the 95% CI?
 ```{r 4a}
-# Low Tail
-for ( theta in seq( 0.170 , 0.190 , 0.001) ) { 
-  show( 
-    c( 
+N = 45 # Number of Trials
+z = 3  # Number of Successes
+
+# Low Tail - iterate over values of theta from 0.170 to 0.190 in increments of 0.001
+for ( theta in seq( 0.170 , 0.190 , 0.001) ) {
+  
+  show( # Show the list object for each value of theta
+    c( # Create a list including value of theta and the 2-tail probability
+      
+      # Get the two-tail probability using the LOWER tail estimate. Multuply by 2 for 2 tail
+      # Interpret as the probability p of getting z heads for a given value of theta
       theta , 2*sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ))
     )
   ) 
 }
 
-# High Tail
 highTailZ = z:N 
 
+# High Tail - iterate over values of theta from 0.005 to 0.020 in increments of 0.001
 for ( theta in seq( 0.005 , 0.020 , 0.001) ) { 
-  show( 
-    c( 
+  
+  show( # Show the list object for each value of theta
+    c( # Create a list including value of theta and the 2-tail probability
+      
+      # Get the two-tail probability using the UPPER tail estimate. Multuply by 2 for 2 tail
+      # Interpret as the probability p of getting z heads for a given value of theta
       theta , 2*sum( choose(N,highTailZ) * theta^highTailZ * (1-theta)^(N-highTailZ) ) 
     )
   ) 
 }
 ```
 
-## `b` Explain above code
+* We can be 95% confident that values of theta will fall between $0.0130$ and $0.1830$
 
+## `b` Explain above code
+* See comments above for details and interpretation
+* 
 ## `c` Stop when `z` = 3, what is the 95% CI?
+* Note altered the code by adding `(lowTailZ/N) *` and `(highTailZ/N) *`
+```{r 4c}
+# Low Tail - iterate over values of theta from 0.170 to 0.190 in increments of 0.001
+for ( theta in seq( 0.170 , 0.190 , 0.001) ) {
+  
+  show( # Show the list object for each value of theta
+    c( # Create a list including value of theta and the 2-tail probability
+      
+      # Get the two-tail probability using the LOWER tail estimate. Multuply by 2 for 2 tail
+      # Interpret as the probability p of getting z heads for a given value of theta
+      theta , 2*sum( (lowTailZ/N) * choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ))
+      #               ^^^^^^^^^^^^^
+    )
+  ) 
+}
+
+highTailZ = z:N 
+
+# High Tail - iterate over values of theta from 0.005 to 0.020 in increments of 0.001
+for ( theta in seq( 0.005 , 0.020 , 0.001) ) { 
+  
+  show( # Show the list object for each value of theta
+    c( # Create a list including value of theta and the 2-tail probability
+      
+      # Get the two-tail probability using the UPPER tail estimate. Multuply by 2 for 2 tail
+      # Interpret as the probability p of getting z heads for a given value of theta
+      theta , 2*sum( (highTailZ/N) * choose(N,highTailZ) * theta^highTailZ * (1-theta)^(N-highTailZ) ) 
+      #               ^^^^^^^^^^^^^^
+    )
+  ) 
+}
+```
 
 ## `d` Is the CI the same as for stopping when N = 45? 
-Hint: Modify the R script of the previous part for use with stopping at z, like the second part of the previous question.
+* No it is not. 
+* All values shown fall within the 95% confidence interval. I.e., $\forall \ p \leq 0.05$
+
+
