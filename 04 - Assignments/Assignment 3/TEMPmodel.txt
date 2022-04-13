@@ -1,10 +1,12 @@
 
   model {
-    for ( i in 1:Ntotal ) {
-      y[i] ~ dbern( theta[s[i]] )
+    for ( s in 1:Nsubj ) {
+      z[s] ~ dbin( theta[s] , N[s] )
+      theta[s] ~ dbeta( omega*(kappa-2)+1 , (1-omega)*(kappa-2)+1 ) 
     }
-    for ( sIdx in 1:Nsubj ) {
-      theta[sIdx] ~ dbeta( 2 , 2 ) # N.B.: 2,2 prior; change as appropriate.
-    }
+    omega ~ dbeta( 1 , 1 )
+    kappa <- kappaMinusTwo + 2
+    #kappaMinusTwo ~ dgamma( 0.01 , 0.01 )  # mean=1 , sd=10 (generic vague)
+    kappaMinusTwo ~ dgamma( 1.105125 , 0.1051249 )  # mode=1 , sd=10 
   }
   
