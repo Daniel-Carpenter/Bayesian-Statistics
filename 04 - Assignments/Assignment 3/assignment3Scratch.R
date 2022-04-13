@@ -103,3 +103,59 @@ z = sum(y_s1, y_s2, y_s3, y_s4) # Sum of the heads
 
 # Call the function
 likFromMLE(N, z, omega, kappa, theta)
+
+
+# ==============================================================================
+# TASK 6
+# ==============================================================================
+
+# a ----------------------------------------------------------------------------
+
+myprop <- function(n, p){ 
+  out <- sample(c(0.3, 0.6), size = n,
+                replace = TRUE, prob = c(p, 1-p)) 
+  return(out)
+} 
+
+# b ----------------------------------------------------------------------------
+
+myprop(n=10,  p=0.5) 
+myprop(n=20,  p=0.1)
+myprop(n=100, p=0.4)
+
+theFill   = c('darkseagreen', 'skyblue')
+theBorder = c('darkseagreen4', 'skyblue4')
+
+# c ----------------------------------------------------------------------------
+
+# Create a bar plot given the output of a myprop function
+createBarPlot <- function(myprop) {
+  
+  # Create the barplot
+  barplot(table(myprop), 
+          main = 'Proposal Distribution from myprop(n,p)\nHead=0.6, Tail=0.3 | Daniel Carpenter',
+          col  = theFill, border = theBorder,
+          xlab = 'Head=0.6, Tail=0.3', ylab = 'Frequency')
+  
+  # Create the legend
+  legend('topleft', legend=c("Heads", "Tails"), 
+         bty = 1, fill=theFill, border=theBorder,box.col = 'grey90')
+}
+
+createBarPlot(myprop(n=1000, p=0.3))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
