@@ -236,8 +236,8 @@ sources:
 
 # Task 3 Fair Coins
 
-## `a` What is the two-tailed p value?  
-The two-tailed p-value is simply two times the one-tailed `p` value. See one-tailed description in part `c`
+## `a-b` Two-tailed p value and Code Expanation?  
+Generally, the two-tailed p-value is simply two times the one-tailed `p` value. See one-tailed description in part `c`
 
 ### Fix `N`:  
 $$
@@ -248,64 +248,47 @@ $$
 
 
 ```{r 1a}
-N = 45 ; z = 3 ; theta = 1/6 
+N = 45 ; z = 3 ; theta = 1/6  # Data as defined in problem 3 description
 
-lowTailZ = 0:z
+lowTailZ = 0:z # Consider the low tail because z/N = 3/45 is less than expected p=1/6:
+
+# Calculates the cumulative lower tail probability of getting z success out of N trials is
+# Multiply by two to get the two-tail p value
 paste('Two tailed p-value:', 2 * sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) ) )
-```
-
-
-## `b` Explain each line of the script (one-tail)
-```{r 1b, eval=FALSE}
-N = 45 ; z = 3 ; theta = 1/6 # Inputs as defined in problem 3 description
-
-lowTailZ = 0:z # Create a vector from 0 to z (3) to represent the successes
-
-# Calculates the probability of getting z success out of N trials is
-sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) )
 ```
 
 
 ## `c` Why does it consider the low tail and not the high tail?
 * Since $(z / N)_{\text {actual }} < E\left[(z / N)_{\theta, I}\right]$, we use lower tail. 
 * If $(z / N)_{\text {actual }} > E\left[(z / N)_{\theta, I}\right]$, then we would use the upper tail.
+* E.g., $(z/N = 3/45) \leq (p=1/6)$
+
 
 ## `d` Explain the meaning of the final result.
 * The final results gives the probability `p` of getting `z` heads out of `N` flips
-* I.e., the probability `p` of getting `z` heads out of `N` flips is 0.04460167
-* Above result is for a one tailed experiment
+* Two-tailed p-value is $\geq 0.05$, so we should not reject the hypothesis that $\theta = 1/6$
 
 ## `e`-`f`
 
 ### Explain the code
 ```{r 1e}
 sum( (lowTailZ/N) * choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) )
+
+
+# The cumulative lower tail probability is a negative binomial, 
+# however, the tail is over n >= N, so we compute as  1-p(n<N)
+complN = z:(N-1)
+complP = sum( (z/complN) * choose(complN,z) * theta^z * (1-theta)^(complN-z) )
+lowTailP = 1-complP
+
+# Two-tail probability:
+TwoTailP = 2 * lowTailP
+show( TwoTailP )
 ```
 
-### Fix `z`:  
-$$
-\begin{aligned}
-p(N \mid z, \theta) &=\left(\begin{array}{c}
-N-1 \\
-z-1
-\end{array}\right) \theta^{z-1}(1-\theta)^{N-z} \cdot \theta \\
-&=\left(\begin{array}{c}
-N-1 \\
-z-1
-\end{array}\right) \theta^{z}(1-\theta)^{N-z} \\
-&=\frac{z}{N}\left(\begin{array}{c}
-N \\
-z
-\end{array}\right) \theta^{z}(1-\theta)^{N-z}
-\end{aligned}
-$$
-
-* `z` is fixed in advance and `N` is the random variable. 
-* Interpret as the probability of taking `N` flips to get `z` heads
-
 ### Explain the results
-the probability `p` of getting `z` heads out of `N` flips is 0.002605228
-
+* two-tailed p value is $< 0.05$, so reject the hypothesis that $\theta = 1/6$. 
+* Difference in part A due to different stopping intention when establishing the sampling distribution.
 
 ---
 
@@ -349,7 +332,7 @@ for ( theta in seq( 0.005 , 0.020 , 0.001) ) {
 }
 ```
 
-* We can be 95% confident that values of theta will fall between $0.0130$ and $0.1830$
+* We can be 95% confident that values of theta will fall between $0.014$ and $0.182$
 
 ## `b` Explain above code
 * See comments above for details and interpretation
@@ -357,21 +340,25 @@ for ( theta in seq( 0.005 , 0.020 , 0.001) ) {
 ## `c` Stop when `z` = 3, what is the 95% CI?
 * Note altered the code by adding `(lowTailZ/N) *` and `(highTailZ/N) *`
 ```{r 4c}
-# Low Tail - iterate over values of theta from 0.170 to 0.190 in increments of 0.001
-for ( theta in seq( 0.170 , 0.190 , 0.001) ) {
+# For candidate theta values GREATER than z/N observed, compute the LEFT-tail p-value:
+complN = z:(N-1)
+
+# Low Tail - iterate over values of theta
+for ( theta in seq( 0.150 , 0.160 , 0.001) ) {
   
   show( # Show the list object for each value of theta
     c( # Create a list including value of theta and the 2-tail probability
       
       # Get the two-tail probability using the LOWER tail estimate. Multuply by 2 for 2 tail
       # Interpret as the probability p of getting z heads for a given value of theta
-      theta , 2*sum( (lowTailZ/N) * choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ))
-      #               ^^^^^^^^^^^^^
+      theta , 2*(1-sum( (z/complN) * choose(complN,z) * theta^z * (1-theta)^(complN-z) ) )
+
     )
   ) 
 }
 
-highTailZ = z:N 
+# For candidate theta values LESS than z/N observed, compute the RIGHT-tail p-value:
+highTailN = z:N # Notice N not N-1
 
 # High Tail - iterate over values of theta from 0.005 to 0.020 in increments of 0.001
 for ( theta in seq( 0.005 , 0.020 , 0.001) ) { 
@@ -381,15 +368,13 @@ for ( theta in seq( 0.005 , 0.020 , 0.001) ) {
       
       # Get the two-tail probability using the UPPER tail estimate. Multuply by 2 for 2 tail
       # Interpret as the probability p of getting z heads for a given value of theta
-      theta , 2*sum( (highTailZ/N) * choose(N,highTailZ) * theta^highTailZ * (1-theta)^(N-highTailZ) ) 
-      #               ^^^^^^^^^^^^^^
+      theta , 2*sum((z/highTailN) * choose(highTailN,z) * theta^z * (1-theta)^(highTailN-z)) 
     )
   ) 
 }
 ```
 
 ## `d` Is the CI the same as for stopping when N = 45? 
-* No it is not. 
-* All values shown fall within the 95% confidence interval. I.e., $\forall \ p \leq 0.05$
+* When the stopping at fixed z, the confidence interval is from $0.014$ to $0.154$
 
 
