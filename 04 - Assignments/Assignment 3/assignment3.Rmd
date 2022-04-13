@@ -18,8 +18,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
 	echo = TRUE,
-	message = FALSE,
-	warning = FALSE
+	message=FALSE,
+	warning=FALSE
 )
 ```
 
@@ -109,7 +109,7 @@ plotMCMC( mcmcCoda, data=myData, compVal=NULL, rope=c(0.45,0.55),
 # Add the histogram
 plotPost(mcmcCoda[,'theta[1]'], xlim = c(0,1), xlab= expression(theta[1]),
          main = 'Daniel Carpenter', col = 'darkseagreen3',
-                      showCurve = FALSE)
+                      showCurve=FALSE)
 
 # Add the density line
 paramSampleVec = as.matrix(mcmcCoda[,'theta[1]'])
@@ -387,37 +387,42 @@ for ( theta in seq( 0.005, 0.020, 0.001) ) {
 * Overview: start with the actual or idealized data and then use Bayes’ rule to generate the corresponding distribution on parameter values
 1. Real or hypothetical world creates an actual or an idealized data set
 2. Bayes’ rule is the applied, which creates a posterior distribution
-3. Posterior distribution is used as the hypothetical distribution of parameter values for
-power analysis
+3. Posterior distribution is used as the hypothetical distribution of parameter values for power analysis
 
-Intrepet code: 
+**Interpret code:**  
+
+* Some `#` comments copied and pasted, ***but added own comments to ensure intepretation is right***.   
+* Note `eval=FALSE`:    
+
 ## `a`
-```{r, eval = false}
-# Load the functions genMCMC, smryMCMC, and plotMCMC:
-# (This also sources DBDA2E-utilities.R)
+```{r, eval=FALSE}
+# Get key functions: genMCMC, smryMCMC, and plotMCMC, and get DBDA2E-utilities.R
 source("Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa.R")
 ```
 
 ## `b`
-```{r, eval = false}
-# Specify idealized hypothesis:
+```{r, eval=FALSE}
+# The idealized hypothesis. This could be anecdotal evidence
 idealGroupMean = 0.65
 idealGroupSD   = 0.07
 
+# Specify how much (idealized) data we have to support that hypothesis. 
+# The more data, the more confidence in the hypothesis
 idealNsubj       = 100  # more subjects => higher confidence in hypothesis
 idealNtrlPerSubj = 100  # more trials => higher confidence in hypothesis
 ```
 
 ## `c`
-```{r, eval = false}
+```{r, eval=FALSE}
+# goal is to generate data that supports the claims above:
+
 # Generate random theta values for idealized subjects:
 betaAB = betaABfromMeanSD( idealGroupMean, idealGroupSD )
 theta = rbeta( idealNsubj, betaAB$a, betaAB$b )
-
 ```
 
 ## `d`
-```{r, eval = false}
+```{r, eval=FALSE}
 # Transform the theta values to exactly match idealized mean, SD:
 theta = ((theta-mean(theta))/sd(theta))*idealGroupSD + idealGroupMean
 theta[ theta >= 0.999 ] = 0.999 # must be between 0 and 1
@@ -428,7 +433,7 @@ z = round( theta*idealNtrlPerSubj )
 ```
 
 ## `e`
-```{r, eval = false}
+```{r, eval=FALSE}
 # Convert to data format needed by JAGS function:
 # Set up an empty matrix for holding the data:
 dataMat=matrix(0,ncol=2,nrow=0,dimnames=list(NULL,c("y","s")))
@@ -445,14 +450,27 @@ for ( sIdx in 1:idealNsubj ) {
 ```
 
 ## `f`
-```{r, eval = false}
-# Make it a data frame:
+```{r, eval=FALSE}
+# Convert to a data frame:
 idealDatFrm = data.frame(dataMat)
 
 # Run Bayesian analysis on idealized data:
-mcmcCoda = genMCMC( data=idealDatFrm, saveName=NULL, numSavedSteps=2000, thinSteps=20 )
+## Trying to create a set of representative parameter values for power analysis
+## Want each successive step of joint parameter values to be clearly distinct,
+## I.e., we want chains with very small autocorrelation. So thin the chains
+## I.e., only generate as many steps in the chain as need by power analysis
+## **we now have a large set of representative parameter values for conducting a power analysis
 
-# Convert coda object to matrix for convenience:
+# Actual output from running baysiean analysis: 
+## creates a posterior distribution on parameters ω and κ (as well as all the individual θs)
+
+mcmcCoda = genMCMC(data=idealDatFrm, 
+                   saveName=NULL, 
+                   numSavedSteps=2000, 
+                   thinSteps=20 
+                   )
+
+# Convert coda object to matrix for handling:
 mcmcMat = as.matrix(mcmcCoda)
 ```
 
