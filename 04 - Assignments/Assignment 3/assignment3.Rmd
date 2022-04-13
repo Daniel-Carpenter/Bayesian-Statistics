@@ -383,7 +383,7 @@ for ( theta in seq( 0.005, 0.020, 0.001) ) {
 
 # Task 5
 
-`a` Explain Graph
+## `a` Explain Graph
 
 * Overview: start with the actual or idealized data and then use Bayes’ rule to generate the corresponding distribution on parameter values
 
@@ -396,14 +396,11 @@ for ( theta in seq( 0.005, 0.020, 0.001) ) {
 * Some `#` comments copied and pasted, ***but added own comments to ensure intepretation is right***.   
 * Note `eval=FALSE`:    
 
-## `a`
+## `b`
 ```{r, eval=FALSE}
 # Get key functions: genMCMC, smryMCMC, and plotMCMC, and get DBDA2E-utilities.R
 source("Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa.R")
-```
 
-## `b`
-```{r, eval=FALSE}
 # The idealized hypothesis. This could be anecdotal evidence
 idealGroupMean = 0.65
 idealGroupSD   = 0.07
