@@ -228,3 +228,42 @@ sources:
 2. the higher-level parameters on which the low-level parameter depends.
 
 * Shrinkage improves the likelihood estimate drastically if the parameters in the formula do so.
+
+
+---
+
+<br>
+
+# Task 3 Fair Coins
+
+## `a` What is the two-tailed p value?
+
+## `b` Explain each line of the script
+```{r 1b}
+N = 45 ; z = 3 ; theta = 1/6 
+
+lowTailZ = 0:z
+sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) )
+```
+
+## `c` Why does it consider the low tail and not the high tail?
+
+## `d` Explain the meaning of the final result.
+```{r 1d}
+# Call function
+```
+
+
+## `e`-`f`
+
+### Explain each line
+
+```{r 1e}
+sum( (lowTailZ/N) * choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ) )
+```
+
+### Explain the results
+```{r 1f}
+# Call function
+```
+
