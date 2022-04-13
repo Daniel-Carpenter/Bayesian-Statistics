@@ -305,3 +305,42 @@ $$
 
 ### Explain the results
 the probability `p` of getting `z` heads out of `N` flips is 0.002605228
+
+
+---
+
+<br>
+
+
+# Task 4 Dicotomous Outcome
+> COntinuing from `Task 3` with a dichotomous outcome  with `N` = 45 and `z` = 3. 
+
+## `a` Stop when `N` = 45. What is the 95% CI?
+```{r 4a}
+# Low Tail
+for ( theta in seq( 0.170 , 0.190 , 0.001) ) { 
+  show( 
+    c( 
+      theta , 2*sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ))
+    )
+  ) 
+}
+
+# High Tail
+highTailZ = z:N 
+
+for ( theta in seq( 0.005 , 0.020 , 0.001) ) { 
+  show( 
+    c( 
+      theta , 2*sum( choose(N,highTailZ) * theta^highTailZ * (1-theta)^(N-highTailZ) ) 
+    )
+  ) 
+}
+```
+
+## `b` Explain above code
+
+## `c` Stop when `z` = 3, what is the 95% CI?
+
+## `d` Is the CI the same as for stopping when N = 45? 
+Hint: Modify the R script of the previous part for use with stopping at z, like the second part of the previous question.
