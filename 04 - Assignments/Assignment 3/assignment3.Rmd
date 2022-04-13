@@ -31,10 +31,10 @@ knitr::opts_chunk$set(
 
 ```{r}
 # The data input
-y = c( rep(1,9),rep(0,3) , rep(1,45),rep(0,15) , rep(1,3),rep(0,9) ) 
-s = c( rep("A",12) , rep("B",60) , rep("C",12) )
+y = c( rep(1,9),rep(0,3), rep(1,45),rep(0,15), rep(1,3),rep(0,9) ) 
+s = c( rep("A",12), rep("B",60), rep("C",12) )
 fileName = "Ass3.1.csv"
-write.csv( data.frame(y=y,s=s) , file=fileName , row.names=FALSE )
+write.csv( data.frame(y=y,s=s), file=fileName, row.names=FALSE )
 
 
 # Example for Jags-Ydich-XnomSsubj-Mbernbeta.R 
@@ -68,14 +68,14 @@ graphFileType = "png"
 
 #------------------------------------------------------------------------------- 
 # Generate the MCMC chain:
-mcmcCoda = genMCMC( data=myData , numSavedSteps=50000 , saveName=fileNameRoot )
+mcmcCoda = genMCMC( data=myData, numSavedSteps=50000, saveName=fileNameRoot )
 
 #------------------------------------------------------------------------------- 
 # Display diagnostics of chain, for specified parameters:
 parameterNames = varnames(mcmcCoda) # get all parameter names
 for ( parName in parameterNames ) {
-  diagMCMC( codaObject=mcmcCoda , parName=parName , 
-            saveName=fileNameRoot , saveType=graphFileType )
+  diagMCMC( codaObject=mcmcCoda, parName=parName, 
+            saveName=fileNameRoot, saveType=graphFileType )
 }
 
 # Ensure that the graphs of theta[1] and [2] are shown
@@ -84,14 +84,14 @@ knitr::include_graphics(paste0(fileNameRoot, 'Diagtheta[2].', graphFileType), dp
 
 #------------------------------------------------------------------------------- 
 # Get summary statistics of chain:
-summaryInfo = smryMCMC( mcmcCoda , compVal=NULL , rope=c(0.45,0.55) ,
-                        compValDiff=0.0 , ropeDiff = c(-0.05,0.05) ,
+summaryInfo = smryMCMC( mcmcCoda, compVal=NULL, rope=c(0.45,0.55),
+                        compValDiff=0.0, ropeDiff = c(-0.05,0.05),
                         saveName=fileNameRoot )
 
 # Display posterior information:
-plotMCMC( mcmcCoda , data=myData , compVal=NULL , rope=c(0.45,0.55) ,
-          compValDiff=0.0 , ropeDiff = c(-0.05,0.05) ,
-          saveName=fileNameRoot , saveType=graphFileType )
+plotMCMC( mcmcCoda, data=myData, compVal=NULL, rope=c(0.45,0.55),
+          compValDiff=0.0, ropeDiff = c(-0.05,0.05),
+          saveName=fileNameRoot, saveType=graphFileType )
 ```
 
 
@@ -113,10 +113,10 @@ plotPost(mcmcCoda[,'theta[1]'], xlim = c(0,1), xlab= expression(theta[1]),
 
 # Add the density line
 paramSampleVec = as.matrix(mcmcCoda[,'theta[1]'])
-densCurve = density( paramSampleVec , adjust=2 )
+densCurve = density( paramSampleVec, adjust=2 )
 a = densCurve$x; b = densCurve$y
 
-lines(a, b, type="l" , lwd=2.5 , col='darkseagreen4' , bty="n")
+lines(a, b, type="l", lwd=2.5, col='darkseagreen4', bty="n")
 
 
 graphics.off() # This closes all of R's graphics windows.
@@ -304,14 +304,14 @@ N = 45 # Number of Trials
 z = 3  # Number of Successes
 
 # Low Tail - iterate over values of theta from 0.170 to 0.190 in increments of 0.001
-for ( theta in seq( 0.170 , 0.190 , 0.001) ) {
+for ( theta in seq( 0.170, 0.190, 0.001) ) {
   
   show( # Show the list object for each value of theta
     c( # Create a list including value of theta and the 2-tail probability
       
       # Get the two-tail probability using the LOWER tail estimate. Multuply by 2 for 2 tail
       # Interpret as the probability p of getting z heads for a given value of theta
-      theta , 2*sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ))
+      theta, 2*sum( choose(N,lowTailZ) * theta^lowTailZ * (1-theta)^(N-lowTailZ))
     )
   ) 
 }
@@ -319,14 +319,14 @@ for ( theta in seq( 0.170 , 0.190 , 0.001) ) {
 highTailZ = z:N 
 
 # High Tail - iterate over values of theta from 0.005 to 0.020 in increments of 0.001
-for ( theta in seq( 0.005 , 0.020 , 0.001) ) { 
+for ( theta in seq( 0.005, 0.020, 0.001) ) { 
   
   show( # Show the list object for each value of theta
     c( # Create a list including value of theta and the 2-tail probability
       
       # Get the two-tail probability using the UPPER tail estimate. Multuply by 2 for 2 tail
       # Interpret as the probability p of getting z heads for a given value of theta
-      theta , 2*sum( choose(N,highTailZ) * theta^highTailZ * (1-theta)^(N-highTailZ) ) 
+      theta, 2*sum( choose(N,highTailZ) * theta^highTailZ * (1-theta)^(N-highTailZ) ) 
     )
   ) 
 }
@@ -344,14 +344,14 @@ for ( theta in seq( 0.005 , 0.020 , 0.001) ) {
 complN = z:(N-1)
 
 # Low Tail - iterate over values of theta
-for ( theta in seq( 0.150 , 0.160 , 0.001) ) {
+for ( theta in seq( 0.150, 0.160, 0.001) ) {
   
   show( # Show the list object for each value of theta
     c( # Create a list including value of theta and the 2-tail probability
       
       # Get the two-tail probability using the LOWER tail estimate. Multuply by 2 for 2 tail
       # Interpret as the probability p of getting z heads for a given value of theta
-      theta , 2*(1-sum( (z/complN) * choose(complN,z) * theta^z * (1-theta)^(complN-z) ) )
+      theta, 2*(1-sum( (z/complN) * choose(complN,z) * theta^z * (1-theta)^(complN-z) ) )
 
     )
   ) 
@@ -361,14 +361,14 @@ for ( theta in seq( 0.150 , 0.160 , 0.001) ) {
 highTailN = z:N # Notice N not N-1
 
 # High Tail - iterate over values of theta from 0.005 to 0.020 in increments of 0.001
-for ( theta in seq( 0.005 , 0.020 , 0.001) ) { 
+for ( theta in seq( 0.005, 0.020, 0.001) ) { 
   
   show( # Show the list object for each value of theta
     c( # Create a list including value of theta and the 2-tail probability
       
       # Get the two-tail probability using the UPPER tail estimate. Multuply by 2 for 2 tail
       # Interpret as the probability p of getting z heads for a given value of theta
-      theta , 2*sum((z/highTailN) * choose(highTailN,z) * theta^z * (1-theta)^(highTailN-z)) 
+      theta, 2*sum((z/highTailN) * choose(highTailN,z) * theta^z * (1-theta)^(highTailN-z)) 
     )
   ) 
 }
@@ -377,4 +377,82 @@ for ( theta in seq( 0.005 , 0.020 , 0.001) ) {
 ## `d` Is the CI the same as for stopping when N = 45? 
 * When the stopping at fixed z, the confidence interval is from $0.014$ to $0.154$
 
+---
+
+<br>
+
+# Task 5
+
+`a` Explain Graph
+* Overview: start with the actual or idealized data and then use Bayes’ rule to generate the corresponding distribution on parameter values
+1. Real or hypothetical world creates an actual or an idealized data set
+2. Bayes’ rule is the applied, which creates a posterior distribution
+3. Posterior distribution is used as the hypothetical distribution of parameter values for
+power analysis
+
+Intrepet code: 
+## `a`
+```{r, eval = false}
+# Load the functions genMCMC, smryMCMC, and plotMCMC:
+# (This also sources DBDA2E-utilities.R)
+source("Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa.R")
+```
+
+## `b`
+```{r, eval = false}
+# Specify idealized hypothesis:
+idealGroupMean = 0.65
+idealGroupSD   = 0.07
+
+idealNsubj       = 100  # more subjects => higher confidence in hypothesis
+idealNtrlPerSubj = 100  # more trials => higher confidence in hypothesis
+```
+
+## `c`
+```{r, eval = false}
+# Generate random theta values for idealized subjects:
+betaAB = betaABfromMeanSD( idealGroupMean, idealGroupSD )
+theta = rbeta( idealNsubj, betaAB$a, betaAB$b )
+
+```
+
+## `d`
+```{r, eval = false}
+# Transform the theta values to exactly match idealized mean, SD:
+theta = ((theta-mean(theta))/sd(theta))*idealGroupSD + idealGroupMean
+theta[ theta >= 0.999 ] = 0.999 # must be between 0 and 1
+theta[ theta <= 0.001 ] = 0.001 # must be between 0 and 1
+
+# Generate idealized data very close to theta’s:
+z = round( theta*idealNtrlPerSubj )
+```
+
+## `e`
+```{r, eval = false}
+# Convert to data format needed by JAGS function:
+# Set up an empty matrix for holding the data:
+dataMat=matrix(0,ncol=2,nrow=0,dimnames=list(NULL,c("y","s")))
+
+# For each simulated subject,
+for ( sIdx in 1:idealNsubj ) {
+  
+  # Create vector of 0’s and 1’s matching the z values generated above:
+  yVec = c(rep(1,z[sIdx]),rep(0,idealNtrlPerSubj-z[sIdx]))
+  
+  # Bind the subject data to the bottom of the matrix:
+  dataMat = rbind( dataMat, cbind( yVec, rep(sIdx, idealNtrlPerSubj) ) )
+}
+```
+
+## `f`
+```{r, eval = false}
+# Make it a data frame:
+idealDatFrm = data.frame(dataMat)
+
+# Run Bayesian analysis on idealized data:
+mcmcCoda = genMCMC( data=idealDatFrm, saveName=NULL, numSavedSteps=2000, thinSteps=20 )
+
+# Convert coda object to matrix for convenience:
+mcmcMat = as.matrix(mcmcCoda)
+```
 
