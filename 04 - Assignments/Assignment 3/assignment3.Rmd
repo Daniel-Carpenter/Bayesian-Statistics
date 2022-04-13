@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 ## `a`-`b`
 
-```{r, cache=TRUE}
+```{r}
 # The data input
 y = c( rep(1,9),rep(0,3), rep(1,45),rep(0,15), rep(1,3),rep(0,9) ) 
 s = c( rep("A",12), rep("B",60), rep("C",12) )
@@ -565,3 +565,48 @@ source('Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa-Power-3.R')
 
 ### Question
 * Power estimates  similar last question: high power for `omegaNarrowHDI` and low power for `thetasNarrowHDI`
+
+---
+
+<br>
+
+# Task 6
+
+## `a` Proposal Function `myprop()`
+```{r myprop}
+
+```
+
+
+## `b` Call `myprop()`
+```{r mypropCall}
+
+```
+
+
+## `c` Barplot of `myprop()`
+```{r theBar}
+
+```
+
+
+## `d` Liklihood Latex 
+
+
+## `e` ℎ(𝜃) Beta prior
+
+
+## `f` Acceptance Equation
+
+
+## `g` Create function `mymcmc()`
+```{r mymcmc}
+
+```
+
+
+## `h` Call function `mymcmc()`
+```{r mymcmcCall}
+
+```
+
