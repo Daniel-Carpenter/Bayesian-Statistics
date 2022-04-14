@@ -157,86 +157,163 @@ p = 0.3  # Probability of a success, in this case is outcome of 0.3
 
 # e mymcmc ---------------------------------------------------------------------
 
-coindie<-function(n=1000, prob=0.3, 
-                  h=c(1/4,3/4),E2=c(5,6),
-                  proposedValues, ...){
-  
-  # Initial value uses the proposed values
-  init = proposedValues[2]
-  
-  library(xtable)
-  dieset<-c()
-  dieset[1]<-"E1"
-  die<-function(n=1){
-    sample(1:6,size=n,replace=TRUE)
-  }
+mymcmc <- function(n=10000, h, p=0.5, proposed, ...){
   
   # Function to sample n tosses with head proposed has a probability p
   # proposed 2-values in vector. First value is success, second is failure
-  myprop <- function(n=1, p=prob, proposed=proposedValues){ 
+  myprop <- function(n, p, proposed){ 
     proposalDist <- sample(proposed, size = n,
                            replace = TRUE, prob = c(p, 1-p)) 
     
     return(list('proposalDist' = proposalDist, 'n'=n, 'p'=p))
   }
-  face<-c()
-  alpha<-c()      # holds acceptance probs
+  alpha<-c() # holds transition probs
   alpha[1]<-1
-  post<-c()       # post sample
-  prop<-c()       # vec of proposed states 1s and 2s
-  prop[1]=init    # initial state
+  u<-c() # holds uniform values
+  u[1]<-1
+  post<-c()# post sample
+  prop<-c() # vec of proposed states 1s and 2s
+  prop[1]=proposed[1] # initial state
   post[1]=prop[1]
-  dice<-c()
-  dice[1]<-die()
   
-  # Form the Acceptance Set
   for(i in 2:n){ # starts at 2 because initial value given above
+    # proposal state 
+    prop[i]=myprop(n=1, p=p, proposed=proposed)$proposalDist   
     
-    # Formulate the Proposal
-    prop[i]<-myprop()$proposalDist          
-    
-    # Formulate the Acceptance Set using the Proposal and the Posterior
+    # calculate alpha
+    # notice h[prop[i]] gives the actual value of h
     alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
     
-    dice[i]<-die()
-    ifelse(alpha[i]==1,dieset[i]<-"E1",dieset[i]<-"E2")
-    
-    # is x an element of set y
-    if(alpha[i]==1 | (is.element(dice[i],E2) & alpha[i]!=1)){post[i]<-prop[i]}
+    # to calculate accepting proposal with prob alpha
+    # select a random value from  a uniform (0,1)
+    u[i]=runif(1)
+    if(u[i]<=alpha[i]){post[i]<-prop[i]}
     else{post[i]<-post[i-1]}
-  }  
-  res<-matrix(c(prop,round(alpha,2),dieset,dice,post ),nc=5,nr=n,byrow=FALSE,dimnames=list(1:n,c("proposal","alpha", "E","dice","post")))
+  }
+  res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE)
   sim<-table(post)/n
-  print(sim)
+  # windows only works with a pc
+  # quartz with macs
+  # dev.new(noRStudioGD = TRUE) # or quartz() 
+  
   postexact<-h/sum(h)
   
-  # Colors to reuse  
-  fillColor   = c('darkseagreen1', 'skyblue1')
-  borderColor = c('darkseagreen4', 'skyblue4')
   
-  # Plot the proposal
-  barplot(table(prop)/n,
-          main = 'Proposal', xlab = expression(theta), ylab = 'Probability',
-          col = fillColor, border = borderColor,
-          ...)
+  # PLOTS ======================================================================
+  
+  require(tidyverse)
+  require(ggplot2)
+  
+  # Create a simple theme for reuse
+  myTheme <- theme_minimal() + theme(text = element_text(color = '#666666'),
+                                     panel.grid.major = element_blank())
   
   
-  fillColor   = c('darkseagreen4', 'skyblue3')
+  # Make the iter vector a data frame
+  iterOut <- as.data.frame(res) %>% 
+    mutate(numIterations = row_number()) 
   
-  # Plot the posterior
-  barplot(table(post)/n,
-          main = 'Posterior', xlab = expression(theta), ylab = 'Probability',
-          col = fillColor, border = borderColor,
-          ...)
   
-  return(list(iter=res,sim=sim,postexact=postexact,post=post,xtable=xtable(res,dig=1)) )
+  
+  # Show Proposal  -------------------------------------------------------------
+  propPlot <- ggplot(data.frame(table(prop)/n),
+                     aes(x=prop, y = Freq)) +
+    
+    # COlumn Chart of the post estimated
+    geom_col( fill="lightblue", colour="lightblue4", alpha = 0.5) +
+    
+    # Theme
+    myTheme +
+    
+    # Labels
+    labs(title = 'Proposal', y = "Probability", x = expression(theta) )
+  
+  
+  # Posterior simulation ------------------------------------------------------
+  postPlot <- ggplot(data.frame(table(post)/n), 
+                     aes(x=post, y = Freq)) + 
+    
+    # COlumn Chart of the post estimated
+    geom_col( fill="tomato3", colour="tomato4", alpha = 0.5) +
+    
+    # Theme
+    myTheme + 
+    
+    # Labels
+    labs(title = "Posterior", y = "Probability", x = expression(theta) )
+  
+  
+  # Posterior Trace Plot  ------------------------------------------------------
+  tracePostPlot <- ggplot(data=iterOut,
+                          aes(x=numIterations, y=V4)) +
+    
+    # Add the lines
+    geom_line(color='grey75', alpha = 0.7) +
+    
+    # Add some points
+    geom_point(color = 'grey40', size = 0.25, alpha = 0.1) + 
+    
+    # Theme and Labels
+    myTheme +
+    labs(title = "Trace Plot", x = "Iterations", y = expression(theta) )
+  
+  
+  # Print the plots on single grid ---------------------------------------------
+  require(cowplot) # allows for plotting on single grid using plot_grid())
+  print(plot_grid(propPlot, postPlot, tracePostPlot,
+                  nrow = 1, rel_widths = c(1,1,2)))
+  
+  
+  # The returned output is a list 
+  # Use obj$ to obtain whatever interests you
+  return(list(iter=res,sim=sim,postexact=postexact,post=post) )
 }
 
-proposedValues=c(0.3, 0.6)
 
-# Call the function
-ans <- coindie(n=n, p=p, proposedValues=proposedValues,
-               h=c(0.6,0.4),E2=c(2,3,4,5))
+# Create a function to establish a Uniform Binomial Experiment
+getBernBetaH <- function(numThetaValues, 
+                         x, n, 
+                         shape1=2, shape2=2) {
+  
+  ## Form uniform probability
+  theta <- seq(0, 1, length = numThetaValues)
+  
+  ## Calculate prior assuming uniform distribution
+  prior = dbeta(theta, shape1, shape2)
+  plot(prior)
+  
+  ## Calculate the likelihood
+  likelihood  = dbinom(x=x, size=n, prob=theta)
+  plot(likelihood)
+  
+  ## Calculate the Prior x the Likelihood
+  h <-  prior * likelihood
+  plot(h)
+  
+  return(h)
+}
+
+
+# Inputs for getH()
+numThetaValues = 1000
+
+# Proposal Inputs 
+p=0.5
+proposed=c(0.3,0.6)
+
+# Beta prior inputs
+shape1 = 2
+shape2 = 2
+
+# Bernoulli Liklihood inputs
+x = 4
+n = 10
+
+# h: prior x liklihood using beta prior and bernoulli likelihood
+h=getBernBetaH(numThetaValues, x, n, shape1,shape2)
+
+# Call mydmcmc and add some extras to the plot
+mydmcmcOutput <- mymcmc(n=300, h, p=0.5, proposed=c(0.3,0.6))
 
 
 

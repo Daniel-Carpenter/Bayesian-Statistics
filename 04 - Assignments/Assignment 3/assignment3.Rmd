@@ -23,6 +23,9 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+All questions and parts done completely. Note Task 5 part g only ran one simulation but please not the remaining run entirely.   
+
 ---
 
 # Task 1
@@ -650,12 +653,164 @@ $$ \alpha_{i, j}=\min \left\{1, \frac{h_{j}}{h_{i}}\right\} $$
 
 ## `g` Create function `mymcmc()`
 ```{r mymcmc}
+mymcmc <- function(n=10000, h, p=0.5, proposed, ...){
 
+  # Function to sample n tosses with head proposed has a probability p
+  # proposed 2-values in vector. First value is success, second is failure
+  myprop <- function(n, p, proposed){ 
+    proposalDist <- sample(proposed, size = n,
+                           replace = TRUE, prob = c(p, 1-p)) 
+    
+    return(list('proposalDist' = proposalDist, 'n'=n, 'p'=p))
+  }
+  alpha<-c() # holds transition probs
+  alpha[1]<-1
+  u<-c() # holds uniform values
+  u[1]<-1
+  post<-c()# post sample
+  prop<-c() # vec of proposed states 1s and 2s
+  prop[1]=proposed[1] # initial state
+  post[1]=prop[1]
+  
+  for(i in 2:n){ # starts at 2 because initial value given above
+    # proposal state 
+    prop[i]=myprop(n=1, p=p, proposed=proposed)$proposalDist   
+    
+    # calculate alpha
+    # notice h[prop[i]] gives the actual value of h
+    alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+    
+    # to calculate accepting proposal with prob alpha
+    # select a random value from  a uniform (0,1)
+    u[i]=runif(1)
+    if(u[i]<=alpha[i]){post[i]<-prop[i]}
+    else{post[i]<-post[i-1]}
+  }
+  res<-matrix(c(prop,u,alpha,post ),nc=4,nr=n,byrow=FALSE)
+  sim<-table(post)/n
+  # windows only works with a pc
+  # quartz with macs
+  # dev.new(noRStudioGD = TRUE) # or quartz() 
+  
+  postexact<-h/sum(h)
+  
+  
+  # PLOTS ======================================================================
+  
+  require(tidyverse)
+  require(ggplot2)
+  
+  # Create a simple theme for reuse
+  myTheme <- theme_minimal() + theme(text = element_text(color = '#666666'),
+                                     panel.grid.major = element_blank())
+  
+  
+  # Make the iter vector a data frame
+  iterOut <- as.data.frame(res) %>% 
+    mutate(numIterations = row_number()) 
+  
+  
+  
+  # Show Proposal  -------------------------------------------------------------
+  propPlot <- ggplot(data.frame(table(prop)/n),
+                     aes(x=prop, y = Freq)) +
+
+    # COlumn Chart of the post estimated
+    geom_col( fill="lightblue", colour="lightblue4", alpha = 0.5) +
+
+    # Theme
+    myTheme +
+
+    # Labels
+    labs(title = 'Proposal', y = "Probability", x = expression(theta) )
+  
+
+  # Posterior simulation ------------------------------------------------------
+  postPlot <- ggplot(data.frame(table(post)/n), 
+                     aes(x=post, y = Freq)) + 
+  
+    # COlumn Chart of the post estimated
+    geom_col( fill="tomato3", colour="tomato4", alpha = 0.5) +
+    
+    # Theme
+    myTheme + 
+    
+    # Labels
+    labs(title = "Posterior", y = "Probability", x = expression(theta) )
+  
+  
+  # Posterior Trace Plot  ------------------------------------------------------
+  tracePostPlot <- ggplot(data=iterOut,
+                          aes(x=numIterations, y=V4)) +
+    
+    # Add the lines
+    geom_line(color='grey75', alpha = 0.7) +
+    
+    # Add some points
+    geom_point(color = 'grey40', size = 0.25, alpha = 0.1) + 
+    
+    # Theme and Labels
+    myTheme +
+    labs(title = "Trace Plot", x = "Iterations", y = expression(theta) )
+  
+  
+  # Print the plots on single grid ---------------------------------------------
+  require(cowplot) # allows for plotting on single grid using plot_grid())
+  print(plot_grid(propPlot, postPlot, tracePostPlot,
+            nrow = 1, rel_widths = c(1,1,2)))
+
+  
+  # The returned output is a list 
+  # Use obj$ to obtain whatever interests you
+  return(list(iter=res,sim=sim,postexact=postexact,post=post) )
+}
 ```
 
 
 ## `h` Call function `mymcmc()`
 ```{r mymcmcCall}
 
+# Create a function to get a bernnouli lik and beta prior
+getBernBetaH <- function(numThetaValues, 
+                         x, n, 
+                         shape1=2, shape2=2) {
+  
+  ## Form uniform probability
+  theta <- seq(0, 1, length = numThetaValues)
+  
+  ## Calculate prior assuming uniform distribution
+  prior = dbeta(theta, shape1, shape2)
+  
+  ## Calculate the likelihood
+  likelihood  = dbinom(x=x, size=n, prob=theta)
+  
+  ## Calculate the Prior x the Likelihood
+  h <-  prior * likelihood
+  
+  return(h)
+}
+
+
+# Inputs for getBernBetaH()
+numThetaValues = 1000
+
+# Proposal Inputs 
+p=0.5
+proposed=c(0.3,0.6)
+
+# Beta prior inputs
+shape1 = 2
+shape2 = 2
+
+# Bernoulli Likelihood inputs
+x = 4
+n = 10
+
+# h: prior x likelihood using beta prior and bernoulli likelihood
+h=getBernBetaH(numThetaValues, x, n, shape1,shape2)
+
+# Call mydmcmc and add some extras to the plot
+obj <- mymcmc(n=50000, h, p=0.5, proposed=c(0.3,0.6))
+# head(obj) # not required since prints already
 ```
 
