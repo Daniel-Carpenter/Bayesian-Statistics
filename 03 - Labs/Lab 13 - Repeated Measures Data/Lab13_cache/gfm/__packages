@@ -1,0 +1,15 @@
+base
+methods
+datasets
+utils
+grDevices
+graphics
+stats
+coda
+rjags
+runjags
+parallel
+dplyr
+tidyr
+ggplot2
+ggmcmc

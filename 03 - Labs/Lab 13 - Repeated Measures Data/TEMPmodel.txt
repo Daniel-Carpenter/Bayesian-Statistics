@@ -1,0 +1,37 @@
+
+  model {
+  	for  (i  in 1:n) { 
+  	       for (j in 1:K){ 
+  	                 y[i,j] ~ dnorm( mu[i,j], tau )
+  	                 mu[i,j] <- m + a[i]
+  		  }
+  		a[i]~dnorm( 0, tau.a)
+      }		
+  	# prior distributions
+  	m ~ dnorm( 0.0, 1.0E-06)
+  	
+    sigma ~ dunif(0,200)
+  	sigma.a ~ dunif(0,200)
+    
+  	tau ~ dgamma(0.001,0.001)
+  	s2<-pow(tau,-1)
+  	
+    # tau<-pow(sigma,-2)
+    tau.a<-pow(sigma.a,-2)
+   
+    # s2<-1/tau
+    s2.a<-1/tau.a
+  
+    # correlation between two measurements
+  r12 <- s2.a/(s2.a+s2)
+  	# calculation of residuals 
+  	for  (i  in 1:n) { 
+  	       for (j in 1:K){ 
+  			res[i,j]<- y[i,j]-mu[i,j]
+  	}}
+  	# Calculation of R2
+  	R2 <- 1 - pow(  sd(res[1:n,1:K])/sd(y[1:n,1:K]), 2 )
+  	
+  }
+  
+  
