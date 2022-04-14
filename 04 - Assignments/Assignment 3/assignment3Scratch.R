@@ -111,11 +111,14 @@ likFromMLE(N, z, omega, kappa, theta)
 
 # a ----------------------------------------------------------------------------
 
-myprop <- function(n, p){ 
-  out <- sample(c(0.3, 0.6), size = n,
-                replace = TRUE, prob = c(p, 1-p)) 
-  return(out)
-} 
+# Function to sample n tosses with head proposed has a probability p
+# proposed 2-values in vector. First value is success, second is failure
+myprop <- function(n, p, proposed=c(0.3, 0.6)){ 
+  proposalDist <- sample(proposed, size = n,
+                         replace = TRUE, prob = c(p, 1-p)) 
+  
+  return(list('proposalDist' = proposalDist, 'n'=n, 'p'=p))
+}
 
 # b ----------------------------------------------------------------------------
 
@@ -123,27 +126,117 @@ myprop(n=10,  p=0.5)
 myprop(n=20,  p=0.1)
 myprop(n=100, p=0.4)
 
-theFill   = c('darkseagreen', 'skyblue')
-theBorder = c('darkseagreen4', 'skyblue4')
 
 # c ----------------------------------------------------------------------------
+
 # Create a bar plot given the output of a myprop function
 createBarPlot <- function(myprop) {
   
+  # Colors to reuse  
+  fillColor   = c('darkseagreen', 'skyblue')
+  borderColor = c('darkseagreen4', 'skyblue4')
+  
   # Create the barplot
-  barplot(table(myprop), 
-          main = 'Proposal Distribution from myprop(n,p)\nHead=0.6, Tail=0.3 | Daniel Carpenter',
-          col  = theFill, border = theBorder,
-          xlab = expression(theta), ylab = 'Frequency')
+  barplot(table(myprop$proposalDist) / myprop$n, 
+          main = paste0('Proposal Distribution from myprop(n,p) | p = ',myprop$p,'\n Daniel Carpenter'),
+          col  = fillColor, border = borderColor,
+          xlab = expression(theta), ylab = 'Probability')
   
   # Create the legend
-  legend('topleft', legend=c("Heads", "Tails"), 
-         bty = 1, fill=theFill, border=theBorder,box.col = 'grey90')
+  legend('topleft', legend=c("Outcome of 0.3", "Outcome of 0.6"), 
+         bty = 1, fill=fillColor, border=borderColor, box.col = 'grey90')
 }
 
-createBarPlot(myprop(n=1000, p=0.3))
+n = 1000 # number of tosses
+p = 0.3  # Probability of a success, in this case is outcome of 0.3
+
+# Call the bar plot function
+# Note proposed c(0.3, 0.6) by default...
+# createBarPlot(myprop(n, p))
 
 
+# e mymcmc ---------------------------------------------------------------------
+
+coindie<-function(n=1000, prob=0.3, 
+                  h=c(1/4,3/4),E2=c(5,6),
+                  proposedValues, ...){
+  
+  # Initial value uses the proposed values
+  init = proposedValues[2]
+  
+  library(xtable)
+  dieset<-c()
+  dieset[1]<-"E1"
+  die<-function(n=1){
+    sample(1:6,size=n,replace=TRUE)
+  }
+  
+  # Function to sample n tosses with head proposed has a probability p
+  # proposed 2-values in vector. First value is success, second is failure
+  myprop <- function(n=1, p=prob, proposed=proposedValues){ 
+    proposalDist <- sample(proposed, size = n,
+                           replace = TRUE, prob = c(p, 1-p)) 
+    
+    return(list('proposalDist' = proposalDist, 'n'=n, 'p'=p))
+  }
+  face<-c()
+  alpha<-c()      # holds acceptance probs
+  alpha[1]<-1
+  post<-c()       # post sample
+  prop<-c()       # vec of proposed states 1s and 2s
+  prop[1]=init    # initial state
+  post[1]=prop[1]
+  dice<-c()
+  dice[1]<-die()
+  
+  # Form the Acceptance Set
+  for(i in 2:n){ # starts at 2 because initial value given above
+    
+    # Formulate the Proposal
+    prop[i]<-myprop()$proposalDist          
+    
+    # Formulate the Acceptance Set using the Proposal and the Posterior
+    alpha[i]=min(1,h[prop[i]]/h[post[i-1]])
+    
+    dice[i]<-die()
+    ifelse(alpha[i]==1,dieset[i]<-"E1",dieset[i]<-"E2")
+    
+    # is x an element of set y
+    if(alpha[i]==1 | (is.element(dice[i],E2) & alpha[i]!=1)){post[i]<-prop[i]}
+    else{post[i]<-post[i-1]}
+  }  
+  res<-matrix(c(prop,round(alpha,2),dieset,dice,post ),nc=5,nr=n,byrow=FALSE,dimnames=list(1:n,c("proposal","alpha", "E","dice","post")))
+  sim<-table(post)/n
+  print(sim)
+  postexact<-h/sum(h)
+  
+  # Colors to reuse  
+  fillColor   = c('darkseagreen1', 'skyblue1')
+  borderColor = c('darkseagreen4', 'skyblue4')
+  
+  # Plot the proposal
+  barplot(table(prop)/n,
+          main = 'Proposal', xlab = expression(theta), ylab = 'Probability',
+          col = fillColor, border = borderColor,
+          ...)
+  
+  
+  fillColor   = c('darkseagreen4', 'skyblue3')
+  
+  # Plot the posterior
+  barplot(table(post)/n,
+          main = 'Posterior', xlab = expression(theta), ylab = 'Probability',
+          col = fillColor, border = borderColor,
+          ...)
+  
+  return(list(iter=res,sim=sim,postexact=postexact,post=post,xtable=xtable(res,dig=1)) )
+}
+
+proposedValues=c(0.3, 0.6)
+
+# Call the function
+ans <- coindie(n=n, p=p, proposedValues=proposedValues,
+               h=c(0.6,0.4),E2=c(2,3,4,5))
 
 
 

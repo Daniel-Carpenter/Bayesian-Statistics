@@ -567,18 +567,19 @@ source('Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa-Power-3.R')
 ## `a` Proposal Function `myprop()`
 ```{r myprop}
 # Function to sample n tosses with head proposed has a probability p
-# 2-values in vector proposal. First value is success, second is failure
-myprop <- function(n, p, proposal=c(0.3, 0.6)){ 
-  out <- sample(proposal, size = n,
-                replace = TRUE, prob = c(p, 1-p)) 
-  return(out)
+# proposed 2-values in vector. First value is success, second is failure
+myprop <- function(n, p, proposed=c(0.3, 0.6)){ 
+  proposalDist <- sample(proposed, size = n,
+                         replace = TRUE, prob = c(p, 1-p)) 
+  
+  return(list('proposalDist' = proposalDist, 'n'=n, 'p'=p))
 }
 ```
 
 
 ## `b` Call `myprop()`
 ```{r mypropCall}
-# Given proposal c(0.3, 0.6) by default...
+# Proposed c(0.3, 0.6) by default...
 myprop(n=10,  p=0.5) #  10 tosses with probability of success being 0.5
 myprop(n=20,  p=0.1) #  20 tosses with probability of success being 0.1
 myprop(n=100, p=0.4) # 100 tosses with probability of success being 0.4
@@ -588,17 +589,17 @@ myprop(n=100, p=0.4) # 100 tosses with probability of success being 0.4
 ## `c` Barplot of `myprop()`
 ```{r theBar}
 # Create a bar plot given the output of a myprop function
-createBarPlot <- function(myprop, n, p) {
+createBarPlot <- function(myprop) {
 
   # Colors to reuse  
   fillColor   = c('darkseagreen', 'skyblue')
   borderColor = c('darkseagreen4', 'skyblue4')
 
   # Create the barplot
-  barplot(table(myprop) / n, 
-          main = paste0('Proposal Distribution from myprop(n,p) | p = ',p,'\n Daniel Carpenter'),
+  barplot(table(myprop$proposalDist) / myprop$n, 
+          main = paste0('Proposal Distribution from myprop(n,p) | p = ',myprop$p,'\n Daniel Carpenter'),
           col  = fillColor, border = borderColor,
-          xlab = 'Outcomes', ylab = 'Probability')
+          xlab = expression(theta), ylab = 'Probability')
   
   # Create the legend
   legend('topleft', legend=c("Outcome of 0.3", "Outcome of 0.6"), 
@@ -608,9 +609,10 @@ createBarPlot <- function(myprop, n, p) {
 n = 1000 # number of tosses
 p = 0.3  # Probability of a success, in this case is outcome of 0.3
 
-# Call the bar plot function and tell it what n and p are
-# Note Given proposal c(0.3, 0.6) by default...
-createBarPlot(myprop(n, p), n, p)
+# Call the bar plot function
+# Note proposed c(0.3, 0.6) by default...
+theProposal <- myprop(n, p)
+createBarPlot(theProposal)
 ```
 
 <br>
