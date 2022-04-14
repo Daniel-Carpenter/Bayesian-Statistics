@@ -97,7 +97,7 @@ goalAchievedForSample = function( data ) {
 Nsubj = 40 ; NtrlPerSubj = 100
 #Nsubj = 2*7 ; NtrlPerSubj = 47 # 658 flips total
 # Specify the number of simulated experiments:
-nSimulatedDataSets = 1#50 # min(500,NROW(mcmcMat)) # An arbitrary large number.
+nSimulatedDataSets = 20 # min(500,NROW(mcmcMat)) # An arbitrary large number.
 # Run the simulated experiments:
 simCount=0
 if (exists("goalTally")) rm(goalTally) # in case previously run from here down

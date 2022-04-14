@@ -478,9 +478,7 @@ mcmcMat = as.matrix(mcmcCoda)
 ```{r, eval=FALSE}
 # Changes to `Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa-Power.R`...
 
-# I would choose 50 but it took an eroneous time to run. This case only uses 1 chain.
-# Note the implication is high uncertainty in estimates since base on only 1 simulated data sets.
-nSimulatedDataSets = 1 # min(500,NROW(mcmcMat)) 
+nSimulatedDataSets = 50 # min(500,NROW(mcmcMat)) 
 ```
 
 ### Run the Power Model
@@ -507,8 +505,6 @@ idealNtrlPerSubj =   10 # Matches the actual data trials per subject
 
 ```{r 5h2, eval = TRUE, cache=TRUE}
 # Note the -1 at end. 
-# Again, only using one simulation because it my computer cannot handle the simulations
-# Note the implication is high uncertainty in estimates since base on only 1 simulated data sets.
 source('Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa-Power-1.R')
 ```
 
@@ -524,13 +520,11 @@ HDImaxWid = 0.1
 # Specify sample size for each simulated data set:
 Nsubj = 40 ; NtrlPerSubj = 100
 #Nsubj = 2*7 ; NtrlPerSubj = 47 # 658 flips total
-nSimulatedDataSets = 1 # still 1 since takes too long to run for an exercise
+nSimulatedDataSets = 20 # still 1 since takes too long to run for an exercise
 ```
 
 ```{r 5i2, eval = TRUE, cache=TRUE}
 # Note the -2 at end of file name
-# Again, only using one simulation because it my computer cannot handle the simulations
-# Note the implication is high uncertainty in estimates since base on only 1 simulated data sets.
 source('Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa-Power-2.R')
 ```
 
@@ -558,8 +552,6 @@ mcmcCoda = genMCMC( data=idealDatFrm , saveName=NULL ,
 ### Run the model
 ```{r 5j, cache=TRUE}
 # Note the -3 at end of file name
-# Again, only using one simulation because it my computer cannot handle the simulations
-# Note the implication is high uncertainty in estimates since base on only 1 simulated data sets.
 source('Jags-Ydich-XnomSsubj-MbinomBetaOmegaKappa-Power-3.R')
 ```
 
