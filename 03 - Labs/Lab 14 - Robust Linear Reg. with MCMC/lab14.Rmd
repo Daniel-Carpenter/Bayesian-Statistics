@@ -1,0 +1,74 @@
+---
+title: 'Lab 14: Robust Linear Regression and MCMC'
+author: "Wayne Stewart"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# MCMC problem
+
+We have learnt a lot about GLM regression. One MCMC problem we may encounter is strong covariance between parameters. This will cause the sampler to move slowly through the parameter space and cause strong autocorrelation for a parameter.
+
+## Fix
+
+One method to fix this is to transform the x and y variables. This may also help for situations where the size of the x and y metrics are large for the computer numerics.
+
+## Standardize the variables
+
+Note that $Z$ has mean 0 and standard deviation 1. 
+
+$$Z=\frac{X-\bar{X}}{S_X}$$
+
+#Task 1
+
+Prove sample mean of $Z$ is 0 and standard deviation is 1.
+
+# Outliers problem
+
+Outliers can be a problem because they may overly influence an analysis - meaning they might be most responsible for parameter estimates and dominate the rest of the data in terms of their impact on estimates.
+
+One method to lessen the impact of outliers is to use a distribution on Y that has large tails.
+
+## Fix
+
+The t-distribution would be a suitable replacement to the normal.
+
+Read pages 479-487 (Section 17.2)
+
+# Task 2
+
+After reading the above sections do the following:
+
+## Make a Jags model that will analyze the following simulated data 
+
+Do this by NOT using a t distribution and NOT using ceneterd variables. Make sure you diagnose the MCMC
+
+```{r sample}
+x = 42:80
+set.seed(34) # we will all have the same data
+y = 20 + 4*x + rnorm(39,0,20)
+xx = 41
+yy = 20+4*xx + 60
+x = c(xx,x)
+y = c(yy, y)
+plot(y~x, xlim=range(c(0, x)),ylim=range(c(0,y)))
+points(xx,yy,pch=19,cex=3,col="green3")
+
+```
+
+## Make a jags model that will analyze the data.
+
+See pages 485-486.
+This time center the data and use a t distribution. Make sure you diagnose the MCMC.
+Back transform (transform to original scale) and then:
+
+## Compare results!!  
+
+## Summarize what you have learnt!!
+
