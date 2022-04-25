@@ -1,10 +1,18 @@
 ---
 title: 'Lab 14: Robust Linear Regression and MCMC'
-author: "Wayne Stewart"
-date: "`r Sys.Date()`"
+author: "Daniel Carpenter"
+date: "April 2022"
 output:
-  html_document: default
-  pdf_document: default
+  html_document: 
+    df_print: default
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+  # github_document:
+  #   toc: yes
+  #   # number_sections: yes
+  #   toc_depth: 2
+---
 ---
 
 ```{r setup, include=FALSE}
@@ -29,6 +37,25 @@ $$Z=\frac{X-\bar{X}}{S_X}$$
 
 Prove sample mean of $Z$ is 0 and standard deviation is 1.
 
+Sample mean:  
+$$
+E[Z]=E\left[\frac{X-\bar{X}}{S_{X}}\right]=\frac{1}{S_{X}}[E[X]-\bar{X}]=\frac{1}{S_{X}}[\bar{X}-\bar{X}]=0
+$$
+
+Standard deviation:  
+$$
+\begin{aligned}
+\operatorname{Var}\left[Z^{2}\right] &=E\left[Z^{2}\right]-E^{2}[Z] \\
+&=E\left[\left(\frac{X-\bar{X}}{S_{X}}\right)^{2}\right]-0^{2} \\
+&=\frac{1}{S_{X}^{2}}\left[E\left[X^{2}\right]-2 \bar{X} E[X]+\bar{X}^{2}\right] \\
+&=\frac{1}{S_{X}^{2}}\left[\left\{E\left[X^{2}\right]-E^{2}[X]\right\}+E^{2}[X]-2 \bar{X} E[X]+\bar{X}^{2}\right] \\
+&=\frac{1}{S_{X}^{2}}\left[\{\operatorname{Var}[X]\}+\bar{X}^{2}-2 \bar{X}^{2}+\bar{X}^{2}\right] \\
+&=\frac{1}{S_{X}^{2}}\left[S_{X}^{2}+0\right] \\
+&=1
+\end{aligned}
+$$
+
+
 # Outliers problem
 
 Outliers can be a problem because they may overly influence an analysis - meaning they might be most responsible for parameter estimates and dominate the rest of the data in terms of their impact on estimates.
@@ -37,7 +64,7 @@ One method to lessen the impact of outliers is to use a distribution on Y that h
 
 ## Fix
 
-The t-distribution would be a suitable replacement to the normal.
+Partial fix: The t-distribution would be a suitable replacement to the normal.
 
 Read pages 479-487 (Section 17.2)
 
@@ -67,6 +94,68 @@ points(xx,yy,pch=19,cex=3,col="green3")
 See pages 485-486.
 This time center the data and use a t distribution. Make sure you diagnose the MCMC.
 Back transform (transform to original scale) and then:
+
+
+```{r jagscode, warning=FALSE,message=FALSE,eval = TRUE}
+source("DBDA2E-utilities.R") # Must be in R's current working directory.
+
+fileNameRoot="JAGS_1/" # For output file names.
+dir.create(fileNameRoot)
+
+library(rjags)
+Ntotal = length(y)  # Compute the total number of x,y pairs.
+dataList = list(    # Put the information into a list.
+  x = x,
+  y = y ,
+  Ntotal = Ntotal 
+)
+
+# Define the model:
+modelString = "
+model{
+    for( i in 1 : Ntotal ) {
+        y[i] ~ dnorm(mu[i], tau)
+        mu[i] <- beta0 + beta1 * x[i]
+    }
+    beta0 ~ dnorm(0.0, 1.0E-6)
+    beta1 ~ dnorm(0.0, 1.0E-6)
+    sigma ~ dunif(0, 1000)
+    tau <- pow(sigma,  -2)
+}
+" # close quote for modelString
+writeLines( modelString , con="TEMPmodel.txt" )
+# Initialize the chains based on MLE of data.
+initsList = list(beta0 = 0, beta1 = 0, sigma =10)
+# Run the chains:
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+update( jagsModel , n.iter=500 )
+codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "sigma") ,
+                            n.iter=33340 )
+save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+
+varName = 'beta0'
+diagMCMC( codaObject=codaSamples , parName=varName )
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+varName = 'beta1'
+diagMCMC( codaObject=codaSamples , parName=varName )
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+
+varName = 'sigma'
+diagMCMC( codaObject=codaSamples , parName=varName )
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+library(ggmcmc)
+s = ggs(codaSamples)
+d=ggs_density(s)
+print(d)
+cr =  ggs_crosscorrelation(s)
+print(cr)
+summary(codaSamples)
+```
+
 
 ## Compare results!!  
 
