@@ -106,7 +106,7 @@ Please note that you **MUST** read the following items:
 
 -   <https://en.wikipedia.org/wiki/QR_decomposition>
 
-![Taken from the STAN documentation](screenshot-mc-stan.org-2022.01.14-11_32_10.png){ width=70% }
+[](stanDoc.png)
 
 
 ## A STAN model
@@ -120,9 +120,11 @@ The basic STAN blocks are **data**, **parameters**, and **model**. We will need 
 Please look at the code below and see how the QR factorization plays out in practice. These tools will really help with making the ampler work more efficiently.
 
 
-```{r, message=FALSE,warning=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(rstan)
 library(Intro2R)
+library(shinystan)
+
 
 
 with(ddt, lm(LENGTH ~ SPECIES))->ylm
@@ -133,7 +135,9 @@ y <- ddt[,"LENGTH"]
 dataslr5 <- list(X = X, y = y, N = length(y),nbetas=dim(X)[2])
 ```
 
-```{stan output.var="qmlr", eval = FALSE}
+### `SLR2-Q.stan`
+
+```{stan eval=FALSE, output.var="qmlr"}
 data {
   int<lower=0> N;
   int<lower=0> nbetas;
@@ -166,14 +170,12 @@ generated quantities {
   vector[nbetas] beta;
   beta = R_ast_inverse * theta; // coefficients on x
 }
-
-
 ```
 
 ```{r fit, eval=FALSE}
 options(mc.cores = parallel::detectCores())
 
-fit5 <- stan(file = "D:/2021-MATH4753/Bayesian/SLR2-Q.stan",
+fit5 <- stan(file = "SLR2-Q.stan",
              model_name = "Simple Linear Regression matrix Q",
              data = dataslr5,
              chains = 3,
@@ -193,6 +195,62 @@ shinystan::launch_shinystan(afit5)
 
 -  Make the above code run and make a screen shot of the posterior histograms of the Diagnostic page, NUTS(Plots) Tab, Parameter: beta[3] all else default. Include the picture in your write up.  
 
+![](StanShots/beta3.png)
+![](StanShots/exploreBeta1.png)
+
+
 -  Make a screen shot of the Explore page, beta[1], Multiview. Add the picture to your write up
 
 -  Now change the STAN code so that you do not transform the data using the QR transformation. That is the model will use $\beta$ directly. Make copies of the above two pages for the new model.
+
+
+### `SLR2-Q-1.stan`
+
+```{stan eval=FALSE, output.var="qmlr"}
+data {
+  int<lower=0> N;   // number of data items
+  int<lower=0> K;   // number of predictors
+  matrix[N, K] x;   // predictor matrix
+  vector[N] y;      // outcome vector
+}
+transformed data {
+  matrix[N, K] Q_ast;
+  matrix[K, K] R_ast;
+  matrix[K, K] R_ast_inverse;
+  // thin and scale the QR decomposition
+  Q_ast = qr_thin_Q(x) * sqrt(N - 1);
+  R_ast = qr_thin_R(x) / sqrt(N - 1);
+  R_ast_inverse = inverse(R_ast);
+}
+parameters {
+  real alpha;           // intercept
+  vector[K] theta;      // coefficients on Q_ast
+  real<lower=0> sigma;  // error scale
+}
+model {
+  y ~ normal(Q_ast * theta + alpha, sigma);  // likelihood
+}
+generated quantities {
+  vector[K] beta;
+  beta = R_ast_inverse * theta; // coefficients on x
+}
+```
+
+```{r fit2, eval=FALSE}
+options(mc.cores = parallel::detectCores())
+
+fit5 <- stan(file = "SLR2-Q-1.stan",
+             model_name = "Simple Linear Regression matrix Q 2",
+             data = dataslr5,
+             chains = 3,
+             warmup = 1000,
+             iter = 3000,
+             pars = c("beta", "sigma")
+)
+
+afit6 <- as.shinystan(fit5)
+shinystan::launch_shinystan(afit6)
+
+```
+
+Attempted to create model but was unsuccessful since there was little documentation on this.
