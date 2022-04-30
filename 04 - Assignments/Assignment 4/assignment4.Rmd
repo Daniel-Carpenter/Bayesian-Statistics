@@ -44,14 +44,17 @@ All questions and parts done completely.
 
 A dataset of *25 observations* was collected.  
 
-### JAGS Model
+<br>
 
-* Since the 
+## `a` Mathematics  
+
 * The *linear predictor* of this data are the `cases` and `distance` variables  
 * Since the *predicted variable* `time` is interval data, therefore:
   * The *link* function will be linear $\mu = lin(x)$
   * the *Metric* scale will be used. 
   * Since the Metric scale is used, a typical *noise distribution* for Metric scale types of predicted variables is normally distributed, or $y$ ~ $N(\mu, \sigma)$
+
+### JAGS Model
 
 ```{r setupSoftDrinkJAGS}
 # The JAGS Model
@@ -76,6 +79,10 @@ modelString =
   }
   "
 ```
+
+<br>
+
+## `b` Distribution of Data
 
 ### Data for Model
 ```{r setupSoftDrinkData}
@@ -212,8 +219,13 @@ initsList   = list( tau   = 1,  # Initial parameter values
                     beta2 = 0 )
 ```
 
+
+<br>
+
+## `c-g`  
+
 ### Run the JAGS Model
-```{r runSoftDrinkJAGS, echo=TRUE, out.width = "720px, cache=TRUE"}
+```{r runSoftDrinkJAGS, echo=TRUE, out.width = "720px", cache=TRUE}
 source("DBDA2E-utilities.R") # Must be in R's current working directory.
 library(rjags)
 
@@ -245,20 +257,48 @@ codaSamples = coda.samples( jagsModel, variable.names=parameters, n.iter=nIter )
 # Save the coda samples
 save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
-# Save/show the MCMC Diagnostics for each parameter
-for (varName in parameters) {
-  
-  # Output the data for each parameter defined above
-  diagMCMC( codaObject=codaSamples , parName=varName )
-  saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
-}
+
+# Diagnostics and Posteriors ----------------------------------------
+
+# Tau
+varName = paste0(parameters[1])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.046992, 0.15745)) # from summary(codaSamples)
+
+# Beta 0
+varName = paste0(parameters[2])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.086928 , 4.64718)) # from summary(codaSamples)
+
+# Beta 1
+varName = paste0(parameters[3])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(1.263161 , 1.97443)) # from summary(codaSamples)
+
+# Beta 2
+varName = paste0(parameters[4])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.006817 , 0.02172)) # from summary(codaSamples)
+
 graphics.off()
 
-# Print Graphs
-knitr::include_graphics(paste0(fileNameRoot,parameters[1], '.png')) # Force to knit
-knitr::include_graphics(paste0(fileNameRoot,parameters[2], '.png')) # Force to knit
-knitr::include_graphics(paste0(fileNameRoot,parameters[3], '.png')) # Force to knit
-knitr::include_graphics(paste0(fileNameRoot,parameters[4], '.png')) # Force to knit
+# Density Plots
+library(ggmcmc)
+s = ggs(codaSamples)
+d = ggs_density(s)
+print(d)
 
 # Using classical methods (point estimates)
 est.softDrink <- glm(time ~ distance + cases, data = dataList)
@@ -269,8 +309,36 @@ summary(codaSamples)
 ```
 
 
+## `h` Formula for Model
+$$
+miles = \beta_0 + \beta_1 \times distance + \beta_2 \times cases + \epsilon
+$$
 
+## `i` Interpreation of Results
 
+### For each additional `case` stocked by the employee...   
+
+a - How much delivery time will be required on average (point estimate)? 
+
+* 0.01448 minutes for an additional case stocked  
+    
+b - How much delivery time will be required on average (interval estimate) and with what posterior   probability?
+
+* There is a probability of 95% that the delivery time between 0.007017 and 0.02198 minutes for an additional 100 ft. walked by the employee.  
+
+<br>
+
+### For every increase of walking `distance` by 100 feet...   
+a - What delivery time will be required on average (point estimate)?   
+
+* 1.61015 minutes for an additional 100 ft walked by the employee (I am assuming that the units for the data is per 100 ft. If it was per 1 ft. then it would be 1.61015 * 100)     
+    
+b - What delivery time will be required on average ( interval  
+estimate) and with what posterior probability?
+
+* There is a probability of 95% that the delivery time between 1.250213 and 1.96077 minutes  for an additional 100 ft. walked by the employee. (Note assumption in bullet `a`)  
+
+*Estimates above are approximate by nature of MCMC*
 
 
 
