@@ -18,8 +18,9 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
 	echo = TRUE,
-	message=FALSE,
-	warning=FALSE
+	include = TRUE,
+	message = FALSE,
+	warning = FALSE
 )
 ```
 
@@ -29,3 +30,144 @@ All questions and parts done completely. Note Task 5 part g only ran one simulat
 ---
 
 # Task 1
+
+## Overview of Problem 
+
+### Soft Drink Delivery Times Problem
+* Goal: estimation of the required time needed by each employee to refill an automatic vending machines owned and served by the company. 
+* For this reason, a small quality assurance study was set-up by an industrial engineer of the company. 
+  * As the response variable he considered the `total service time` (measured in minutes) of each machine, including its stocking with beverage products and any required maintenance or housekeeping. 
+  * After examining the problem, the industrial engineer recommended two important variables which affect delivery time:  
+
+1. the `number of cases of stocked products` and   
+2. the `distance walked by the employee` (measured in feet).  
+
+A dataset of *25 observations* was finally collected.  
+
+```{r setupSoftDrinkJAGS}
+# Create the directory for the JAGS output
+fileNameRoot="Task 1 JAGS Output (Soft Drinks)/" 
+dir.create(fileNameRoot)
+
+library(rjags)
+
+# The JAGS Model
+modelString = 
+  "
+  model {
+  
+    # model’s likelihood 
+    for (i in 1:n) { 
+      time[i] ~ dnorm( mu[i], tau ) # stochastic componenent 
+      
+      # link and linear predictor 
+      mu[i] <- beta0 + beta1 * cases[i] + … 
+    }
+  
+    # prior distributions 
+    tau ~ dgamma( 0.01, 0.01 ) 
+    … 
+    …
+    beta2 ~ dnorm( 0.0, 1.0E-4) 
+    …
+    …
+  }
+  "
+
+# Data from soft drink experiment. See details below
+dataList  = 
+  list(n = 25,
+       
+       # Total Service time (dependent var)
+       # Measure: minutes
+       time = c(16.68, 11.5, 12.03, 14.88, 
+                13.75, 18.11, 8, 17.83, 79.24, 
+                21.5, 40.33, 21, 13.5, 19.75, 
+                24, 29, 15.35, 19, 9.5, 35.1,
+                17.9, 52.32, 18.75, 19.83, 10.75), 
+       
+       # Distance an employee walks on foot to the vending machine
+       # Measure: feet
+       distance = c(560, 220, 340, 80, 150, 330, 
+                    110, 210, 1460, 605, 688, 215,
+                    255, 462, 448, 776, 200, 132, 
+                    36, 770, 140, 810, 450, 635, 150),
+       
+       # Number of cases of stocked products to restock
+       # Measure: Number of cases of product
+       cases = c( 7, 3, 3, 4, 6, 
+                  7, 2, 7, 30, 5, 
+                  16, 10, 4, 6, 9,
+                  10, 6, 7, 3, 17, 
+                  10, 26, 9, 8, 4) 
+       )
+
+# Model Control Inputs ---------------------------------------------------------
+
+## MCMC Controls
+modelName   = 'SoftDrinks'      # Name of the model for File Naming
+adaptSteps  = 500               # Number of steps to adapt the samplers
+burnInSteps = 1000              # Number of steps to burn-in the chains
+nChains     = 3                 # nChains should be 2 or more for diagnostics 
+nIter       = 10000             # Total Number of iterations to perform
+
+## Parameter Definitions
+parameters  = c("tau",          # The parameters to be monitored
+                "beta0", 
+                "beta1", 
+                'beta2') 
+initsList   = list( tau   = 1,  # Initial parameter values
+                    beta0 = 1, 
+                    beta1 = 0, 
+                    beta2 = 0 )
+
+# ------------------------------------------------------------------------------
+
+```
+
+
+```{r runSoftDrinkJAGS}
+# Create a text file to hold the model above
+writeLines( modelString , con=paste0(modelName, ".txt") )
+
+# Run the Chains:
+jagsModel = jags.model(file     = paste0(modelName, ".txt"), 
+                       data     = dataList, 
+                       inits    = initsList, 
+                       n.chains = nChains,
+                       n.adapt  = adaptSteps 
+                       )
+
+# Burn-in:
+cat( "Burning in the MCMC chain...\n" )
+update( jagsModel , n.iter=burnInSteps )
+
+# Sample MCMC
+cat( "Sampling final MCMC chain...\n" )
+codaSamples = coda.samples( jagsModel, variable.names=parameters, n.iter=nIter )
+
+# Note the resulting codaSamples object has these indices: 
+#   codaSamples[[ chainIdx ]][ stepIdx , paramIdx ]
+
+save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+
+# Save the MCMC Diagnostics for each parameters
+for (varName in parameters) {
+  
+  # Output the data for each parameter defined above
+  diagMCMC( codaObject=codaSamples , parName=varName )
+  saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
