@@ -357,6 +357,9 @@ estimate) and with what posterior probability?
 
 ## `j` Add `typical.y`
 
+* The engineer wished to find a typical or representative delivery route.   
+* He suggested the following code chunk.  
+
 ### New Jags Model
 ```{r setupNewSoftDrinkJAGS}
 # The JAGS Model
@@ -418,11 +421,18 @@ summary(codaSamples)
 * Shrink factor stabilizes (good)  
 * Chain densities represent each other well. Slight variation near median values.
 
+*Estimates above are approximate by nature of MCMC*  
+
+
 ---
 
 <br>
 
 ## `l` Add $R^{2}_{B}$
+* $R^{2}_{B}$ is the sample variance of `Y`  
+* $\sigma^2$ is the variance of the random variable `Y` in the model   
+* $R^{2}_{B}$ is the reduction in uncertainty of the response variable Y through the model using explanatory variables x  
+
 ```{r setup3SoftDrinkJAGS}
 # The JAGS Model
 modelString3 = 
@@ -480,13 +490,13 @@ codaSamples <- runJagsFunction(modelString3,
 
 # Note not monitoring other parameters to keep the file cleaner.
 
-# Plots for beta2 since question about prob later on
-varName = 'beta2'
+# Beta 2
+varName = paste0(parameters[4])
 diagMCMC( codaObject=codaSamples , parName=varName );
 saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.911270   , 0.97351)) # from summary(codaSamples)
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.006817 , 0.02172)) # from summary(codaSamples)
 
 
 # Plots for R2B
@@ -512,6 +522,8 @@ su
 * Shrink factor stabilizes (good)  
 * Chain densities represent each other well.
 
+*Estimates above are approximate by nature of MCMC*  
+
 
 ### Calculate $P(\beta_2 > 0.01|D)$
 ```{r}
@@ -525,3 +537,10 @@ probExact = 1 - pnorm(0.01, mu, sigma)
 paste('Probability that beta2 > 0.01, given the data:', round(probExact, 3))
 
 ```
+
+---
+
+<br>
+
+## Task 2
+
