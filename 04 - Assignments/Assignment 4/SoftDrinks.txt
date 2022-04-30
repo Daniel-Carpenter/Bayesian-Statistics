@@ -1,0 +1,19 @@
+
+  model {
+  
+    # model’s likelihood 
+    for (i in 1:n) { 
+      time[i] ~ dnorm( mu[i], tau ) # stochastic componenent 
+      
+      # link and linear predictor 
+      # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
+      mu[i] <- beta0 + (beta1 * cases[i]) + (beta2 * distance[i]) 
+    }
+  
+    # prior distributions 
+    beta0 ~ dnorm(  0.0, 1.0E-4)  # Check! 
+    beta1 ~ dnorm(  0.0, 1.0E-4)  # Check! 
+    beta2 ~ dnorm(  0.0, 1.0E-4) 
+    tau   ~ dgamma( 0.01, 0.01 ) 
+  }
+  
