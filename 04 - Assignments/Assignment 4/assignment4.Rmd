@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 ```
 
 
-All questions and parts done completely. Note Task 5 part g only ran one simulation but please not the remaining run entirely.   
+All questions and parts done completely.    
 
 ---
 
@@ -42,15 +42,18 @@ All questions and parts done completely. Note Task 5 part g only ran one simulat
 1. the `number of cases of stocked products` and   
 2. the `distance walked by the employee` (measured in feet).  
 
-A dataset of *25 observations* was finally collected.  
+A dataset of *25 observations* was collected.  
+
+### JAGS Model
+
+* Since the 
+* The *linear predictor* of this data are the `cases` and `distance` variables  
+* Since the *predicted variable* `time` is interval data, therefore:
+  * The *link* function will be linear $\mu = lin(x)$
+  * the *Metric* scale will be used. 
+  * Since the Metric scale is used, a typical *noise distribution* for Metric scale types of predicted variables is normally distributed, or $y$ ~ $N(\mu, \sigma)$
 
 ```{r setupSoftDrinkJAGS}
-# Create the directory for the JAGS output
-fileNameRoot="Task 1 JAGS Output (Soft Drinks)/" 
-dir.create(fileNameRoot)
-
-library(rjags)
-
 # The JAGS Model
 modelString = 
   "
@@ -61,24 +64,26 @@ modelString =
       time[i] ~ dnorm( mu[i], tau ) # stochastic componenent 
       
       # link and linear predictor 
-      mu[i] <- beta0 + beta1 * cases[i] + … 
+      # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
+      mu[i] <- beta0 + (beta1 * cases[i]) + (beta2 * distance[i]) 
     }
   
     # prior distributions 
-    tau ~ dgamma( 0.01, 0.01 ) 
-    … 
-    …
-    beta2 ~ dnorm( 0.0, 1.0E-4) 
-    …
-    …
+    tau   ~ dgamma( 0.01, 0.01 ) 
+    beta0 ~ dnorm(  0.0, 1.0E-4)  # Check! 
+    beta1 ~ dnorm(  0.0, 1.0E-4)  # Check! 
+    beta2 ~ dnorm(  0.0, 1.0E-4) 
   }
   "
+```
 
+### Data for Model
+```{r setupSoftDrinkData}
 # Data from soft drink experiment. See details below
 dataList  = 
   list(n = 25,
        
-       # Total Service time (dependent var)
+       # Total Service time (predicted variable)
        # Measure: minutes
        time = c(16.68, 11.5, 12.03, 14.88, 
                 13.75, 18.11, 8, 17.83, 79.24, 
@@ -86,7 +91,8 @@ dataList  =
                 24, 29, 15.35, 19, 9.5, 35.1,
                 17.9, 52.32, 18.75, 19.83, 10.75), 
        
-       # Distance an employee walks on foot to the vending machine
+       # Distance an employee walks on foot to the vending machine 
+       # (predictor variable 1)
        # Measure: feet
        distance = c(560, 220, 340, 80, 150, 330, 
                     110, 210, 1460, 605, 688, 215,
@@ -94,6 +100,7 @@ dataList  =
                     36, 770, 140, 810, 450, 635, 150),
        
        # Number of cases of stocked products to restock
+       # (predictor variable 2)
        # Measure: Number of cases of product
        cases = c( 7, 3, 3, 4, 6, 
                   7, 2, 7, 30, 5, 
@@ -101,15 +108,58 @@ dataList  =
                   10, 6, 7, 3, 17, 
                   10, 26, 9, 8, 4) 
        )
+```
 
-# Model Control Inputs ---------------------------------------------------------
+```{r setupSoftDrinkDataPlots, cache=TRUE}
+require(tidyverse)
+require(ggplot2)
+
+# Function to see data: how does prediced value compare to the predictor?
+getGLMPlot <- function(predictedValue, predictor, ...)
+{
+  df <- data.frame(predictedValue, predictor)
+  colnames(df) <- c('predictedValue', 'predictor')
+  
+  plot.glm <- df %>% 
+    ggplot(aes(y = predictedValue,
+               x = predictor)) +
+    labs(title    = 'Snapshot of Soft Drink Data',
+         subtitle = 'Daniel Carpenter',
+         ...) +
+    theme_minimal() +
+    geom_point(color = 'steelblue3') + 
+    geom_smooth(method = 'glm',
+                color = 'grey80',
+                linetype = 'dotdash',
+                fill = 'grey87')
+  
+  print(plot.glm)
+}
+
+# Distance as a predictor
+getGLMPlot(predictedValue = dataList$time    , y = 'Time',
+           predictor      = dataList$distance, x = 'Distance')
+
+# Num. Cases as a predictor
+getGLMPlot(predictedValue = dataList$time, y = 'Time',
+           predictor      = dataList$cases, x = 'Number of Cases')
+
+```
+
+
+### MCMC Model Control Inputs
+```{r, setupSoftDrinkInputs}
+# Model Name and Root
+fileNameRoot= "Task 1 JAGS Output (Soft Drinks)/" # Directory
+modelName   = 'SoftDrinks'      # Name of the model for File Naming
+
 
 ## MCMC Controls
-modelName   = 'SoftDrinks'      # Name of the model for File Naming
 adaptSteps  = 500               # Number of steps to adapt the samplers
 burnInSteps = 1000              # Number of steps to burn-in the chains
 nChains     = 3                 # nChains should be 2 or more for diagnostics 
 nIter       = 10000             # Total Number of iterations to perform
+
 
 ## Parameter Definitions
 parameters  = c("tau",          # The parameters to be monitored
@@ -120,14 +170,16 @@ initsList   = list( tau   = 1,  # Initial parameter values
                     beta0 = 1, 
                     beta1 = 0, 
                     beta2 = 0 )
-
-# ------------------------------------------------------------------------------
-
 ```
 
+### Run the JAGS Model
+```{r runSoftDrinkJAGS, eval=FALSE, include=TRUE}
+library(rjags)
 
-```{r runSoftDrinkJAGS}
-# Create a text file to hold the model above
+# Create the directory for the JAGS output
+dir.create(fileNameRoot)
+
+# Create a text file to hold the model string
 writeLines( modelString , con=paste0(modelName, ".txt") )
 
 # Run the Chains:
@@ -149,9 +201,10 @@ codaSamples = coda.samples( jagsModel, variable.names=parameters, n.iter=nIter )
 # Note the resulting codaSamples object has these indices: 
 #   codaSamples[[ chainIdx ]][ stepIdx , paramIdx ]
 
+# Save the coda samples
 save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
-# Save the MCMC Diagnostics for each parameters
+# Save/show the MCMC Diagnostics for each parameter
 for (varName in parameters) {
   
   # Output the data for each parameter defined above
