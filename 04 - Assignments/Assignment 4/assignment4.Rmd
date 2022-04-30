@@ -65,9 +65,6 @@ modelString =
     # model’s likelihood 
     for (i in 1:n) { 
       time[i] ~ dnorm( mu[i], tau ) # stochastic componenent 
-      
-      # link and linear predictor 
-      # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
       mu[i] <- beta0 + (beta1 * cases[i]) + (beta2 * distance[i]) 
     }
   
@@ -120,8 +117,8 @@ dataList  =
 
 ### Examine the Data
 ```{r setupSoftDrinkDataPlots, cache=TRUE}
-require(tidyverse)
-require(ggplot2)
+library(tidyverse)
+library(ggplot2)
 
 # Boxplots of the data
 df.softDrinks <- data.frame(dataList$time, dataList$distance, dataList$cases)
@@ -162,7 +159,7 @@ df.softDrinks %>%
 
 # Scatter of the data
 # Function to see data: how does prediced value compare to the predictor?
-getGLMPlot <- function(predictedValue, predictor, ...)
+getGLMPlot <- function(predictedValue, predictor, methodName = 'glm', ...)
 {
   df <- data.frame(predictedValue, predictor)
   colnames(df) <- c('predictedValue', 'predictor')
@@ -170,18 +167,23 @@ getGLMPlot <- function(predictedValue, predictor, ...)
   plot.glm <- df %>% 
     ggplot(aes(y = predictedValue,
                x = predictor)) +
-    labs(title    = 'Snapshot of Soft Drink Data',
+    labs(title    = 'Snapshot of Data',
          subtitle = 'Daniel Carpenter',
          caption = 'This view is only to see how the two variables move together. Does not assume causal or independant relationship.',
          ...) +
     theme_minimal() +
-    geom_point(color = 'steelblue3') + 
-    geom_smooth(method = 'glm',
+    
+    # Points
+    geom_point(color = 'steelblue3') +
+    
+    # Using a GLM smoother
+    geom_smooth(method = methodName,
                 color = 'grey80',
                 linetype = 'dotdash',
                 fill = 'grey87')
   
-  print(plot.glm)
+  # print(plot.glm)
+  return(plot.glm)
 }
 
 # Distance as a predictor
@@ -213,10 +215,6 @@ parameters  = c("tau",          # The parameters to be monitored
                 "beta0", 
                 "beta1", 
                 'beta2') 
-initsList   = list( tau   = 1,  # Initial parameter values
-                    beta0 = 1, 
-                    beta1 = 0, 
-                    beta2 = 0 )
 ```
 
 
@@ -226,7 +224,11 @@ initsList   = list( tau   = 1,  # Initial parameter values
 
 ### Function to Run the JAGS Model
 ```{r runSoftDrinkJAGS, echo=TRUE}
-runJagsFunction <- function(modelString, parameters) {
+runJagsFunction <- function(modelString, parameters, nIter=10000, # Total iterations
+                            initsList   = list( tau   = 1,  # Initial parameter values
+                                                beta0 = 1, 
+                                                beta1 = 0, 
+                                                beta2 = 0 )) {
   
   source("DBDA2E-utilities.R") # Must be in R's current working directory.
   library(rjags)
@@ -542,5 +544,171 @@ paste('Probability that beta2 > 0.01, given the data:', round(probExact, 3))
 
 <br>
 
-## Task 2
+# Task 2
+
+![Task 2 Description](Images/Task2.png)
+
+## `a` Data
+
+### Data for Model
+```{r setupBeetleData}
+dataList <- list(
+                 # Dose exposed to the beetle
+                 x = c(1.6907, 1.7242, 1.7552, 1.7842, 
+                       1.8113, 1.8369, 1.8610, 1.8839), 
+                 
+                 # Concentrations of carbon disulphide 
+                 n = c(59, 60, 62, 56, 63, 59, 62, 60), 
+                 
+                 # Number of beetles killed
+                 y = c(6, 13, 18, 28, 52, 53, 61, 60)
+                 )
+```
+
+### Plots of data
+```{r beetlePlots}
+require(tidyverse)
+# Distance as a predictor
+getGLMPlot(predictedValue = dataList$y, y = 'Number of beetles killed',
+           predictor      = dataList$x, x = 'Dose exposed to the beetle',
+           methodName = 'loess')  + # just using this to see the trend
+  geom_text(aes(label = paste0('n=', dataList$n)),
+                nudge_y = max(dataList$y) * 0.125,
+            size = 3,
+            color = 'grey40')
+  
+```
+
+## `b` JAGS Model 
+
+### The JAGS Model for Beetles
+```{r beetleJAGS}
+# The JAGS Model
+modelString = 
+"
+model {
+
+  for (i in 1:8) {
+  
+    # link and linear predictor 
+    y[i] ~ dbin(p[i], n[i]) 
+    
+          
+    # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
+    logit(p[i]) <- beta0 + ( beta1 * (x[i] - mean(x[])) )
+    
+    phat[i] <- y[i]/n[i] 
+    yhat[i] <- n[i]*p[i] 
+  } 
+  
+  # prior distributions 
+  beta0 ~ dnorm(  0.0, 1.0E-4)  
+  beta1 ~ dnorm(  0.0, 1.0E-4)  
+}
+"
+```
+
+### MCMC Model Control Inputs for Beetles
+```{r, setupBeetleInputs}
+# Model Name and Root
+fileNameRoot= "Task 2 JAGS Output (Beetles)/" # Directory
+modelName   = 'Beetles'      # Name of the model for File Naming
+
+
+## MCMC Controls
+adaptSteps  = 500               # Number of steps to adapt the samplers
+burnInSteps = 1000              # Number of steps to burn-in the chains
+nChains     = 3                 # nChains should be 2 or more for diagnostics 
+
+
+## Parameter Definitions
+parameters  = c("beta0", 
+                "beta1") 
+```
+
+## `c` Run Jags Model and Get Diagnostics
+```{r runBeetlesJags1, echo=TRUE, out.width = "720px", cache=TRUE}
+# Run the fun and store
+codaSamples <- runJagsFunction(modelString, parameters, nIter=5000, # Total iterations
+                               initsList   = list( beta0 = 1, 
+                                                   beta1 = 0 )
+                               )
+
+
+# Diagnostics and Posteriors ----------------------------------------
+
+# Beta 0
+varName = paste0(parameters[1])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.4813 , 1.031)) # from summary(codaSamples)
+
+# Beta 1
+varName = paste0(parameters[2])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(29.1521  , 40.382)) # from summary(codaSamples)
+
+graphics.off()
+
+# Density Plots
+library(ggmcmc)
+s = ggs(codaSamples)
+d = ggs_density(s)
+print(d)
+
+# Using classical methods (point estimates)
+# est.softDrink <- glm(time ~ distance + cases, data = dataList)
+# summary(est.softDrink)
+
+# Using Baysian Methods
+summary(codaSamples)
+```
+
+
+## `d`
+
+## `e`
+
+## `f` Pair Plots
+> Centered vs. Non-Centered Independant Variables
+
+```{r, pairs}
+require(ggmcmc)
+library(GGally)
+# Centered Independant Variable
+ggs_pairs(ggs(codaSamples), 
+          
+          # Change to Contours
+          lower = list(continuous =  'density'), 
+          
+          # Color by Chain and add transparency
+          mapping = aes(color = Chain, alpha = 0.2)
+          ) + 
+  labs(title = 'Pair Plot of Logistic Simulation',
+       subtitle = 'Centered Independant Variable | Daniel Carpenter\n') + 
+  theme_minimal() 
+
+
+# Centered Independant Variable
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
