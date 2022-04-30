@@ -29,7 +29,7 @@ All questions and parts done completely.
 
 ---
 
-# Task 1
+# Task 1 - GLM
 
 ## Overview of Problem 
 
@@ -72,8 +72,8 @@ modelString =
     }
   
     # prior distributions 
-    beta0 ~ dnorm(  0.0, 1.0E-4)  # Check! 
-    beta1 ~ dnorm(  0.0, 1.0E-4)  # Check! 
+    beta0 ~ dnorm(  0.0, 1.0E-4)  
+    beta1 ~ dnorm(  0.0, 1.0E-4)  
     beta2 ~ dnorm(  0.0, 1.0E-4) 
     tau   ~ dgamma( 0.01, 0.01 ) 
   }
@@ -224,39 +224,49 @@ initsList   = list( tau   = 1,  # Initial parameter values
 
 ## `c-g`  
 
-### Run the JAGS Model
-```{r runSoftDrinkJAGS, echo=TRUE, out.width = "720px", cache=TRUE}
-source("DBDA2E-utilities.R") # Must be in R's current working directory.
-library(rjags)
+### Function to Run the JAGS Model
+```{r runSoftDrinkJAGS, echo=TRUE}
+runJagsFunction <- function(modelString, parameters) {
+  
+  source("DBDA2E-utilities.R") # Must be in R's current working directory.
+  library(rjags)
+  
+  # Create the directory for the JAGS output
+  dir.create(fileNameRoot)
+  
+  # Create a text file to hold the model string
+  writeLines( modelString , con=paste0(modelName, ".txt") )
+  
+  # Run the Chains:
+  jagsModel = jags.model(file     = paste0(modelName, ".txt"), 
+                         data     = dataList, 
+                         inits    = initsList, 
+                         n.chains = nChains,
+                         n.adapt  = adaptSteps 
+                         )
+  
+  # Burn-in:
+  cat( "Burning in the MCMC chain...\n" )
+  update( jagsModel , n.iter=burnInSteps )
+  
+  # Sample MCMC
+  cat( "Sampling final MCMC chain...\n" )
+  codaSamples = coda.samples( jagsModel, variable.names=parameters, n.iter=nIter )
+  
+  # Note the resulting codaSamples object has these indices: 
+  #   codaSamples[[ chainIdx ]][ stepIdx , paramIdx ]
+  
+  # Save the coda samples
+  save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
+  
+  return(codaSamples)
+}
+```
 
-# Create the directory for the JAGS output
-dir.create(fileNameRoot)
-
-# Create a text file to hold the model string
-writeLines( modelString , con=paste0(modelName, ".txt") )
-
-# Run the Chains:
-jagsModel = jags.model(file     = paste0(modelName, ".txt"), 
-                       data     = dataList, 
-                       inits    = initsList, 
-                       n.chains = nChains,
-                       n.adapt  = adaptSteps 
-                       )
-
-# Burn-in:
-cat( "Burning in the MCMC chain...\n" )
-update( jagsModel , n.iter=burnInSteps )
-
-# Sample MCMC
-cat( "Sampling final MCMC chain...\n" )
-codaSamples = coda.samples( jagsModel, variable.names=parameters, n.iter=nIter )
-
-# Note the resulting codaSamples object has these indices: 
-#   codaSamples[[ chainIdx ]][ stepIdx , paramIdx ]
-
-# Save the coda samples
-save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
-
+### Run Jags Model
+```{r runJags1, out.width = "720px", cache=TRUE}
+# Run the fun and store
+codaSamples <- runJagsFunction(modelString, parameters)
 
 # Diagnostics and Posteriors ----------------------------------------
 
@@ -341,9 +351,177 @@ estimate) and with what posterior probability?
 *Estimates above are approximate by nature of MCMC*
 
 
+---
+
+<br>
+
+## `j` Add `typical.y`
+
+### New Jags Model
+```{r setupNewSoftDrinkJAGS}
+# The JAGS Model
+modelString2 = 
+  "
+  model {
+  
+    # model’s likelihood 
+    for (i in 1:n) { 
+      time[i] ~ dnorm( mu[i], tau ) # stochastic componenent 
+      
+      # link and linear predictor 
+      # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
+      mu[i]     <- beta0 + (beta1 * cases[i]) + (beta2 * distance[i]) 
+    }
+    
+    typical.y <- beta0 + beta1 * mean(cases[]) + beta2 * mean(distance[])
+    
+    # prior distributions 
+    beta0 ~ dnorm(  0.0, 1.0E-4)   
+    beta1 ~ dnorm(  0.0, 1.0E-4)   
+    beta2 ~ dnorm(  0.0, 1.0E-4) 
+    tau   ~ dgamma( 0.01, 0.01 ) 
+  }
+  "
+```
+
+### Run Jags Model
+> Note only *monitoring* `typical.y`  
+
+```{r runJags2, cache=TRUE, out.width="720px"}
+# Run the fun and store
+codaSamples <- runJagsFunction(modelString2, 
+                               parameters  = c('typical.y')) # Monitor only R2B typical.y
+
+# Diagnostics and Posteriors ----------------------------------------
+
+# Note not monitoring other parameters to keep the file cleaner.
+
+# Get Plots for typical.y
+varName = 'typical.y'
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(21.045328  , 23.7713)) # from summary(codaSamples)
+
+graphics.off()
+
+# Using Baysian Methods
+summary(codaSamples)
+```
+
+### Interpretation of `typical.y`:
+* The mean  typical outcome of `time` is around 22.3816. I find this interesting given the boxplots showing a median value slightly less than 20 () created at the top of the file).
+* There is a probability of 95% that the typical outcome of `time` of will fall between 21 and 23.7
+* The param. value’s trace has a defined range and hovers around mean value.  
+* No issues with autocorrelation, as it drops significantly immediately.  
+* Shrink factor stabilizes (good)  
+* Chain densities represent each other well. Slight variation near median values.
+
+---
+
+<br>
+
+## `l` Add $R^{2}_{B}$
+```{r setup3SoftDrinkJAGS}
+# The JAGS Model
+modelString3 = 
+  "
+  model {
+  
+    # model’s likelihood 
+    for (i in 1:n) { 
+      time[i] ~ dnorm( mu[i], tau ) # stochastic componenent 
+      
+      # link and linear predictor 
+      # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
+      mu[i]     <- beta0 + (beta1 * cases[i]) + (beta2 * distance[i]) 
+    }
+    
+    typical.y <- beta0 + beta1 * mean(cases[]) + beta2 * mean(distance[])
+    
+    # prior distributions 
+    beta0 ~ dnorm(  0.0, 1.0E-4)   
+    beta1 ~ dnorm(  0.0, 1.0E-4)   
+    beta2 ~ dnorm(  0.0, 1.0E-4) 
+    tau   ~ dgamma( 0.01, 0.01 ) 
+    
+		# definition of sigma
+		s2<-1/tau
+		s <-sqrt(s2)
+		
+		# calculation of the sample variance
+	  for (i in 1:n){ c.time[i]<-time[i]-mean(time[]) } 
+		sy2 <- inprod( c.time[], c.time[] )/(n-1)
+		
+		# calculation of Bayesian version R squared
+		R2B <- 1 - s2/sy2
+    
+		# Posterior Probabilities
+		p.beta0 <- step( beta0 )
+		p.beta1 <- step( beta1 )
+		p.beta2 <- step( beta2 )
+  }
+  "
+```
+
+### Run Jags Model
+> Note only *monitoring* $R^{2}_{B}$  
 
 
+```{r runJags3, cache=TRUE, out.width="720px"}
+# Run the fun and store
+codaSamples <- runJagsFunction(modelString3, 
+                               parameters  = c('beta2', # want to monitor this to get point est
+                                               'R2B') # Monitor only R2B
+                               )
+
+# Diagnostics and Posteriors ----------------------------------------
+
+# Note not monitoring other parameters to keep the file cleaner.
+
+# Plots for beta2 since question about prob later on
+varName = 'beta2'
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.911270   , 0.97351)) # from summary(codaSamples)
 
 
+# Plots for R2B
+varName = 'R2B'
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
+
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.911270   , 0.97351)) # from summary(codaSamples)
+
+graphics.off()
+
+# Using Baysian Methods
+su = summary(codaSamples)
+su
+```
+
+### Interpretation of $R2B$:
+* The mean  typical outcome of `time` is around 0.9515  
+* There is a probability of 95% that the typical outcome of `time` of will fall between 0.911409  and 0.97363
+* The param. value’s trace has a defined range and hovers around mean value but dips low sometimes.  
+* No issues with autocorrelation, as it drops significantly immediately.  
+* Shrink factor stabilizes (good)  
+* Chain densities represent each other well.
 
 
+### Calculate $P(\beta_2 > 0.01|D)$
+```{r}
+# Since Beta2 must be distributed normally, here get the mean and sd
+mu    = su$statistics[2,1]
+sigma = su$statistics[2,2]
+
+# Probability that beta2 > 0.01, given the data
+probExact = 1 - pnorm(0.01, mu, sigma)
+
+paste('Probability that beta2 > 0.01, given the data:', round(probExact, 3))
+
+```
