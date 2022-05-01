@@ -8,8 +8,7 @@ model {
     
           
     # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
-    # Note that x is non-centered now since it is not centering around mean
-    logit(p[i]) <- beta0 + ( beta1 * x[i] )      # Removed (x[i] - mean(x[]))
+    logit(p[i]) <- beta0 + ( beta1 * (x[i] - mean(x[])) ) # Note centering around mean
     
     phat[i] <- y[i]/n[i] 
     yhat[i] <- n[i]*p[i] 

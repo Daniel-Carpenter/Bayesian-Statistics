@@ -545,7 +545,7 @@ paste('Probability that beta2 > 0.01, given the data:', round(probExact, 3))
 
 <br>
 
-# Task 2
+# Task 2 - Logit/Probit/Centering
 
 ![Task 2 Description](Images/Task2.png)
 
@@ -580,16 +580,19 @@ getGLMPlot(predictedValue = dataList$y, y = 'Number of beetles killed',
   
 ```
 
-## `b` JAGS Model (*Centered*)
-> Model centered Independant variable *dose* (`x`) around it's mean
+## `b` JAGS Model `Logit` (*Centered*)
+> Model centered Independant variable *dose* (`x`) around it's mean  
+> Uses a Logit Link  
 
 * To help convergence, *centering* causes nearly uncorrelated regression coeff's
 * [See reasoning for centering article](https://agabrioblog.onrender.com/tutorial/multiple-linear-regression-jags/multiple-linear-regression-jags/)  
 
-### The JAGS Model for Beetles
+### The JAGS Model for Beetles `Logit` (*Centered*)
 ```{r beetleJAGS}
 # The JAGS Model
-modelString = 
+modelName   = 'BeetlesLogitCenter'      # Name of the model for File Naming
+
+modelStringLogitCenter = 
 "
 model {
 
@@ -613,12 +616,10 @@ model {
 "
 ```
 
-### MCMC Model Control Inputs for Beetles
+### MCMC Model Control Inputs for Beetles `Logit` (*Centered*)
 ```{r, setupBeetleInputs}
 # Model Name and Root
 fileNameRoot= "Task 2 JAGS Output (Beetles)/" # Directory
-modelName   = 'Beetles'      # Name of the model for File Naming
-
 
 ## MCMC Controls
 adaptSteps  = 500               # Number of steps to adapt the samplers
@@ -631,10 +632,10 @@ parameters  = c("beta0",
                 "beta1") 
 ```
 
-## `c` Run Jags Model (*Centered*)
+## `c` Run Jags Model `Logit` (*Centered*)
 ```{r runBeetlesJags1, echo=TRUE, out.width = "720px", cache=TRUE}
 # Run the fun and store
-codaSamples <- runJagsFunction(modelString, parameters, nIter=5000, # Total iterations
+codaSamplesLogitCenter <- runJagsFunction(modelStringLogitCenter, parameters, nIter=5000, # Total iterations
                                initsList   = list( beta0 = 0,  # Note initial values
                                                    beta1 = 0 )
                                )
@@ -644,30 +645,30 @@ codaSamples <- runJagsFunction(modelString, parameters, nIter=5000, # Total iter
 
 # Beta 0
 varName = paste0(parameters[1])
-diagMCMC( codaObject=codaSamples , parName=varName );
+diagMCMC( codaObject=codaSamplesLogitCenter , parName=varName );
 saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.4813 , 1.031)) # from summary(codaSamples)
+plotPost( codaSamplesLogitCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.4813 , 1.031)) # from summary(codaSamplesLogitCenter)
 
 # Beta 1
 varName = paste0(parameters[2])
-diagMCMC( codaObject=codaSamples , parName=varName );
+diagMCMC( codaObject=codaSamplesLogitCenter , parName=varName );
 saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(29.1521  , 40.382)) # from summary(codaSamples)
+plotPost( codaSamplesLogitCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(29.1521  , 40.382)) # from summary(codaSamplesLogitCenter)
 
 # graphics.off()
 
 # Density Plots
 library(ggmcmc)
-s = ggs(codaSamples)
+s = ggs(codaSamplesLogitCenter)
 d = ggs_density(s)
 print(d)
 
 # Using Baysian Methods
-summary(codaSamples)
+summary(codaSamplesLogitCenter)
 ```
 
 ---
@@ -683,6 +684,7 @@ summary(codaSamples)
 ### The JAGS Model for Beetles (*not centered*)
 ```{r beetleJAGS2}
 # The JAGS Model
+modelName   = 'BeetlesLogitNonCenter'      # Name of the model for File Naming
 modelString = 
 "
 model {
@@ -713,40 +715,42 @@ model {
 
 ```{r runBeetlesJags2, echo=TRUE, out.width = "720px", cache=TRUE}
 # Run the fun and store
-codaSamplesNonCenter <- runJagsFunction(modelString, parameters, nIter=5000, # Total iterations
-                                        initsList   = list( beta0 = 1, 
-                                                            beta1 = 1 )
-                                        )
+codaSamplesLogitNonCenter <- runJagsFunction(modelString, parameters = c("beta0", 
+                                                                         "beta1"), 
+                                             nIter=5000, # Total iterations
+                                             initsList   = list( beta0 = 1, 
+                                                                 beta1 = 1 )
+                                             )
 
 
 # Diagnostics and Posteriors ----------------------------------------
 
 # Beta 0
 varName = paste0(parameters[1])
-diagMCMC( codaObject=codaSamplesNonCenter , parName=varName );
+diagMCMC( codaObject=codaSamplesLogitNonCenter , parName=varName );
 saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-plotPost( codaSamplesNonCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.4813 , 1.031)) # from summary(codaSamplesNonCenter)
+plotPost( codaSamplesLogitNonCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.4813 , 1.031)) # from summary(codaSamplesLogitNonCenter)
 
 # Beta 1
 varName = paste0(parameters[2])
-diagMCMC( codaObject=codaSamplesNonCenter , parName=varName );
+diagMCMC( codaObject=codaSamplesLogitNonCenter , parName=varName );
 saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-plotPost( codaSamplesNonCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(29.1521  , 40.382)) # from summary(codaSamplesNonCenter)
+plotPost( codaSamplesLogitNonCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(29.1521  , 40.382)) # from summary(codaSamplesLogitNonCenter)
 
 # graphics.off()
 
 # Density Plots
 library(ggmcmc)
-s = ggs(codaSamplesNonCenter)
+s = ggs(codaSamplesLogitNonCenter)
 d = ggs_density(s)
 print(d)
 
 # Using Baysian Methods
-summary(codaSamplesNonCenter)
+summary(codaSamplesLogitNonCenter)
 ```
 
 
@@ -768,7 +772,7 @@ require(ggmcmc)
 library(GGally)
 
 # Centered Independant Variable
-ggs_pairs(ggs(codaSamples), 
+ggs_pairs(ggs(codaSamplesLogitCenter), 
           
           # Change to Contours
           lower = list(continuous =  'density'), 
@@ -782,7 +786,7 @@ ggs_pairs(ggs(codaSamples),
 
 
 # Centered Independent Variable
-ggs_pairs(ggs(codaSamplesNonCenter), 
+ggs_pairs(ggs(codaSamplesLogitNonCenter), 
           
           # Change to Contours
           lower = list(continuous =  'density'), 
@@ -821,6 +825,8 @@ Not Random | beta0, beta1, phat[i],
 ### The JAGS Model for `Probit` Beetles
 ```{r beetleJAGS3}
 # The JAGS Model
+modelName   = 'BeetlesProbitNonCenter'      # Name of the model for File Naming
+
 modelString = 
 "
 model {
@@ -850,40 +856,42 @@ model {
 ### Run Jags Model `Probit` (*Centered*)
 ```{r runBeetlesJags3, echo=TRUE, out.width = "720px", cache=TRUE}
 # Run the fun and store
-codaSamples <- runJagsFunction(modelString, parameters, nIter=5000, # Total iterations
-                               initsList   = list( beta0 = 0,  # Note initial values
-                                                   beta1 = 0 )
-                               )
+codaSamplesProbitCenter <- runJagsFunction(modelString, 
+                                           parameters = c("beta0", "beta1"), 
+                                           nIter=5000, # Total iterations
+                                           initsList   = list( beta0 = 0,  # Note initial values
+                                                               beta1 = 0 )
+                                           )
 
 
 # Diagnostics and Posteriors ----------------------------------------
 
 # Beta 0
 varName = paste0(parameters[1])
-diagMCMC( codaObject=codaSamples , parName=varName );
+diagMCMC( codaObject=codaSamplesProbitCenter , parName=varName );
 saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.295   , 0.5969)) # from summary(codaSamples)
+plotPost( codaSamplesProbitCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.295   , 0.5969)) # from summary(codaSamplesProbitCenter)
 
 # Beta 1
 varName = paste0(parameters[2])
-diagMCMC( codaObject=codaSamples , parName=varName );
+diagMCMC( codaObject=codaSamplesProbitCenter , parName=varName );
 saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
-plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(16.947   , 22.7206)) # from summary(codaSamples)
+plotPost( codaSamplesProbitCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(16.947   , 22.7206)) # from summary(codaSamplesProbitCenter)
 
 # graphics.off()
 
 # Density Plots
 library(ggmcmc)
-s = ggs(codaSamples)
+s = ggs(codaSamplesProbitCenter)
 d = ggs_density(s)
 print(d)
 
 # Using Baysian Methods
-summary(codaSamples)
+summary(codaSamplesProbitCenter)
 
 # Pairs plot
 pairs <- ggs_pairs(s, 
@@ -904,4 +912,76 @@ print(pairs)
 ### Interpretation of Results (`Probit`)
 * Similar outcome as the `logit` model (in terms of convergence and stationarity)  
 * However, significantly different results for the point estimate of $\beta_1$.  
+
+<br>
+
+## `i` Plot Estimations of `Logit` (*Centered*)
+```{r logitCenterFit}
+require(tidyverse)
+require(ggplot)
+require(DescTools)
+
+# Rerun with p and yhat
+modelName   = 'BeetlesLogitNonCenter2'      # Name of the model for File Naming
+codaSamplesLogitCenter2 <- runJagsFunction(modelStringLogitCenter, 
+                                           parameters =c("beta0", "beta1",
+                                                         'p','yhat') , 
+                                           nIter=5000, # Total iterations
+                                           initsList   = list( beta0 = 0,  # Note initial values
+                                                               beta1 = 0 )
+                                           )
+
+
+valuesOf = 'p' # the value of interest
+
+# Create a summary of the codaSample simulations
+codaSummary <- summary(codaSamplesLogitCenter2)
+
+# Actual dataList as a data frame
+actualData <- data.frame(y = dataList$y, 
+                         # n = dataList$n,#intentially do not include n
+                         x = dataList$x)
+
+# Coda sample stats and names
+codaStats <- as.data.frame(codaSummary$statistics) %>%
+  mutate(statName = rownames(codaSummary$statistics)) %>%
+  select(statName, mean = Mean)
+
+# Coda sample quantiles and names
+codaQuantiles <- as.data.frame(codaSummary$quantiles) %>%
+  mutate(statName = rownames(codaSummary$quantiles)) %>%
+  select(statName,
+         lowerTail = `2.5%`,
+         upperTail = `97.5%`)
+
+df.codaSummary <- codaStats %>% 
+  
+  # Join the stats and CI together
+  left_join(codaQuantiles, 
+            by = 'statName') %>%
+  
+  # Filter to the parameter based on input
+  filter(statName %like% paste0(valuesOf, '%')) %>%
+  
+  # Rename stat name to the one inputted (get rid of idxs)
+  mutate(statName = valuesOf)
+
+# Filter down to the 
+df <- df.codaSummary %>%
+  bind_cols(actualData) #%>%
+  # pivot_longer(cols      = !c(statName, x),
+  #              names_to  = 'estName',
+  #              values_to = 'estValue')
+
+head(df)
+df %>%
+  ggplot(aes(x=x)) + 
+  geom_line(aes(y=lowerTail), linetype='dashed') + 
+  geom_line(aes(y=mean)) + 
+  geom_line(aes(y=upperTail), linetype = 'dashed')
+
+
+```
+
+
 

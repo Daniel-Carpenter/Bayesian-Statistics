@@ -1,0 +1,22 @@
+
+model {
+
+  for (i in 1:8) {
+  
+    # link and linear predictor 
+    y[i] ~ dbin(p[i], n[i]) 
+    
+          
+    # In JAGS, ilogit is logistic. Use logistic since not 0/1 predicted values
+    # Note that x is non-centered now since it is not centering around mean
+    logit(p[i]) <- beta0 + ( beta1 * x[i] )      # Removed (x[i] - mean(x[]))
+    
+    phat[i] <- y[i]/n[i] 
+    yhat[i] <- n[i]*p[i] 
+  } 
+  
+  # prior distributions 
+  beta0 ~ dnorm(  0.0, 0.001)  
+  beta1 ~ dnorm(  0.0, 0.001)  
+}
+
