@@ -1039,7 +1039,7 @@ getLineFitFromCoda <- function(codaSamplesLogitCenter2, # Coda Samples
 ```
 
 ### Get the Line Fit
-```{r runFunFit}
+```{r runFunFit, cache=TRUE}
 # Plot the lines and fit for p
 getLineFitFromCoda(codaSamplesLogitCenter2, dataList, valuesOf = 'p')    
 
@@ -1056,9 +1056,101 @@ getLineFitFromCoda(codaSamplesLogitCenter2, dataList, valuesOf = 'yhat')
 
 ## `1` Describe Data 
 
+### Get Titanic Data
+```{r, titanicData}
+require(vcdExtra) # Titanic passenger data
+require(knitr) # Titanic passenger data
+data("Titanicp")
+
+# Head of data
+kable(head(Titanicp))
+```
+
 <br>
 
-## `2` Plots fo Data 
+### Describe Data
+
+Variable Name | Description
+--------------|-------------
+`pclass`      | Class of Passenger ('1st', '2nd', '3rd'). 1st is highest class, 3rd is lowest class.
+`survived`    | Whether the passenger 'died' or 'survived' after the Titanic sank
+`sex`         | Sex of the passenger $\in$ (male, female)
+`age`         | passenger age in years (or fractions of a year, for children), a numeric vector; age is missing for 263 of the passengers
+`sibsp`       | Number of siblings or spouses aboard; integer: 0:8
+`parch`       | Number of parents or children aboard; integer: 0:6
+
+<br>
+
+## `2` Plots of Data 
+```{r ggplots, cache=TRUE}
+library(ggplot2)
+
+# Overview
+ggplot(Titanicp, 
+       aes(x     = age,
+           color = pclass,
+           fill  = pclass)) + 
+  
+  # Density
+  geom_density(alpha = 0.25) + 
+  
+  # Facets
+  facet_grid(cols = vars(sex),
+             rows = vars(survived)) +
+
+  labs(title    = 'Titanic Survivor/Death Overview',
+       subtitle = 'Daniel Carpenter\n') + 
+  
+  theme(panel.background = element_blank(),
+        panel.grid = element_line(color='grey95'),
+        legend.position = 'top')
+
+
+# Survived vs not 
+g = ggplot(Titanicp, aes(x = age, 
+                         y=as.numeric(survived =="survived"),
+                         color = sex)) + 
+  ylab("Survived") + 
+  theme_bw() 
+
+# Jitter the plot so that the points are not on top of each other
+# Mainly woman who survived, but not exact relationship
+JITTER_AMOUNT = 0.015
+g = g + geom_point(position = position_jitter(height = JITTER_AMOUNT, width =0))
+g
+
+# Generalized Linear Model - binomial with link logit. Also fit a cubic
+# Older woman are more likely to survive, and younger boys are more likely to survive
+# Note wide interval likely due to limited sample size
+g = g + stat_smooth(method = "glm", 
+                    method.args = list(family=binomial("logit")), 
+                    formula = y ~ x + I(x^2) + I(x^3), 
+                    alpha = 0.25, size = 2.5, 
+                    aes(fill = sex))
+g
+
+# Now break out by class of passenger
+# First class females have high likelihood of survival
+g = g + facet_wrap(~pclass)
+g
+
+# Pairs Plot
+ggpairs(Titanicp)
+```
+
+<br>
+
+### Interpretation of Plots
+
+* Most of the individuals who died were older males. However, some females died too.  
+
+* Young individuals regardless of age have similar survival rates, but males plummit quickly  
+
+* Without consideration of class, females have higher likelihood of survival with incraesed age  
+
+* Limited sample size with wider tails in older age groups  
+
+* It appears that 1st class had highest priority for life boats (see slope and intercept). Third class had low priority regardless of age, but age still negatively impacted likelihood of survival.   
 
 <br>
 
