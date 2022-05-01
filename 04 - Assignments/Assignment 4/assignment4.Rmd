@@ -635,10 +635,13 @@ parameters  = c("beta0",
 ## `c` Run Jags Model `Logit` (*Centered*)
 ```{r runBeetlesJags1, echo=TRUE, out.width = "720px", cache=TRUE}
 # Run the fun and store
-codaSamplesLogitCenter <- runJagsFunction(modelStringLogitCenter, parameters, nIter=5000, # Total iterations
-                               initsList   = list( beta0 = 0,  # Note initial values
-                                                   beta1 = 0 )
-                               )
+codaSamplesLogitCenter <- runJagsFunction(modelStringLogitCenter, 
+                                          parameters =c("beta0", "beta1",
+                                                        'p','yhat') , 
+                                          nIter=5000, # Total iterations
+                                          initsList   = list( beta0 = 0,  # Note initial values
+                                                              beta1 = 0 )
+                                          )
 
 
 # Diagnostics and Posteriors ----------------------------------------
@@ -916,71 +919,121 @@ print(pairs)
 <br>
 
 ## `i` Plot Estimations of `Logit` (*Centered*)
-```{r logitCenterFit}
-require(tidyverse)
-require(ggplot)
-require(DescTools)
 
-# Rerun with p and yhat
-modelName   = 'BeetlesLogitNonCenter2'      # Name of the model for File Naming
-codaSamplesLogitCenter2 <- runJagsFunction(modelStringLogitCenter, 
-                                           parameters =c("beta0", "beta1",
-                                                         'p','yhat') , 
-                                           nIter=5000, # Total iterations
-                                           initsList   = list( beta0 = 0,  # Note initial values
-                                                               beta1 = 0 )
-                                           )
+### Function to Plot Fit of Coda
+```{r logitCenterFit, cache=TRUE}
 
-
-valuesOf = 'p' # the value of interest
-
-# Create a summary of the codaSample simulations
-codaSummary <- summary(codaSamplesLogitCenter2)
-
-# Actual dataList as a data frame
-actualData <- data.frame(y = dataList$y, 
-                         # n = dataList$n,#intentially do not include n
-                         x = dataList$x)
-
-# Coda sample stats and names
-codaStats <- as.data.frame(codaSummary$statistics) %>%
-  mutate(statName = rownames(codaSummary$statistics)) %>%
-  select(statName, mean = Mean)
-
-# Coda sample quantiles and names
-codaQuantiles <- as.data.frame(codaSummary$quantiles) %>%
-  mutate(statName = rownames(codaSummary$quantiles)) %>%
-  select(statName,
-         lowerTail = `2.5%`,
-         upperTail = `97.5%`)
-
-df.codaSummary <- codaStats %>% 
+# Function to plot code sample line fit
+getLineFitFromCoda <- function(codaSamplesLogitCenter, # Coda Samples 
+                               dataList,               # Actual data (list of y and x)
+                               valuesOf) {             # either 'p' or 'yhat'
   
-  # Join the stats and CI together
-  left_join(codaQuantiles, 
-            by = 'statName') %>%
+  require(tidyverse)
+  require(ggplot)
+  require(DescTools) # %like% function
   
-  # Filter to the parameter based on input
-  filter(statName %like% paste0(valuesOf, '%')) %>%
+  # Create a summary of the codaSample simulations
+  codaSummary <- summary(codaSamplesLogitCenter)
   
-  # Rename stat name to the one inputted (get rid of idxs)
-  mutate(statName = valuesOf)
+  # Actual dataList as a data frame
+  actualData <- data.frame(y = dataList$y, 
+                           # n = dataList$n, #intentionally do not include n
+                           x = dataList$x)
+  
+  # Coda sample stats and names
+  codaStats <- as.data.frame(codaSummary$statistics) %>%
+    mutate(statName = rownames(codaSummary$statistics)) %>%
+    select(statName, mean = Mean)
+  
+  # Coda sample quantiles and names
+  codaQuantiles <- as.data.frame(codaSummary$quantiles) %>%
+    mutate(statName = rownames(codaSummary$quantiles)) %>%
+    select(statName,
+           lowerTail = `2.5%`,
+           upperTail = `97.5%`)
+  
+  df.codaSummary <- codaStats %>% 
+    
+    # Join the stats and CI together
+    left_join(codaQuantiles, 
+              by = 'statName') %>%
+    
+    # Filter to the parameter based on input
+    filter(statName %like% paste0(valuesOf, '%')) %>%
+    
+    # Rename stat name to the one inputted (get rid of idxs)
+    mutate(statName = valuesOf)
+  
+  # Filter down to the 
+  df <- df.codaSummary %>%
+    bind_cols(actualData)
+  
+  
+  # ------------------------------------------------------------------------------
+  # PLOTS
+  # ------------------------------------------------------------------------------
+  
+  lineSize = 0.75
+  
+  # Create the colors to map to the legend for easy viewing
+  legendMapping = c('Actual Data' = 'tomato3',
+                    'Mean Est.'= 'steelblue3',
+                    '95% Upper/Lower Tail' = "grey70"
+                    )
+  
+  # If p, then Convert y to % of total since cumulative prob, not nominal values
+  if (valuesOf == 'p') { 
+    df$y = df$y / max(df$y)
+  }
+  
+  # Create the plot
+  plot.fit <- df %>% 
+    
+    ggplot(aes(x=x)) + 
+    
+    # Lines ----
+    
+    ## 95% lower bound
+    geom_line(aes(y=lowerTail,  color='95% Upper/Lower Tail'), # map to legend/color
+              linetype='dashed', size = lineSize) +   
+    
+    ## Mean Estimate
+    geom_line(aes(y=mean, color = 'Mean Est.'), # map to legend/color
+              size = lineSize) +                                    
+    
+    ## 95% upper bound
+    geom_line(aes(y=upperTail, color='95% Upper/Lower Tail'), # map to legend/color
+              linetype = 'dashed', size = lineSize) + 
+    
+    ## Plot the actual data
+    geom_point(aes(y=y, color = 'Actual Data'), # map to legend/color
+               size = 2, alpha = 0.5) +                              
+    
+    # Map the colors
+    scale_color_manual(name = "", values = legendMapping) + 
+    
+    # Labels on plot using input
+    labs(title = paste('Model Fit of Variable', valuesOf),
+         subtitle = paste0('How does the Centered Logit Model fit the Actual Data?\nDaniel Carpenter'),
+         y = paste0(valuesOf, '\n'),
+         x = 'Dose Concentration') +
+    
+    # The theme
+    theme_minimal() + theme(text = element_text(color = 'grey30'),
+                            legend.position = 'top')
+    
+  
+  return(plot.fit)
+}
+```
 
-# Filter down to the 
-df <- df.codaSummary %>%
-  bind_cols(actualData) #%>%
-  # pivot_longer(cols      = !c(statName, x),
-  #              names_to  = 'estName',
-  #              values_to = 'estValue')
+### Get the Line Fit
+```{r runFunFit}
+# Plot the lines and fit for p
+getLineFitFromCoda(codaSamplesLogitCenter, dataList, valuesOf = 'p')    
 
-head(df)
-df %>%
-  ggplot(aes(x=x)) + 
-  geom_line(aes(y=lowerTail), linetype='dashed') + 
-  geom_line(aes(y=mean)) + 
-  geom_line(aes(y=upperTail), linetype = 'dashed')
-
-
+# Plot the lines and fit for yhat
+getLineFitFromCoda(codaSamplesLogitCenter, dataList, valuesOf = 'yhat') 
 ```
 
 
