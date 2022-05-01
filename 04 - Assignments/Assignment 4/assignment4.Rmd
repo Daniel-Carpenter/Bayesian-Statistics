@@ -7,12 +7,13 @@ fontsize: 12pt
 geometry: margin=1in
 output:
   html_document: 
+    number_sections: yes
     toc: yes
     toc_float: yes
     theme: yeti
   # github_document:
+    # number_sections: yes
   #   toc: yes
-  #   # number_sections: yes
   #   toc_depth: 2
 ---
 
@@ -636,8 +637,7 @@ parameters  = c("beta0",
 ```{r runBeetlesJags1, echo=TRUE, out.width = "720px", cache=TRUE}
 # Run the fun and store
 codaSamplesLogitCenter <- runJagsFunction(modelStringLogitCenter, 
-                                          parameters =c("beta0", "beta1",
-                                                        'p','yhat') , 
+                                          parameters =c("beta0", "beta1") , 
                                           nIter=5000, # Total iterations
                                           initsList   = list( beta0 = 0,  # Note initial values
                                                               beta1 = 0 )
@@ -922,9 +922,20 @@ print(pairs)
 
 ### Function to Plot Fit of Coda
 ```{r logitCenterFit, cache=TRUE}
+# Rerun with p and yhat
+# Rerun model because in past run wanted to see density plots of only beta1 and 2
+# Took way too long for the pairs plot so just rerunnning
+modelName   = 'BeetlesLogitNonCenter2'      # Name of the model for File Naming
+codaSamplesLogitCenter2 <- runJagsFunction(modelStringLogitCenter, 
+                                           parameters =c("beta0", "beta1",
+                                                         'p','yhat') , 
+                                           nIter=5000, # Total iterations
+                                           initsList   = list( beta0 = 0,  # Note initial values
+                                                               beta1 = 0 )
+                                           )
 
 # Function to plot code sample line fit
-getLineFitFromCoda <- function(codaSamplesLogitCenter, # Coda Samples 
+getLineFitFromCoda <- function(codaSamplesLogitCenter2, # Coda Samples 
                                dataList,               # Actual data (list of y and x)
                                valuesOf) {             # either 'p' or 'yhat'
   
@@ -933,7 +944,7 @@ getLineFitFromCoda <- function(codaSamplesLogitCenter, # Coda Samples
   require(DescTools) # %like% function
   
   # Create a summary of the codaSample simulations
-  codaSummary <- summary(codaSamplesLogitCenter)
+  codaSummary <- summary(codaSamplesLogitCenter2)
   
   # Actual dataList as a data frame
   actualData <- data.frame(y = dataList$y, 
@@ -1030,11 +1041,30 @@ getLineFitFromCoda <- function(codaSamplesLogitCenter, # Coda Samples
 ### Get the Line Fit
 ```{r runFunFit}
 # Plot the lines and fit for p
-getLineFitFromCoda(codaSamplesLogitCenter, dataList, valuesOf = 'p')    
+getLineFitFromCoda(codaSamplesLogitCenter2, dataList, valuesOf = 'p')    
 
 # Plot the lines and fit for yhat
-getLineFitFromCoda(codaSamplesLogitCenter, dataList, valuesOf = 'yhat') 
+getLineFitFromCoda(codaSamplesLogitCenter2, dataList, valuesOf = 'yhat') 
 ```
 
 
+---
+
+<br>
+
+# Task 3 - Titanic / Logistic
+
+## `1` Describe Data 
+
+<br>
+
+## `2` Plots fo Data 
+
+<br>
+
+## `3` JAGS Model using DIC
+
+<br>
+
+## `4` Intepretation
 
