@@ -305,7 +305,7 @@ saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
 plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.006817 , 0.02172)) # from summary(codaSamples)
 
-graphics.off()
+# graphics.off()
 
 # Density Plots
 library(ggmcmc)
@@ -410,7 +410,7 @@ saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
 plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(21.045328  , 23.7713)) # from summary(codaSamples)
 
-graphics.off()
+# graphics.off()
 
 # Using Baysian Methods
 summary(codaSamples)
@@ -510,7 +510,7 @@ saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
 plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.911270   , 0.97351)) # from summary(codaSamples)
 
-graphics.off()
+# graphics.off()
 
 # Using Baysian Methods
 su = summary(codaSamples)
@@ -658,7 +658,7 @@ saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
 plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(29.1521  , 40.382)) # from summary(codaSamples)
 
-graphics.off()
+# graphics.off()
 
 # Density Plots
 library(ggmcmc)
@@ -737,7 +737,7 @@ saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
 plotPost( codaSamplesNonCenter[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(29.1521  , 40.382)) # from summary(codaSamplesNonCenter)
 
-graphics.off()
+# graphics.off()
 
 # Density Plots
 library(ggmcmc)
@@ -756,13 +756,14 @@ summary(codaSamplesNonCenter)
 * Shrink factor unstable and never settles  
 * Clearly, the model does not converge among the three chains.  
 
+<br>
 
 ## `f` Pairs Plots
 > Centered vs. Non-Centered Independant Variables
 
 ### Create the Plots
 
-```{r, pairs}
+```{r, pairs, cache=TRUE}
 require(ggmcmc)
 library(GGally)
 
@@ -780,7 +781,7 @@ ggs_pairs(ggs(codaSamples),
   theme_minimal() + theme(text = element_text(color = 'grey25'))
 
 
-# Centered Independant Variable
+# Centered Independent Variable
 ggs_pairs(ggs(codaSamplesNonCenter), 
           
           # Change to Contours
@@ -804,14 +805,103 @@ ggs_pairs(ggs(codaSamplesNonCenter),
 * Low levels of cross-correlation  
 * Extremely stable results  
 
+<br>
+
+## `g` Random vs. Non-Random Vars
+
+Type       | Variables
+-----------|-------------
+Random     | p[i], y[i], yhat[i]
+Not Random | beta0, beta1, phat[i], 
+
+<br>
+
+## `h` Jags Model using `Probit` (*Centered*)
+
+### The JAGS Model for `Probit` Beetles
+```{r beetleJAGS3}
+# The JAGS Model
+modelString = 
+"
+model {
+
+  for (i in 1:8) {
+  
+    # link and linear predictor 
+    y[i] ~ dbin(p[i], n[i]) 
+    
+    # Now using a probit
+    probit(p[i]) <- beta0 + ( beta1 * (x[i] - mean(x[])) ) # Note centering around mean
+          
+    # Note The old logit method
+    # logit(p[i]) <- beta0 + ( beta1 * (x[i] - mean(x[])) ) # Note centering around mean
+    
+    phat[i] <- y[i]/n[i] 
+    yhat[i] <- n[i]*p[i] 
+  } 
+  
+  # prior distributions 
+  beta0 ~ dnorm(  0.0, 0.001)  
+  beta1 ~ dnorm(  0.0, 0.001)  
+}
+"
+```
+
+### Run Jags Model `Probit` (*Centered*)
+```{r runBeetlesJags3, echo=TRUE, out.width = "720px", cache=TRUE}
+# Run the fun and store
+codaSamples <- runJagsFunction(modelString, parameters, nIter=5000, # Total iterations
+                               initsList   = list( beta0 = 0,  # Note initial values
+                                                   beta1 = 0 )
+                               )
 
 
+# Diagnostics and Posteriors ----------------------------------------
 
+# Beta 0
+varName = paste0(parameters[1])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(0.295   , 0.5969)) # from summary(codaSamples)
 
+# Beta 1
+varName = paste0(parameters[2])
+diagMCMC( codaObject=codaSamples , parName=varName );
+saveGraph( file=paste0(fileNameRoot,varName) , type="png" )
 
+openGraph(); par( mar=c(3.5,0.5,2.5,0.5) , mgp=c(2.25,0.7,0) )
+plotPost( codaSamples[,varName] , main=paste0('Posterior Distribution of ', varName) , xlab=paste0(varName), ROPE = c(16.947   , 22.7206)) # from summary(codaSamples)
 
+# graphics.off()
 
+# Density Plots
+library(ggmcmc)
+s = ggs(codaSamples)
+d = ggs_density(s)
+print(d)
 
+# Using Baysian Methods
+summary(codaSamples)
 
+# Pairs plot
+pairs <- ggs_pairs(s, 
+                   
+                   # Change to Contours
+                   lower = list(continuous =  'density'), 
+                   
+                   # Color by Chain and add transparency
+                   mapping = aes(color = Chain, alpha = 0.2)) +
+  
+                   labs(title = 'Pair Plot of Logistic Simulation',
+                        subtitle = 'Non-Centered Independant Variable | Daniel Carpenter\n') + 
+                   theme_minimal() + theme(text = element_text(color = 'grey25'))
+
+print(pairs)
+```
+
+### Interpretation of Results (`Probit`)
+* Similar outcome as the `logit` model (in terms of convergence and stationarity)  
+* However, significantly different results for the point estimate of $\beta_1$.  
 
