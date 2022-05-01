@@ -713,7 +713,7 @@ model {
 "
 ```
 
-## `c` Run Jags Model (*Non-Centered*) 
+### Run Jags Model (*Non-Centered*) 
 * Note inputs same as last model except for `modelString` changed directly above
 
 ```{r runBeetlesJags2, echo=TRUE, out.width = "720px", cache=TRUE}
@@ -1082,6 +1082,8 @@ Variable Name | Description
 <br>
 
 ## `2` Plots of Data 
+
+### Plots
 ```{r ggplots, cache=TRUE}
 library(ggplot2)
 
@@ -1154,9 +1156,163 @@ ggpairs(Titanicp)
 
 <br>
 
-## `3` JAGS Model using DIC
+## `3` JAGS Models
+
+### Create 2 Models to Compare
+
+```{r rJags, cache=TRUE}
+# Classical methods 
+clglm = glm(survived ~ sex + age + sex:age,family = "binomial", data = Titanicp)
+summary(clglm)
+
+# Convert the data to a list and model matrix
+mat1=model.matrix(clglm)
+mat2=model.frame(clglm)
+head(mat1)
+
+# Create output
+y = with(mat2, ifelse(survived == "survived", 1, 0))
+
+# Data list for MCMC model
+dataList=list(y = y, x = mat1[, "age"],sexm = mat1[,"sexmale"], sexmx = mat1[,"sexmale:age"] , n = length(y))
+
+library (rjags)
+
+#Define the first model (more complex): 
+modelString1 = 
+" 
+model {
+  for(i in 1:n) { 
+    y[i] ~ dbin(theta[i], 1) 
+    eta[i]<- beta[1] + beta[2] * x[i] + beta[3] *sexm[i] + beta[4]*sexmx[i]
+    
+    logit (theta[i]) <- eta[i]
+  }
+  # L<- -10 
+  # U <- 10 
+  
+  for(j in 1:4) {
+    beta[j] ~ dnorm(0, 1.0E-3)
+  }
+}
+"
+  
+#Define the second model (less complex): 
+modelString2 = 
+" 
+model {
+  for(i in 1:n) { 
+    y[i] ~ dbin(theta[i], 1) 
+    eta[i]<- beta[1] + beta [2] *x[i]
+  
+    logit(theta[i]) <- eta[i]
+  }
+  # L<- -10 
+  # U <- 10 
+  
+  for(j in 1:2) {
+    beta[j] ~ dnorm (0,1.0E-3)
+  }
+}
+"
+
+writeLines ( modelString1, con="TEMPmodel1.txt" ) 
+writeLines ( modelString2, con="TEMPmodel2.txt" )
+
+initsList1 = list (beta = c(0.5,0.02,-1.15,-0.05)) 
+initsList2 = list (beta = c(0.5, 0.02))
+
+# JAGS MODEL 1 -----------------------------------------------------------------
+
+# Run the chains model 1: 
+jagsModel1 = jags.model( file="TEMPmodel1.txt" , data=dataList , inits=initsList1 , 
+                        n.chains=3 , n.adapt=500 )
+
+update( jagsModel1 , n.iter=500 )
+codaSamples1 = coda.samples( jagsModel1 , variable.names=c("beta"),
+                            n.iter=3333 )
+save( codaSamples1 , file=paste0("Model1_","Mcmc.Rdata") )
+
+library(ggmcmc)
+
+# Densities
+s1 = ggs(codaSamples1)
+d1 = ggs_density(s1)
+print(d1)
+
+# Cross correlations
+cr1 =  ggs_crosscorrelation(s1)
+print(cr1)
+
+summary(codaSamples1)
+
+
+# JAGS MODEL 2 -----------------------------------------------------------------
+
+# Run the chains model 2: 
+jagsModel2 = jags.model( file="TEMPmodel2.txt" , data=dataList , inits=initsList2, 
+                        n.chains=3 , n.adapt=500 )
+
+update( jagsModel2 , n.iter=500 )
+codaSamples2 = coda.samples( jagsModel2 , variable.names=c("beta"),
+                            n.iter=3333 )
+save( codaSamples2 , file=paste0("Model2_","Mcmc.Rdata") )
+
+# Densities
+s2 = ggs(codaSamples2)
+d2 = ggs_density(s2)
+print(d2)
+
+# Cross correlations
+cr2 =  ggs_crosscorrelation(s2)
+print(cr2)
+
+summary(codaSamples2)
+```
 
 <br>
 
-## `4` Intepretation
+### DIC
+> Deviance Information Criterion   
+ 
 
+```{r DIC, cache=TRUE}
+
+# Takes the model 1 and a penality using traditonal DIC
+dic1 = dic.samples(jagsModel1, n.iter = 2000, type = 'pD')
+dic1
+
+# Takes the model 2 and a penality using traditonal DIC
+dic2 = dic.samples(jagsModel2, n.iter = 2000, type = 'pD')
+dic2
+
+# Want the smallest DIC model, so you can see 
+# First model has the smaller DIC, so use that
+diffdic(dic1, dic2)
+```   
+
+## `4` Intepretation of Smallest DIC Model
+> Using smallest DIC model since that it best  
+
+* All values stated as approximately since each MCMC run will generate a slightly different estimate.
+
+### $\beta$'s and Interpretion of Likelihood of Survival
+$\beta_1$: the mean value ($\mu$) for $\beta_1$ is around  0.50952 and the $\sigma$ is 0.257209. I.e., each person could either survive   
+$\beta_2$: the mean value ($\mu$) for $\beta_2$ is around  0.02229 and the $\sigma$ is 0.008631 I.e. the older you are, the less likely you are to survive.   
+$\beta_3$: the mean value ($\mu$) for $\beta_3$ is around -1.17196 and the $\sigma$ is 0.344398 I.e. a male is more likely to die than a female.   
+$\beta_4$: the mean value ($\mu$) for $\beta_4$ is around -0.04620 and the $\sigma$ is 0.011349 I.e. if you are a male, your outcomes worsen even more if as you age    
+
+### Interval Estimates
+* All values stated as approximately since each MCMC run will generate a slightly different estimate.
+
+With a probability of 95%, the mean value for:  
+$\beta_1$ will be between  0.021934 and  0.98688  
+$\beta_2$ will be between  0.006393 and  0.03890  
+$\beta_3$ will be between -1.802094 and  -0.52080   
+$\beta_4$ will be between -0.068479 and  -0.02551   
+
+### Convergence
+Sampler converged since each chain well represents each other.
+
+### Compared to Classical Estimates
+For each variable, the MCMC estimate represents the classical estimate nearly exactly

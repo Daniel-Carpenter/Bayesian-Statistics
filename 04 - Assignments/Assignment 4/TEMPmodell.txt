@@ -1,0 +1,16 @@
+ 
+model {
+  for(i in 1:n) { 
+    y[i] ~ dbin(theta[i], 1) 
+    eta[i]<- beta[1] + beta [2] *x[i] + beta[3] *sexm[i] + beta[4] *sexmx
+    
+    logit (theta[i]) <- eta[i]
+  }
+  # L<- -10 
+  # U <- 10 
+  
+  for(j in 1:4) {
+    betaljl - dnorm (0,1.0E-3)
+  }
+}
+
