@@ -3,28 +3,29 @@ Exam 1
 Daniel Carpenter
 April 2022
 
--   [](#section)
--   [See Answers to Questions Below:](#see-answers-to-questions-below)
-    -   [Basic Distributional
-        Properties](#basic-distributional-properties)
-    -   [Bayes Rules Proofs](#bayes-rules-proofs)
-    -   [Coin Die Simululation](#coin-die-simululation)
-    -   [SLR in Jags and OpenBUGS](#slr-in-jags-and-openbugs)
+-   [1](#1)
+-   [2 See Answers to Questions
+    Below:](#2-see-answers-to-questions-below)
+    -   [2.1 Basic Distributional
+        Properties](#21-basic-distributional-properties)
+    -   [2.2 Bayes Rules Proofs](#22-bayes-rules-proofs)
+    -   [2.3 Coin Die Simululation](#23-coin-die-simululation)
+    -   [2.4 SLR in Jags and OpenBUGS](#24-slr-in-jags-and-openbugs)
 
-# 
+# 1
 
-# See Answers to Questions Below:
+# 2 See Answers to Questions Below:
 
 ------------------------------------------------------------------------
 
 <br>
 
-## Basic Distributional Properties
+## 2.1 Basic Distributional Properties
 
 > Suppose that X∼Pois(λ=4) where λ is the average number of particles
 > leaving an unstable nucleus per second.
 
-### Find P(X≥8) using an R function
+### 2.1.1 Find P(X≥8) using an R function
 
 ``` r
 x = 8
@@ -33,7 +34,7 @@ x = 8
 
     ## [1] 0.05113362
 
-### Find P(X=2)
+### 2.1.2 Find P(X=2)
 
 ``` r
 dpois(2, lambda = 4) # dpois() since exact probability
@@ -41,7 +42,7 @@ dpois(2, lambda = 4) # dpois() since exact probability
 
     ## [1] 0.1465251
 
-### Make a plot of the distribution of X for X=0 up to X=30
+### 2.1.3 Make a plot of the distribution of X for X=0 up to X=30
 
 ``` r
 # Function to plot the poisson distribution (discrete)
@@ -68,7 +69,7 @@ mu    = 6
 sigma = 10
 ```
 
-### Find P(Y≤3) using an R function
+### 2.1.4 Find P(Y≤3) using an R function
 
 ``` r
 pnorm(3, mu, sigma)
@@ -76,7 +77,7 @@ pnorm(3, mu, sigma)
 
     ## [1] 0.3820886
 
-### Find P(5≤Y\<8) using R
+### 2.1.5 Find P(5≤Y\<8) using R
 
 ``` r
 # Inputs for upper and lower bound when calculating the area
@@ -89,7 +90,7 @@ pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma)
 
     ## [1] 0.1190875
 
-### Make an R function `mynorm(a, b, mu)`
+### 2.1.6 Make an R function `mynorm(a, b, mu)`
 
 > Plot the area between a and b where b\>a and below the density curve
 > when Y is distributed as follows, Y∼N(μ,σ=10) and display a 4 dec
@@ -181,7 +182,7 @@ mynorm <- function(lowerBound = NA, upperBound = NA, mu, sigma=10)
 }
 ```
 
-#### Call your function with the following parameters `mynorm(3,25,5)`, `mynorm(0,20,5)`, `mynorm(-6,10, 5)`
+#### 2.1.6.1 Call your function with the following parameters `mynorm(3,25,5)`, `mynorm(0,20,5)`, `mynorm(-6,10, 5)`
 
 ``` r
 mynorm( 3, 25, 5)
@@ -205,9 +206,9 @@ mynorm(-6, 10, 5)
 
 <br>
 
-## Bayes Rules Proofs
+## 2.2 Bayes Rules Proofs
 
-### Proof of Beta Posterior
+### 2.2.1 Proof of Beta Posterior
 
 *Adapted from JK’s book - page 132 Doing Bayesian Data Analysis:* <br>
 
@@ -245,7 +246,7 @@ solution:
 
 <br>
 
-### Proof of Bayes Rule w/2 Discrete Events
+### 2.2.2 Proof of Bayes Rule w/2 Discrete Events
 
 Prove Bayes Rule for the case of two discrete events:
 ![p(A \\mid B)=\\frac{p(A) p(B \\mid A)}{p(B)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;p%28A%20%5Cmid%20B%29%3D%5Cfrac%7Bp%28A%29%20p%28B%20%5Cmid%20A%29%7D%7Bp%28B%29%7D "p(A \mid B)=\frac{p(A) p(B \mid A)}{p(B)}"),
@@ -289,7 +290,7 @@ or Bayes Theorem
 
 <br>
 
-## Coin Die Simululation
+## 2.3 Coin Die Simululation
 
 Code for Coin Die Simulation:
 
@@ -368,11 +369,11 @@ ans$it
     ## 9  "2"      "0.67" "E2" "2"  "1" 
     ## 10 "1"      "1"    "E1" "5"  "1"
 
-### When the `coindie` function is called above what is the acceptance set?
+### 2.3.1 When the `coindie` function is called above what is the acceptance set?
 
 -   The initial acceptance set is E1, and it finishes at E1.
 
-### There are 10 iterations above. From the table of output `ans$it` how many times does the sampler move from state 1 to 2?
+### 2.3.2 There are 10 iterations above. From the table of output `ans$it` how many times does the sampler move from state 1 to 2?
 
 ``` r
 POST_COLUMN = 1 # Column number that the post are in
@@ -407,7 +408,7 @@ paste('The total number of times the sampler changes states is', countOfChanges,
 
     ## [1] "The total number of times the sampler changes states is 6 times"
 
-### Write down the formula for the acceptance probability.
+### 2.3.3 Write down the formula for the acceptance probability.
 
 Note below is from page 33 of *Teaching MCMC* by Stewart & Stewart:
 
@@ -428,15 +429,15 @@ given that the sampler is at state
 
 <br>
 
-## SLR in Jags and OpenBUGS
+## 2.4 SLR in Jags and OpenBUGS
 
-### SLR OpenBUGS Model
+### 2.4.1 SLR OpenBUGS Model
 
 -   Make a DAG using the doodle bug editor in `OpenBUGS` for the simple
     linear regression model.
     <img src="openBugsSLR.png" style="width:60.0%" />
 
-### Check model in OpenBUGS, then use pretty print and place the code in model below
+### 2.4.2 Check model in OpenBUGS, then use pretty print and place the code in model below
 
 ``` r
 require(rjags)               # Must have previously installed package rjags.
@@ -493,7 +494,7 @@ codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "sigm
 save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 ```
 
-### Summarize the MCMC Estimation:
+### 2.4.3 Summarize the MCMC Estimation:
 
 ``` r
 su = summary(codaSamples)
@@ -510,18 +511,18 @@ su
     ##    plus standard error of the mean:
     ## 
     ##        Mean    SD Naive SE Time-series SE
-    ## beta0 11.91 2.130 0.006734      0.0066697
-    ## beta1 20.06 0.185 0.000585      0.0005845
-    ## sigma 13.41 1.603 0.005068      0.0071646
+    ## beta0 11.92 2.146 0.006787      0.0068821
+    ## beta1 20.06 0.185 0.000585      0.0005896
+    ## sigma 13.41 1.607 0.005082      0.0073206
     ## 
     ## 2. Quantiles for each variable:
     ## 
-    ##         2.5%   25%   50%   75% 97.5%
-    ## beta0  7.733 10.49 11.91 13.32 16.09
-    ## beta1 19.694 19.94 20.06 20.18 20.42
-    ## sigma 10.719 12.28 13.25 14.37 17.00
+    ##        2.5%   25%   50%   75% 97.5%
+    ## beta0  7.70 10.50 11.92 13.34 16.16
+    ## beta1 19.70 19.94 20.06 20.18 20.43
+    ## sigma 10.71 12.28 13.26 14.37 16.99
 
-### Give a 95% Bayesian credible interval for ![\\beta_1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta_1 "\beta_1") and interpret it:
+### 2.4.4 Give a 95% Bayesian credible interval for ![\\beta_1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta_1 "\beta_1") and interpret it:
 
 -   There is 95% probability that
     ![\\beta_1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta_1 "\beta_1")
@@ -554,7 +555,7 @@ head(df)
     ## 5 -16 -342.3
     ## 6 -15 -282.5
 
-### Plot the MCMC SLR Estimation (Slope, Intercept, and Original Data)
+### 2.4.5 Plot the MCMC SLR Estimation (Slope, Intercept, and Original Data)
 
 -   Using the simulated data in the above code chunk and the `ggplot2`
     package,
