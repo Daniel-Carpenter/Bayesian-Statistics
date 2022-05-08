@@ -3,44 +3,44 @@ Lab 3 - Probability: Distributional Theory Continued
 Daniel Carpenter
 February 2022
 
--   [1 Task `1`: Calculating Exact
+-   [Task `1`: Calculating Exact
     Probability](#task-1-calculating-exact-probability)
-    -   [1.1 Inputs for `mu` and `sigma`](#inputs-for-mu-and-sigma)
-    -   [1.2 `a.` Find 𝑃(𝑋 ≤ 8)](#a-find-𝑃𝑋--8)
-    -   [1.3 `b.` Find 𝑃(𝑋 ≥ 11)](#b-find-𝑃𝑋--11)
-    -   [1.4 `c.` Find 𝑃(8 ≤ 𝑋 &lt; 14)](#c-find-𝑃8--𝑋--14)
-    -   [1.5 `d.` Find 𝑃(𝑋 &gt; 10)](#d-find-𝑃𝑋--10)
--   [2 Task `2-4`: Plotting Probability](#task-2-4-plotting-probability)
-    -   [2.1 Probability Function
+    -   [Inputs for `mu` and `sigma`](#inputs-for-mu-and-sigma)
+    -   [`a.` Find 𝑃(𝑋 ≤ 8)](#a-find-𝑃𝑋--8)
+    -   [`b.` Find 𝑃(𝑋 ≥ 11)](#b-find-𝑃𝑋--11)
+    -   [`c.` Find 𝑃(8 ≤ 𝑋 \< 14)](#c-find-𝑃8--𝑋--14)
+    -   [`d.` Find 𝑃(𝑋 \> 10)](#d-find-𝑃𝑋--10)
+-   [Task `2-4`: Plotting Probability](#task-2-4-plotting-probability)
+    -   [Probability Function
         `Myfunction()`](#probability-function-myfunction)
-    -   [2.2 `a.` Find 𝑃(𝑋 ≤ 8)](#a-find-𝑃𝑋--8-1)
-    -   [2.3 `b.` Find 𝑃(𝑋 ≥ 11)](#b-find-𝑃𝑋--11-1)
-    -   [2.4 `c.` Find 𝑃(8 ≤ 𝑋 &lt; 14)](#c-find-𝑃8--𝑋--14-1)
-    -   [2.5 `d.` Find 𝑃(𝑋 &gt; 10)](#d-find-𝑃𝑋--10-1)
--   [3 Task `5`: Create and Demonstrate Function
+    -   [`a.` Find 𝑃(𝑋 ≤ 8)](#a-find-𝑃𝑋--8-1)
+    -   [`b.` Find 𝑃(𝑋 ≥ 11)](#b-find-𝑃𝑋--11-1)
+    -   [`c.` Find 𝑃(8 ≤ 𝑋 \< 14)](#c-find-𝑃8--𝑋--14-1)
+    -   [`d.` Find 𝑃(𝑋 \> 10)](#d-find-𝑃𝑋--10-1)
+-   [Task `5`: Create and Demonstrate Function
     `mynormplot()`](#task-5-create-and-demonstrate-function-mynormplot)
-    -   [3.1 `a-f` Create `mynormplot()`
+    -   [`a-f` Create `mynormplot()`
         Function](#a-f-create-mynormplot-function)
-    -   [3.2 `g.` Calculate 𝑃(7 ≤ 𝑋 ≤ 10), where 𝑋 ∼ 𝑁(8,5) with
+    -   [`g.` Calculate 𝑃(7 ≤ 𝑋 ≤ 10), where 𝑋 ∼ 𝑁(8,5) with
         `mynormplot()`
         Function](#g-calculate-𝑃7--𝑋--10-where-𝑋--𝑁85-with-mynormplot-function)
--   [4 Task `6`:](#task-6)
--   [5 Task `7`:](#task-7)
+-   [Task `6`:](#task-6)
+-   [Task `7`:](#task-7)
 
 ------------------------------------------------------------------------
 
-# 1 Task `1`: Calculating Exact Probability
+# Task `1`: Calculating Exact Probability
 
-## 1.1 Inputs for `mu` and `sigma`
+## Inputs for `mu` and `sigma`
 
-*X* ∼ *N*(*μ* = 10, *σ* = 4)
+![X \\sim N(\\mu = 10, \\sigma = 4)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;X%20%5Csim%20N%28%5Cmu%20%3D%2010%2C%20%5Csigma%20%3D%204%29 "X \sim N(\mu = 10, \sigma = 4)")
 
 ``` r
 mu    = 10
 sigma = 4
 ```
 
-## 1.2 `a.` Find 𝑃(𝑋 ≤ 8)
+## `a.` Find 𝑃(𝑋 ≤ 8)
 
 ``` r
 pnorm(8, mu, sigma)
@@ -48,7 +48,7 @@ pnorm(8, mu, sigma)
 
     ## [1] 0.3085375
 
-## 1.3 `b.` Find 𝑃(𝑋 ≥ 11)
+## `b.` Find 𝑃(𝑋 ≥ 11)
 
 ``` r
 1 - pnorm(11, mu, sigma)
@@ -56,7 +56,7 @@ pnorm(8, mu, sigma)
 
     ## [1] 0.4012937
 
-## 1.4 `c.` Find 𝑃(8 ≤ 𝑋 &lt; 14)
+## `c.` Find 𝑃(8 ≤ 𝑋 \< 14)
 
 ``` r
 # Inputs for upper and lower bound when calculating the area
@@ -69,7 +69,7 @@ pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma)
 
     ## [1] 0.5328072
 
-## 1.5 `d.` Find 𝑃(𝑋 &gt; 10)
+## `d.` Find 𝑃(𝑋 \> 10)
 
 ``` r
 1 - pnorm(10, mu, sigma)
@@ -81,9 +81,9 @@ pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma)
 
 <br>
 
-# 2 Task `2-4`: Plotting Probability
+# Task `2-4`: Plotting Probability
 
-## 2.1 Probability Function `Myfunction()`
+## Probability Function `Myfunction()`
 
 -   *Please note this function is technically task 4, but is placed here
     for repeatability.*
@@ -171,7 +171,7 @@ pnorm(upperBound, mu, sigma) - pnorm(lowerBound, mu, sigma)
     }
 ```
 
-## 2.2 `a.` Find 𝑃(𝑋 ≤ 8)
+## `a.` Find 𝑃(𝑋 ≤ 8)
 
 ``` r
 Myfunction(mu, sigma, upperBound = 8)
@@ -179,7 +179,7 @@ Myfunction(mu, sigma, upperBound = 8)
 
 ![](lab3_files/figure-gfm/2a-1.png)<!-- -->
 
-## 2.3 `b.` Find 𝑃(𝑋 ≥ 11)
+## `b.` Find 𝑃(𝑋 ≥ 11)
 
 ``` r
 Myfunction(mu, sigma, lowerBound = 11)
@@ -187,7 +187,7 @@ Myfunction(mu, sigma, lowerBound = 11)
 
 ![](lab3_files/figure-gfm/2b-1.png)<!-- -->
 
-## 2.4 `c.` Find 𝑃(8 ≤ 𝑋 &lt; 14)
+## `c.` Find 𝑃(8 ≤ 𝑋 \< 14)
 
 ``` r
 Myfunction(mu, sigma, lowerBound = 8, upperBound = 14)
@@ -195,7 +195,7 @@ Myfunction(mu, sigma, lowerBound = 8, upperBound = 14)
 
 ![](lab3_files/figure-gfm/2c-1.png)<!-- -->
 
-## 2.5 `d.` Find 𝑃(𝑋 &gt; 10)
+## `d.` Find 𝑃(𝑋 \> 10)
 
 ``` r
 Myfunction(mu, sigma, lowerBound = 10)
@@ -207,16 +207,16 @@ Myfunction(mu, sigma, lowerBound = 10)
 
 <br>
 
-# 3 Task `5`: Create and Demonstrate Function `mynormplot()`
+# Task `5`: Create and Demonstrate Function `mynormplot()`
 
-## 3.1 `a-f` Create `mynormplot()` Function
+## `a-f` Create `mynormplot()` Function
 
 ``` r
 # Get function from above since it is dynamic and can handle the below calculations
 mynormplot <- Myfunction
 ```
 
-## 3.2 `g.` Calculate 𝑃(7 ≤ 𝑋 ≤ 10), where 𝑋 ∼ 𝑁(8,5) with `mynormplot()` Function
+## `g.` Calculate 𝑃(7 ≤ 𝑋 ≤ 10), where 𝑋 ∼ 𝑁(8,5) with `mynormplot()` Function
 
 ``` r
 mynormplot(
@@ -255,25 +255,20 @@ mynormplot(
 
 <br>
 
-# 4 Task `6`:
+# Task `6`:
 
 Formula for Normal Density using
-$\\LaTeX: \\ \\ X \\sim N(\\mu, \\sigma)$
+![\\LaTeX: \\ \\ X \\sim N(\\mu, \\sigma)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5CLaTeX%3A%20%5C%20%5C%20X%20%5Csim%20N%28%5Cmu%2C%20%5Csigma%29 "\LaTeX: \ \ X \sim N(\mu, \sigma)")
 
 ------------------------------------------------------------------------
 
 <br>
 
-# 5 Task `7`:
+# Task `7`:
 
 ``` r
 if(!require(ggplot2)) install.packages("ggplot2")
-```
 
-    ## Warning in register(): Can't find generic `scale_type` in package ggplot2 to
-    ## register S3 method.
-
-``` r
 ggplot(data = NULL, aes(c(-10,10))) +
   
   # LHS of the distribution (Red)
