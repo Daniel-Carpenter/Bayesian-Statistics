@@ -6,15 +6,15 @@ date:     "April 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  html_document:
-    toc: yes
-    toc_float: yes
-    number_sections: yes
-    toc_depth: 2
-  # github_document:
+  # html_document:
   #   toc: yes
-  #   # number_sections: yes
+  #   toc_float: yes
+  #   number_sections: yes
   #   toc_depth: 2
+  github_document:
+    toc: yes
+    # number_sections: yes
+    toc_depth: 2
 ---
 # 
 # See Answers to Questions Below: 
