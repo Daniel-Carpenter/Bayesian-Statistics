@@ -167,20 +167,20 @@ summary(codaSamples)
     ##    plus standard error of the mean:
     ## 
     ##         Mean    SD Naive SE Time-series SE
-    ## beta0  3.047 4.913 0.015534        0.08538
-    ## beta1 14.982 1.477 0.004671        0.02558
-    ## beta2 11.941 6.950 0.021976        0.11997
-    ## beta3 10.023 2.101 0.006643        0.03567
-    ## sigma  4.167 1.861 0.005884        0.02852
+    ## beta0  3.056 4.636 0.014659        0.07893
+    ## beta1 14.986 1.399 0.004422        0.02390
+    ## beta2 11.938 6.553 0.020720        0.10993
+    ## beta3 10.016 1.969 0.006227        0.03319
+    ## sigma  4.095 1.699 0.005373        0.02286
     ## 
     ## 2. Quantiles for each variable:
     ## 
-    ##         2.5%     25%    50%    75%  97.5%
-    ## beta0 -6.727  0.4024  3.056  5.732 12.765
-    ## beta1 12.046 14.1785 14.985 15.783 17.925
-    ## beta2 -1.868  8.1736 11.932 15.703 25.639
-    ## beta3  5.913  8.8804 10.021 11.167 14.156
-    ## sigma  2.164  3.0106  3.730  4.764  8.777
+    ##         2.5%    25%    50%    75%  97.5%
+    ## beta0 -6.138  0.424  3.021  5.645 12.360
+    ## beta1 12.183 14.207 14.996 15.776 17.791
+    ## beta2 -1.274  8.299 11.963 15.667 24.965
+    ## beta3  6.086  8.900 10.001 11.108 13.996
+    ## sigma  2.163  2.994  3.694  4.712  8.395
 
 ``` r
 library(ggmcmc)
@@ -230,12 +230,14 @@ summary(est.lm)
 
 #### 1. If `x` is increased by one unit what happens to the mean value of `y`?
 
-1.  For each year increased, a male is paid the value of *b**e**t**a*3
+1.  For each year increased, a male is paid the value of
+    ![beta3](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta3 "beta3")
     (which on the iteration before this was 10.098, it changes since it
     is MCMC) more than a female (thousand dollars? units not known since
     link is broken to data).
-2.  E.g., in year 2, a male will make 10.098 × 2 more than the female on
-    average.
+2.  E.g., in year 2, a male will make 10.098
+    ![\\times](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctimes "\times")
+    2 more than the female on average.
 
 #### 2. Will the lines ever `intersect` over the range of the data?
 
@@ -247,8 +249,9 @@ summary(est.lm)
     to males than females, given years of experience.
 2.  The slope of years is the amount paid to males, given years of
     experience.
-3.  This should hover around 10. See *b**e**t**a*3 normal density plot
-    to get a sense of the potential variation.
+3.  This should hover around 10. See
+    ![beta3](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta3 "beta3")
+    normal density plot to get a sense of the potential variation.
 
 #### 4. Use `point interval estimation` (classical medthods) to answer question 1:
 
@@ -385,20 +388,20 @@ summary(codaSamples.equal)
     ##    plus standard error of the mean:
     ## 
     ##          Mean     SD Naive SE Time-series SE
-    ## beta0  2.9808  8.271 0.026152        0.14036
-    ## beta1 15.0050  2.491 0.007875        0.04310
-    ## beta2 21.8696 11.814 0.037355        0.20534
-    ## beta3  0.1756  3.563 0.011265        0.06077
-    ## sigma  7.2196  3.081 0.009741        0.04117
+    ## beta0  2.7665  8.154 0.025782        0.13783
+    ## beta1 15.0649  2.460 0.007779        0.04179
+    ## beta2 22.1133 11.413 0.036086        0.19849
+    ## beta3  0.1145  3.447 0.010900        0.05951
+    ## sigma  7.2156  2.909 0.009199        0.03424
     ## 
     ## 2. Quantiles for each variable:
     ## 
-    ##          2.5%    25%     50%    75%  97.5%
-    ## beta0 -13.188 -1.666  2.9357  7.563 19.526
-    ## beta1  10.040 13.616 15.0147 16.392 19.891
-    ## beta2  -1.610 15.393 21.8990 28.401 44.855
-    ## beta3  -6.794 -1.778  0.1675  2.143  7.236
-    ## sigma   3.785  5.263  6.5052  8.292 14.914
+    ##           2.5%    25%     50%    75%  97.5%
+    ## beta0 -13.6778 -1.832  2.8449  7.503 18.736
+    ## beta1  10.1933 13.642 15.0429 16.465 20.020
+    ## beta2  -0.4358 15.447 21.9867 28.629 45.040
+    ## beta3  -6.7849 -1.839  0.1519  2.115  6.924
+    ## sigma   3.8171  5.289  6.5309  8.311 14.742
 
 ``` r
 library(ggmcmc)
@@ -448,14 +451,17 @@ summary(est.lm.equal)
 
 #### 1. If `x` is increased by one unit what happens to the mean value of `y`?
 
-1.  For each year increased, a male is paid *b**e**t**a*3 (which on the
-    iteration before this was 0.1916, it changes since it is MCMC) more
-    than a female (thousand dollars? units not known since link is
-    broken to data).
-2.  E.g., in year 2, a male will make 0.1916 × 2 more than the female on
-    average.
-3.  This should hover around 0. See *b**e**t**a*3 normal density plot to
-    get a sense of the potential variation.
+1.  For each year increased, a male is paid
+    ![beta3](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta3 "beta3")
+    (which on the iteration before this was 0.1916, it changes since it
+    is MCMC) more than a female (thousand dollars? units not known since
+    link is broken to data).
+2.  E.g., in year 2, a male will make 0.1916
+    ![\\times](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctimes "\times")
+    2 more than the female on average.
+3.  This should hover around 0. See
+    ![beta3](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta3 "beta3")
+    normal density plot to get a sense of the potential variation.
 
 #### 2. Will the lines ever intersect over the range of the data?
 

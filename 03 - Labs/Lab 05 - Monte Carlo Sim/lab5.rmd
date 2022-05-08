@@ -6,13 +6,13 @@ date:     "February 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  # github_document:
-  #   toc: yes
-  #   # number_sections: yes
-  #   toc_depth: 3
-  html_document:
+  github_document:
     toc: yes
-    toc_float: yes
+    # number_sections: yes
+    toc_depth: 3
+  # html_document:
+  #   toc: yes
+  #   toc_float: yes
 ---
 
 ## Task `1` Two-State Bayes Box & Coin-Die Experiment

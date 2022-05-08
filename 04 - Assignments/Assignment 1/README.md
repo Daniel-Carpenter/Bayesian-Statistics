@@ -8,7 +8,7 @@ February 2022
     -   [`a.` Classical Point Estimate for 𝜃 (*Probability of
         Success*)](#a-classical-point-estimate-for-𝜃-probability-of-success)
     -   [`b.` Find classical 95% confidence interval using
-        *θ*](#b-find-classical-95-confidence-interval-using-theta)
+        ![\\theta](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctheta "\theta")](#b-find-classical-95-confidence-interval-using-theta)
     -   [`c.` `mycoin()`: Bayes Box and Related
         Data](#c-mycoin-bayes-box-and-related-data)
 -   [Task `2`: Variance Proof](#task-2-variance-proof)
@@ -24,16 +24,23 @@ February 2022
         `mynorm()`](#a-call-normal-density-function-mynorm)
 -   [Task `5`: Maximum Likelihood Proof and
     Function](#task-5-maximum-likelihood-proof-and-function)
-    -   [`5.1.` Find *λ̂* as a formula](#51-find-hatlambda-as-a-formula)
-    -   [`5.2.` Find the second derivative of *L*(*λ*) as a
+    -   [`5.1.` Find
+        ![\\hat{\\lambda}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7B%5Clambda%7D "\hat{\lambda}")
+        as a formula](#51-find-hatlambda-as-a-formula)
+    -   [`5.2.` Find the second derivative of
+        ![L(\\lambda)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;L%28%5Clambda%29 "L(\lambda)")
+        as a
         formula.](#52-find-the-second-derivative-of-llambda-as-a-formula)
-    -   [`5.3/5.4.` Show *λ̂* is a
-        maximum.](#5354-show-hatlambda-is-a-maximum)
+    -   [`5.3/5.4.` Show
+        ![\\hat{\\lambda}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7B%5Clambda%7D "\hat{\lambda}")
+        is a maximum.](#5354-show-hatlambda-is-a-maximum)
     -   [`5.5.` Make a function called
         `myml(x)`](#55-make-a-function-called-mymlx)
     -   [`5.6.` MLE Does not Account for
         Priors](#56-mle-does-not-account-for-priors)
--   [Task `6`: Un/Biased *λ* Proof](#task-6-unbiased-lambda-proof)
+-   [Task `6`: Un/Biased
+    ![\\lambda](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clambda "\lambda")
+    Proof](#task-6-unbiased-lambda-proof)
 -   [Task `7`: Maximum Likelihood for *Bernoulli*
     Proof](#task-7-maximum-likelihood-for-bernoulli-proof)
 -   [Task `8`: Newton Raphson Expression &
@@ -71,7 +78,7 @@ classicalPointEst(n)
 
     ## [1] 0.5
 
-## `b.` Find classical 95% confidence interval using *θ*
+## `b.` Find classical 95% confidence interval using ![\\theta](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctheta "\theta")
 
 ``` r
 # Function for classical CI est at 95% confidence
@@ -440,7 +447,8 @@ mycoin(p = seq(0,1,length=40), prior = pr, n =10, x=4, alpha=0.05)
 # Task `2`: Variance Proof
 
 > *THIS SHOWS AN EXAMPLE, SEE PART `ii/iii` OF `TASK 3` FOR FINAL PROOF
-> OF *V*(*X*)*
+> OF
+> ![V(X)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;V%28X%29 "V(X)")*
 
 **Inputs**
 
@@ -449,7 +457,8 @@ n = 1000  # Intervals
 p = 0.5   # Probability
 ```
 
-**Variance using raw Definition** $V(X) = \\frac{E(X - \\mu)^2}{n}$
+**Variance using raw Definition**
+![V(X) = \\frac{E(X - \\mu)^2}{n}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;V%28X%29%20%3D%20%5Cfrac%7BE%28X%20-%20%5Cmu%29%5E2%7D%7Bn%7D "V(X) = \frac{E(X - \mu)^2}{n}")
 
 ``` r
 varMethod1 <- function(n, p) {
@@ -467,7 +476,9 @@ varMethod1(n, p)
 
     ## [1] "250.0"
 
-**Verify** *n* × *p* × *q* **is the above variance**
+**Verify**
+![n \\times p \\times q](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n%20%5Ctimes%20p%20%5Ctimes%20q "n \times p \times q")
+**is the above variance**
 
 ``` r
 varMethod2 <- function(n, p) {
@@ -492,62 +503,116 @@ varMethod2(n, p)
 
 ## `i` Definition of The M.G.F of the Binomial Distribution:
 
-$$
+![
 b(x ; n, p)=\\frac{n !}{x !(n-x) !} p^{x} q^{n-x} \\quad \\text { with } \\quad q=1-p .
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Ab%28x%20%3B%20n%2C%20p%29%3D%5Cfrac%7Bn%20%21%7D%7Bx%20%21%28n-x%29%20%21%7D%20p%5E%7Bx%7D%20q%5E%7Bn-x%7D%20%5Cquad%20%5Ctext%20%7B%20with%20%7D%20%5Cquad%20q%3D1-p%20.%0A "
+b(x ; n, p)=\frac{n !}{x !(n-x) !} p^{x} q^{n-x} \quad \text { with } \quad q=1-p .
+")
 
 MGF Given by:
-$$
+
+![
 \\begin{aligned}
 M(x, t) &=\\sum\_{x=0}^{n} e^{x t} \\frac{n !}{x !(n-x) !} p^{x} q^{n-x} \\\\
 &=\\sum\_{x=0}^{n} \\frac{n !}{x !(n-x) !}\\left(p e^{t}\\right)^{x} q^{n-x} \\\\
 &=\\left(p e^{t}+q\\right)^{n}
 \\end{aligned}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Baligned%7D%0AM%28x%2C%20t%29%20%26%3D%5Csum_%7Bx%3D0%7D%5E%7Bn%7D%20e%5E%7Bx%20t%7D%20%5Cfrac%7Bn%20%21%7D%7Bx%20%21%28n-x%29%20%21%7D%20p%5E%7Bx%7D%20q%5E%7Bn-x%7D%20%5C%5C%0A%26%3D%5Csum_%7Bx%3D0%7D%5E%7Bn%7D%20%5Cfrac%7Bn%20%21%7D%7Bx%20%21%28n-x%29%20%21%7D%5Cleft%28p%20e%5E%7Bt%7D%5Cright%29%5E%7Bx%7D%20q%5E%7Bn-x%7D%20%5C%5C%0A%26%3D%5Cleft%28p%20e%5E%7Bt%7D%2Bq%5Cright%29%5E%7Bn%7D%0A%5Cend%7Baligned%7D%0A "
+\begin{aligned}
+M(x, t) &=\sum_{x=0}^{n} e^{x t} \frac{n !}{x !(n-x) !} p^{x} q^{n-x} \\
+&=\sum_{x=0}^{n} \frac{n !}{x !(n-x) !}\left(p e^{t}\right)^{x} q^{n-x} \\
+&=\left(p e^{t}+q\right)^{n}
+\end{aligned}
+")
 
-Differentiate the MGF with respect to *t* using the
-function-of-a-function rule:
-$$
+Differentiate the MGF with respect to
+![t](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t "t")
+using the function-of-a-function rule:
+
+![
 \\begin{aligned}
 \\frac{d M(x, t)}{d t} &=n\\left(q+p e^{t}\\right)^{n-1} p e^{t} \\\\
 &=n p e^{t}\\left(p e^{t}+q\\right)^{n-1}
 \\end{aligned}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Baligned%7D%0A%5Cfrac%7Bd%20M%28x%2C%20t%29%7D%7Bd%20t%7D%20%26%3Dn%5Cleft%28q%2Bp%20e%5E%7Bt%7D%5Cright%29%5E%7Bn-1%7D%20p%20e%5E%7Bt%7D%20%5C%5C%0A%26%3Dn%20p%20e%5E%7Bt%7D%5Cleft%28p%20e%5E%7Bt%7D%2Bq%5Cright%29%5E%7Bn-1%7D%0A%5Cend%7Baligned%7D%0A "
+\begin{aligned}
+\frac{d M(x, t)}{d t} &=n\left(q+p e^{t}\right)^{n-1} p e^{t} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-1}
+\end{aligned}
+")
 
-Now use *t* = 0 to get *E*(*x*)
-*E*(*x*) = *n**p*(*p* + *q*)<sup>*n* − 1</sup> = *n**p*.
+Now use
+![t=0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t%3D0 "t=0")
+to get
+![E(x)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;E%28x%29 "E(x)")
+
+![
+E(x)=n p(p+q)^{n-1}=n p .
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0AE%28x%29%3Dn%20p%28p%2Bq%29%5E%7Bn-1%7D%3Dn%20p%20.%0A "
+E(x)=n p(p+q)^{n-1}=n p .
+")
 
 ## `ii. / iii.` Find the second moment using product rule:
 
-$$
+![
 \\frac{d u v}{d x}=u \\frac{d v}{d x}+v \\frac{d u}{d x}
-$$
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cfrac%7Bd%20u%20v%7D%7Bd%20x%7D%3Du%20%5Cfrac%7Bd%20v%7D%7Bd%20x%7D%2Bv%20%5Cfrac%7Bd%20u%7D%7Bd%20x%7D%0A "
+\frac{d u v}{d x}=u \frac{d v}{d x}+v \frac{d u}{d x}
+")
+
+![
 \\begin{aligned}
 \\frac{d^{2} M(x, t)}{d t^{2}} &=n p e^{t}\\left\\{(n-1)\\left(p e^{t}+q\\right)^{n-2} p e^{t}\\right\\}+\\left(p e^{t}+q\\right)^{n-1}\\left\\{n p e^{t}\\right\\} \\\\
 &=n p e^{t}\\left(p e^{t}+q\\right)^{n-2}\\left\\{(n-1) p e^{t}+\\left(p e^{t}+q\\right)\\right\\} \\\\
 &=n p e^{t}\\left(p e^{t}+q\\right)^{n-2}\\left\\{q+n p e^{t}\\right\\} .
 \\end{aligned}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Baligned%7D%0A%5Cfrac%7Bd%5E%7B2%7D%20M%28x%2C%20t%29%7D%7Bd%20t%5E%7B2%7D%7D%20%26%3Dn%20p%20e%5E%7Bt%7D%5Cleft%5C%7B%28n-1%29%5Cleft%28p%20e%5E%7Bt%7D%2Bq%5Cright%29%5E%7Bn-2%7D%20p%20e%5E%7Bt%7D%5Cright%5C%7D%2B%5Cleft%28p%20e%5E%7Bt%7D%2Bq%5Cright%29%5E%7Bn-1%7D%5Cleft%5C%7Bn%20p%20e%5E%7Bt%7D%5Cright%5C%7D%20%5C%5C%0A%26%3Dn%20p%20e%5E%7Bt%7D%5Cleft%28p%20e%5E%7Bt%7D%2Bq%5Cright%29%5E%7Bn-2%7D%5Cleft%5C%7B%28n-1%29%20p%20e%5E%7Bt%7D%2B%5Cleft%28p%20e%5E%7Bt%7D%2Bq%5Cright%29%5Cright%5C%7D%20%5C%5C%0A%26%3Dn%20p%20e%5E%7Bt%7D%5Cleft%28p%20e%5E%7Bt%7D%2Bq%5Cright%29%5E%7Bn-2%7D%5Cleft%5C%7Bq%2Bn%20p%20e%5E%7Bt%7D%5Cright%5C%7D%20.%0A%5Cend%7Baligned%7D%0A "
+\begin{aligned}
+\frac{d^{2} M(x, t)}{d t^{2}} &=n p e^{t}\left\{(n-1)\left(p e^{t}+q\right)^{n-2} p e^{t}\right\}+\left(p e^{t}+q\right)^{n-1}\left\{n p e^{t}\right\} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{(n-1) p e^{t}+\left(p e^{t}+q\right)\right\} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{q+n p e^{t}\right\} .
+\end{aligned}
+")
 
-Use *t* = 0 again:
-$$
+Use
+![t=0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t%3D0 "t=0")
+again:
+
+![
 \\begin{aligned}
 E\\left(x^{2}\\right) &=n p(p+q)^{n-2}(n p+q) \\\\
 &=n p(n p+q)
 \\end{aligned}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Baligned%7D%0AE%5Cleft%28x%5E%7B2%7D%5Cright%29%20%26%3Dn%20p%28p%2Bq%29%5E%7Bn-2%7D%28n%20p%2Bq%29%20%5C%5C%0A%26%3Dn%20p%28n%20p%2Bq%29%0A%5Cend%7Baligned%7D%0A "
+\begin{aligned}
+E\left(x^{2}\right) &=n p(p+q)^{n-2}(n p+q) \\
+&=n p(n p+q)
+\end{aligned}
+")
 
-**Finally we now have derived *V*(*X*) = *E*(*X* − *μ*)<sup>2</sup>
-(`i`) AND that the variance of *X* is *n**p**q* where *q* = 1 − *p*
+**Finally we now have derived
+![V(X)=E(X-\\mu)^{2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;V%28X%29%3DE%28X-%5Cmu%29%5E%7B2%7D "V(X)=E(X-\mu)^{2}")
+(`i`) AND that the variance of
+![X](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;X "X")
+is
+![n p q](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n%20p%20q "n p q")
+where
+![q=1-p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;q%3D1-p "q=1-p")
 (`ii.`).**
-$$
+
+![
 \\begin{aligned}
 V(x) &=E\\left(x^{2}\\right)-\\{E(x)\\}^{2} \\\\
 &=n p(n p+q)-n^{2} p^{2} \\\\
 &=n p q
 \\end{aligned}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Baligned%7D%0AV%28x%29%20%26%3DE%5Cleft%28x%5E%7B2%7D%5Cright%29-%5C%7BE%28x%29%5C%7D%5E%7B2%7D%20%5C%5C%0A%26%3Dn%20p%28n%20p%2Bq%29-n%5E%7B2%7D%20p%5E%7B2%7D%20%5C%5C%0A%26%3Dn%20p%20q%0A%5Cend%7Baligned%7D%0A "
+\begin{aligned}
+V(x) &=E\left(x^{2}\right)-\{E(x)\}^{2} \\
+&=n p(n p+q)-n^{2} p^{2} \\
+&=n p q
+\end{aligned}
+")
 
 ------------------------------------------------------------------------
 
@@ -687,41 +752,57 @@ mynorm(mu=10, sigma=8,
 
 # Task `5`: Maximum Likelihood Proof and Function
 
-## `5.1.` Find *λ̂* as a formula
+## `5.1.` Find ![\\hat{\\lambda}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7B%5Clambda%7D "\hat{\lambda}") as a formula
 
 -   Do this by first finding the likelihood function which is shown as
-    *L*(*λ*)
-    $$
+    ![L(\\lambda)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;L%28%5Clambda%29 "L(\lambda)")
+
+    ![
     L(\\lambda)=\\prod\_{i=1}^{n} f\_{X}\\left(x\_{i} ; \\lambda\\right)=\\prod\_{i=1}^{n}\\left\\{\\frac{\\lambda^{x\_{i}}}{x\_{i} !} e^{-\\lambda}\\right\\}=\\frac{\\lambda^{x\_{1}+\\ldots+x\_{n}}}{x\_{1} ! \\ldots x\_{n} !} e^{-n \\lambda}
-    $$
+    ](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0AL%28%5Clambda%29%3D%5Cprod_%7Bi%3D1%7D%5E%7Bn%7D%20f_%7BX%7D%5Cleft%28x_%7Bi%7D%20%3B%20%5Clambda%5Cright%29%3D%5Cprod_%7Bi%3D1%7D%5E%7Bn%7D%5Cleft%5C%7B%5Cfrac%7B%5Clambda%5E%7Bx_%7Bi%7D%7D%7D%7Bx_%7Bi%7D%20%21%7D%20e%5E%7B-%5Clambda%7D%5Cright%5C%7D%3D%5Cfrac%7B%5Clambda%5E%7Bx_%7B1%7D%2B%5Cldots%2Bx_%7Bn%7D%7D%7D%7Bx_%7B1%7D%20%21%20%5Cldots%20x_%7Bn%7D%20%21%7D%20e%5E%7B-n%20%5Clambda%7D%0A "
+    L(\lambda)=\prod_{i=1}^{n} f_{X}\left(x_{i} ; \lambda\right)=\prod_{i=1}^{n}\left\{\frac{\lambda^{x_{i}}}{x_{i} !} e^{-\lambda}\right\}=\frac{\lambda^{x_{1}+\ldots+x_{n}}}{x_{1} ! \ldots x_{n} !} e^{-n \lambda}
+    ")
 
-## `5.2.` Find the second derivative of *L*(*λ*) as a formula.
+## `5.2.` Find the second derivative of ![L(\\lambda)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;L%28%5Clambda%29 "L(\lambda)") as a formula.
 
-### `5.2.1`: get log *L*(*λ*)
+### `5.2.1`: get ![\\log L(\\lambda)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clog%20L%28%5Clambda%29 "\log L(\lambda)")
 
-$$
+![
 \\log L(\\lambda)=\\sum\_{i=1}^{n} x\_{i} \\log \\lambda-n \\lambda-\\sum\_{i=1}^{n} \\log \\left(x\_{i} !\\right)
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Clog%20L%28%5Clambda%29%3D%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20x_%7Bi%7D%20%5Clog%20%5Clambda-n%20%5Clambda-%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20%5Clog%20%5Cleft%28x_%7Bi%7D%20%21%5Cright%29%0A "
+\log L(\lambda)=\sum_{i=1}^{n} x_{i} \log \lambda-n \lambda-\sum_{i=1}^{n} \log \left(x_{i} !\right)
+")
 
-### `5.2.1`: Second derivative of *L*(*λ*)
+### `5.2.1`: Second derivative of ![L(\\lambda)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;L%28%5Clambda%29 "L(\lambda)")
 
-$$
+![
 \\frac{d}{d \\lambda}\\{\\log L(\\lambda)\\}
 =\\sum\_{i=1}^{n} \\frac{x\_{i}}{\\lambda}-n=
 0 \\\\ \\text{so,}  \\ \\widehat{\\lambda}=\\frac{1}{n} 
 \\sum\_{i=1}^{n} x\_{i}=\\bar{x}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cfrac%7Bd%7D%7Bd%20%5Clambda%7D%5C%7B%5Clog%20L%28%5Clambda%29%5C%7D%0A%3D%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20%5Cfrac%7Bx_%7Bi%7D%7D%7B%5Clambda%7D-n%3D%0A0%20%5C%5C%20%5Ctext%7Bso%2C%7D%20%20%5C%20%5Cwidehat%7B%5Clambda%7D%3D%5Cfrac%7B1%7D%7Bn%7D%20%0A%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20x_%7Bi%7D%3D%5Cbar%7Bx%7D%0A "
+\frac{d}{d \lambda}\{\log L(\lambda)\}
+=\sum_{i=1}^{n} \frac{x_{i}}{\lambda}-n=
+0 \\ \text{so,}  \ \widehat{\lambda}=\frac{1}{n} 
+\sum_{i=1}^{n} x_{i}=\bar{x}
+")
 
-## `5.3/5.4.` Show *λ̂* is a maximum.
+## `5.3/5.4.` Show ![\\hat{\\lambda}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7B%5Clambda%7D "\hat{\lambda}") is a maximum.
 
--   To check for the maximum, set *λ* = *λ̂* when in above derivation.
+-   To check for the maximum, set
+    ![\\lambda = \\hat{\\lambda}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clambda%20%3D%20%5Chat%7B%5Clambda%7D "\lambda = \hat{\lambda}")
+    when in above derivation.
 -   Then check to see if negative
 
-$$
+![
 \\frac{d^{2}}{d \\lambda^{2}}\\{\\log L(\\lambda)\\}
-=-\\frac{1}{\\lambda^{2}} \\sum\_{i=1}^{n} x\_{i}&lt;0 \\quad 
+=-\\frac{1}{\\lambda^{2}} \\sum\_{i=1}^{n} x\_{i}\<0 \\quad 
 \\text {where} \\ \\lambda=\\widehat{\\lambda}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cfrac%7Bd%5E%7B2%7D%7D%7Bd%20%5Clambda%5E%7B2%7D%7D%5C%7B%5Clog%20L%28%5Clambda%29%5C%7D%0A%3D-%5Cfrac%7B1%7D%7B%5Clambda%5E%7B2%7D%7D%20%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%20x_%7Bi%7D%3C0%20%5Cquad%20%0A%5Ctext%20%7Bwhere%7D%20%5C%20%5Clambda%3D%5Cwidehat%7B%5Clambda%7D%0A "
+\frac{d^{2}}{d \lambda^{2}}\{\log L(\lambda)\}
+=-\frac{1}{\lambda^{2}} \sum_{i=1}^{n} x_{i}<0 \quad 
+\text {where} \ \lambda=\widehat{\lambda}
+")
 
 ## `5.5.` Make a function called `myml(x)`
 
@@ -782,12 +863,19 @@ M.L. Estimate only uses the likelihood.
 
 <br>
 
-# Task `6`: Un/Biased *λ* Proof
+# Task `6`: Un/Biased ![\\lambda](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clambda "\lambda") Proof
 
-Prove whether *λ̂* by proving *E*(*y*) = *λ*, for a random variable *Y* ∼
-*P**o**i**s**s**o**n*(*λ*), *E*(*Y*) = *λ*
+Prove whether
+![\\hat\\lambda](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%5Clambda "\hat\lambda")
+by proving
+![E(y) = \\lambda](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;E%28y%29%20%3D%20%5Clambda "E(y) = \lambda"),
+for a random variable
+![Y](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Y "Y")
+∼
+![Poisson(\\lambda)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Poisson%28%5Clambda%29 "Poisson(\lambda)"),
+![E(Y) = \\lambda](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;E%28Y%29%20%3D%20%5Clambda "E(Y) = \lambda")
 
-$$
+![
 \\begin{aligned}
 E(Y) &=\\sum\_{y=0}^{\\infty} y \\frac{e^{-\\lambda} \\lambda^{y}}{y !} \\\\
 &=\\sum\_{y=1}^{\\infty} y \\frac{e^{-\\lambda} \\lambda^{y}}{y !} \\\\
@@ -797,9 +885,23 @@ E(Y) &=\\sum\_{y=0}^{\\infty} y \\frac{e^{-\\lambda} \\lambda^{y}}{y !} \\\\
 &=\\lambda e^{-\\lambda} e^{\\lambda} \\\\
 &=\\lambda
 \\end{aligned}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Baligned%7D%0AE%28Y%29%20%26%3D%5Csum_%7By%3D0%7D%5E%7B%5Cinfty%7D%20y%20%5Cfrac%7Be%5E%7B-%5Clambda%7D%20%5Clambda%5E%7By%7D%7D%7By%20%21%7D%20%5C%5C%0A%26%3D%5Csum_%7By%3D1%7D%5E%7B%5Cinfty%7D%20y%20%5Cfrac%7Be%5E%7B-%5Clambda%7D%20%5Clambda%5E%7By%7D%7D%7By%20%21%7D%20%5C%5C%0A%26%3D%5Csum_%7By%3D1%7D%5E%7B%5Cinfty%7D%20%5Cfrac%7Be%5E%7B-%5Clambda%7D%20%5Clambda%5E%7By%7D%7D%7B%28y-1%29%20%21%7D%20%5C%5C%0A%26%3D%5Clambda%20e%5E%7B-%5Clambda%7D%20%5Csum_%7By%3D1%7D%5E%7B%5Cinfty%7D%20%5Cfrac%7B%5Clambda%5E%7By-1%7D%7D%7B%28y-1%29%20%21%7D%20%5C%5C%0A%26%3D%5Clambda%20e%5E%7B-%5Clambda%7D%20%5Csum_%7By%3D0%7D%5E%7B%5Cinfty%7D%20%5Cfrac%7B%5Clambda%5E%7By%7D%7D%7By%20%21%7D%20%5C%5C%0A%26%3D%5Clambda%20e%5E%7B-%5Clambda%7D%20e%5E%7B%5Clambda%7D%20%5C%5C%0A%26%3D%5Clambda%0A%5Cend%7Baligned%7D%0A "
+\begin{aligned}
+E(Y) &=\sum_{y=0}^{\infty} y \frac{e^{-\lambda} \lambda^{y}}{y !} \\
+&=\sum_{y=1}^{\infty} y \frac{e^{-\lambda} \lambda^{y}}{y !} \\
+&=\sum_{y=1}^{\infty} \frac{e^{-\lambda} \lambda^{y}}{(y-1) !} \\
+&=\lambda e^{-\lambda} \sum_{y=1}^{\infty} \frac{\lambda^{y-1}}{(y-1) !} \\
+&=\lambda e^{-\lambda} \sum_{y=0}^{\infty} \frac{\lambda^{y}}{y !} \\
+&=\lambda e^{-\lambda} e^{\lambda} \\
+&=\lambda
+\end{aligned}
+")
 
-Therefore, *E*(*Y*) = *λ*, which indicates that *λ* is not biased.
+Therefore,
+![E(Y) = \\lambda](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;E%28Y%29%20%3D%20%5Clambda "E(Y) = \lambda"),
+which indicates that
+![\\lambda](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clambda "\lambda")
+is not biased.
 
 ------------------------------------------------------------------------
 
@@ -807,48 +909,83 @@ Therefore, *E*(*Y*) = *λ*, which indicates that *λ* is not biased.
 
 # Task `7`: Maximum Likelihood for *Bernoulli* Proof
 
-Consider *n* Bernoulli trials with *X* successes.
-$$
+Consider
+![n](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;n "n")
+Bernoulli trials with
+![X](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;X "X")
+successes.
+
+![
 p(x)=\\left(\\begin{array}{l}
 n \\\\
 X
 \\end{array}\\right) \\theta^{X}(1-\\theta)^{n-X}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Ap%28x%29%3D%5Cleft%28%5Cbegin%7Barray%7D%7Bl%7D%0An%20%5C%5C%0AX%0A%5Cend%7Barray%7D%5Cright%29%20%5Ctheta%5E%7BX%7D%281-%5Ctheta%29%5E%7Bn-X%7D%0A "
+p(x)=\left(\begin{array}{l}
+n \\
+X
+\end{array}\right) \theta^{X}(1-\theta)^{n-X}
+")
 
-Compute the likelihood: *L*(*θ*)
-$$
+Compute the likelihood:
+![L(\\theta)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;L%28%5Ctheta%29 "L(\theta)")
+
+![
 L(\\theta)=\\left(\\begin{array}{l}
 n \\\\
 X
 \\end{array}\\right) \\theta^{X}(1-\\theta)^{n-X}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0AL%28%5Ctheta%29%3D%5Cleft%28%5Cbegin%7Barray%7D%7Bl%7D%0An%20%5C%5C%0AX%0A%5Cend%7Barray%7D%5Cright%29%20%5Ctheta%5E%7BX%7D%281-%5Ctheta%29%5E%7Bn-X%7D%0A "
+L(\theta)=\left(\begin{array}{l}
+n \\
+X
+\end{array}\right) \theta^{X}(1-\theta)^{n-X}
+")
 
 Find the log(liklihood):
-$$
+
+![
 \\log L(\\theta)=\\log \\left\\{\\left(\\begin{array}{l}
 n \\\\
 x
 \\end{array}\\right)\\right\\}+x \\log (\\theta)+(n-x) \\log (1-\\theta)
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Clog%20L%28%5Ctheta%29%3D%5Clog%20%5Cleft%5C%7B%5Cleft%28%5Cbegin%7Barray%7D%7Bl%7D%0An%20%5C%5C%0Ax%0A%5Cend%7Barray%7D%5Cright%29%5Cright%5C%7D%2Bx%20%5Clog%20%28%5Ctheta%29%2B%28n-x%29%20%5Clog%20%281-%5Ctheta%29%0A "
+\log L(\theta)=\log \left\{\left(\begin{array}{l}
+n \\
+x
+\end{array}\right)\right\}+x \log (\theta)+(n-x) \log (1-\theta)
+")
 
 Then, Find the derivative of log(likelihood)
-$$
+
+![
 \\frac{d}{d \\theta} \\log L(\\theta)=\\frac{x}{\\theta}-\\frac{n-x}{1-\\theta}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cfrac%7Bd%7D%7Bd%20%5Ctheta%7D%20%5Clog%20L%28%5Ctheta%29%3D%5Cfrac%7Bx%7D%7B%5Ctheta%7D-%5Cfrac%7Bn-x%7D%7B1-%5Ctheta%7D%0A "
+\frac{d}{d \theta} \log L(\theta)=\frac{x}{\theta}-\frac{n-x}{1-\theta}
+")
 
-Set log(likelihood) to 0
-$$
+Set log(likelihood) to
+![0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;0 "0")
+
+![
 \\frac{x}{\\theta}-\\frac{n-x}{1-\\theta}=0 \\Longleftrightarrow x-\\theta x=n \\theta-\\theta x \\Longleftrightarrow \\theta=\\frac{x}{n}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cfrac%7Bx%7D%7B%5Ctheta%7D-%5Cfrac%7Bn-x%7D%7B1-%5Ctheta%7D%3D0%20%5CLongleftrightarrow%20x-%5Ctheta%20x%3Dn%20%5Ctheta-%5Ctheta%20x%20%5CLongleftrightarrow%20%5Ctheta%3D%5Cfrac%7Bx%7D%7Bn%7D%0A "
+\frac{x}{\theta}-\frac{n-x}{1-\theta}=0 \Longleftrightarrow x-\theta x=n \theta-\theta x \Longleftrightarrow \theta=\frac{x}{n}
+")
 
-$\\hat{\\theta}=\\frac{x}{n}$ is the candidate. Now take the second
-derivative:
-$$
+![\\hat{\\theta}=\\frac{x}{n}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7B%5Ctheta%7D%3D%5Cfrac%7Bx%7D%7Bn%7D "\hat{\theta}=\frac{x}{n}")
+is the candidate. Now take the second derivative:
+
+![
 \\frac{d^{2}}{d \\theta^{2}} \\log L(\\theta)=-\\frac{x}{\\theta^{2}}-\\frac{n-x}{(1-\\theta)^{2}}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cfrac%7Bd%5E%7B2%7D%7D%7Bd%20%5Ctheta%5E%7B2%7D%7D%20%5Clog%20L%28%5Ctheta%29%3D-%5Cfrac%7Bx%7D%7B%5Ctheta%5E%7B2%7D%7D-%5Cfrac%7Bn-x%7D%7B%281-%5Ctheta%29%5E%7B2%7D%7D%0A "
+\frac{d^{2}}{d \theta^{2}} \log L(\theta)=-\frac{x}{\theta^{2}}-\frac{n-x}{(1-\theta)^{2}}
+")
 
-Above is is always less than 0. Therefore $\\hat\\theta = \\frac{X}{n}$
-is the maximum likelihood estimator for *θ*.
+Above is is always less than 0. Therefore
+![\\hat\\theta = \\frac{X}{n}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%5Ctheta%20%3D%20%5Cfrac%7BX%7D%7Bn%7D "\hat\theta = \frac{X}{n}")
+is the maximum likelihood estimator for
+![\\theta](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctheta "\theta").
 
 ------------------------------------------------------------------------
 
@@ -860,9 +997,11 @@ is the maximum likelihood estimator for *θ*.
 
 ## Newton Rasphson Expression
 
-$$
+![
 x\_{n+1}=x\_{n}-\\frac{f\\left(x\_{n}\\right)}{f^{\\prime}\\left(x\_{n}\\right)}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Ax_%7Bn%2B1%7D%3Dx_%7Bn%7D-%5Cfrac%7Bf%5Cleft%28x_%7Bn%7D%5Cright%29%7D%7Bf%5E%7B%5Cprime%7D%5Cleft%28x_%7Bn%7D%5Cright%29%7D%0A "
+x_{n+1}=x_{n}-\frac{f\left(x_{n}\right)}{f^{\prime}\left(x_{n}\right)}
+")
 
 ## Create `mynr()` Function
 

@@ -4,13 +4,13 @@ subtitle: 'Bayesian Statistics'
 author: "Daniel Carpenter"
 date: "March, 2022"
 output:
-  # github_document:
-  #   toc: yes
-  #   # number_sections: yes
-  #   toc_depth: 2
-  html_document:
+  github_document:
     toc: yes
-    toc_float: yes
+    # number_sections: yes
+    toc_depth: 2
+  # html_document:
+  #   toc: yes
+  #   toc_float: yes
 ---
 
 ```{r setup, include=FALSE}

@@ -35,8 +35,9 @@ February 2022
         JAGS](#64-6-basic-slr-model-using-jags)
     -   [`6.7` Compare classical tests using the `lm()`
         function](#67-compare-classical-tests-using-the-lm-function)
-    -   [`6.8` Adding *b**e**t**a*<sub>2</sub><sup>2</sup> to
-        Model](#68-adding-beta2_2-to-model)
+    -   [`6.8` Adding
+        ![beta^{2}\_{2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta%5E%7B2%7D_%7B2%7D "beta^{2}_{2}")
+        to Model](#68-adding-beta2_2-to-model)
     -   [`6.9` Comparison of results](#69-comparison-of-results)
 
 ## Task `1` Two-State Bayes Box & Coin-Die Experiment
@@ -189,12 +190,15 @@ Example, if 4/6, then can accept {1,2,3,4}
 ifelse(h1=="s",pi1<-k/6*lik2/(lik1+k/6*lik2), pi1<-lik2/(lik2+k/6*lik1))
 ```
 
-#### $\\LaTeX$ Derivation:
+#### ![\\LaTeX](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5CLaTeX "\LaTeX") Derivation:
 
-$$
-\\text{then} \\ p\_{i,1} = \\frac{k}{6} \\times \\frac{lik\_2}{lik\_1 + k \\times lik\_2}, \\\\
-\\text{else} \\ p\_{i,1} = \\times \\frac{lik\_2}{lik\_2 + k \\times lik\_1}
-$$
+![
+\\text{then} \\ p\_{i,1} = \\frac{k}{6} \\times \\frac{lik_2}{lik_1 + k \\times lik_2}, \\\\
+\\text{else} \\ p\_{i,1} = \\times \\frac{lik_2}{lik_2 + k \\times lik_1}
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Ctext%7Bthen%7D%20%5C%20p_%7Bi%2C1%7D%20%3D%20%5Cfrac%7Bk%7D%7B6%7D%20%5Ctimes%20%5Cfrac%7Blik_2%7D%7Blik_1%20%2B%20k%20%5Ctimes%20lik_2%7D%2C%20%5C%5C%0A%5Ctext%7Belse%7D%20%5C%20p_%7Bi%2C1%7D%20%3D%20%5Ctimes%20%5Cfrac%7Blik_2%7D%7Blik_2%20%2B%20k%20%5Ctimes%20lik_1%7D%0A "
+\text{then} \ p_{i,1} = \frac{k}{6} \times \frac{lik_2}{lik_1 + k \times lik_2}, \\
+\text{else} \ p_{i,1} = \times \frac{lik_2}{lik_2 + k \times lik_1}
+")
 
 ------------------------------------------------------------------------
 
@@ -469,27 +473,27 @@ simRQOut <- simRQ(n=10000,h=hInput,pr=prInput,
 simRQOut$iter
 ```
 
-    ##    prop          u     alpha post
-    ## 1     1 1.00000000 1.0000000    1
-    ## 2     9 0.53054178 1.0000000    9
-    ## 3     6 0.33941962 1.0000000    6
-    ## 4     3 0.35004519 0.8589935    3
-    ## 5     3 0.92478419 1.0000000    3
-    ## 6     2 0.72053837 0.1900581    3
-    ## 7     6 0.82345889 1.0000000    6
-    ## 8     3 0.88534494 0.8589935    6
-    ## 9     8 0.46062170 0.2688505    6
-    ## 10    4 0.63209908 1.0000000    4
-    ## 11    7 0.14080753 0.4456374    7
-    ## 12    8 0.18167414 0.4121590    8
-    ## 13    6 0.14010601 1.0000000    6
-    ## 14    5 0.34722428 1.0000000    5
-    ## 15    3 0.48076982 0.5852766    3
-    ## 16    5 0.57254765 1.0000000    5
-    ## 17    8 0.58426087 0.1831818    5
-    ## 18    7 0.66198630 0.4444444    5
-    ## 19    3 0.03632441 0.5852766    3
-    ## 20    9 0.62414109 0.0625000    3
+    ##    prop          u       alpha post
+    ## 1     1 1.00000000 1.000000000    1
+    ## 2     4 0.47603527 1.000000000    4
+    ## 3     6 0.43003151 0.683180600    6
+    ## 4     7 0.05079937 0.652298158    7
+    ## 5     7 0.87348373 1.000000000    7
+    ## 6     8 0.08245497 0.412158966    8
+    ## 7     8 0.02671783 1.000000000    8
+    ## 8     8 0.21522358 1.000000000    8
+    ## 9    10 0.95887817 0.007496876    8
+    ## 10    6 0.59950306 1.000000000    6
+    ## 11    7 0.67460047 0.652298158    6
+    ## 12    9 0.21151735 0.053687091    6
+    ## 13    6 0.91096293 1.000000000    6
+    ## 14    5 0.63854286 1.000000000    5
+    ## 15    5 0.04229324 1.000000000    5
+    ## 16    6 0.88116786 0.681351678    5
+    ## 17    7 0.75751424 0.444444444    5
+    ## 18    8 0.57761170 0.183181763    5
+    ## 19    9 0.31458162 0.036579790    5
+    ## 20    3 0.16280485 0.585276635    3
 
 ------------------------------------------------------------------------
 
@@ -592,7 +596,7 @@ simRQOut$iter
 ```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ## 0.04298 0.31283 0.41114 0.41586 0.51565 0.86440
+    ## 0.02847 0.31309 0.41278 0.41653 0.51625 0.92927
 
 ## Task `6` Gibbs Sampling via MCMC
 
@@ -610,14 +614,22 @@ distribution are done iteratively.
 
 #### What is the Gibbs Algorithm?
 
-Assume Bivariate Normal target distribution with correlation *ρ* <br> 1.
-Initialize: (*x*<sub>0</sub>,*y*<sub>0</sub>) := (0, 0) and set
-*t* := 0  
-2. Draw *x*<sub>*t*</sub> from the conditional distribution
-*X*<sub>*t*</sub> ∣ (*Y*<sub>*t* − 1</sub>=*y*<sub>*t* − 1</sub>) ∼ *N*(*ρ**y*<sub>*t* − 1</sub>,1−*ρ*<sup>2</sup>).  
-3. Draw *y*<sub>*t*</sub> from the conditional distribution
-*Y*<sub>*t*</sub> ∣ (*X*<sub>*t*</sub>=*x*<sub>*t*</sub>) ∼ *N*(*ρ**x*<sub>*t*</sub>,1−*ρ*<sup>2</sup>).  
-4. Increment *t* := *t* + 1  
+Assume Bivariate Normal target distribution with correlation
+![\\rho](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Crho "\rho")
+<br> 1. Initialize:
+![\\left(x\_{0}, y\_{0}\\right):=(0,0)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft%28x_%7B0%7D%2C%20y_%7B0%7D%5Cright%29%3A%3D%280%2C0%29 "\left(x_{0}, y_{0}\right):=(0,0)")
+and set
+![t:=0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t%3A%3D0 "t:=0")  
+2. Draw
+![x\_{t}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;x_%7Bt%7D "x_{t}")
+from the conditional distribution
+![X\_{t} \\mid\\left(Y\_{t-1}=y\_{t-1}\\right) \\sim N\\left(\\rho y\_{t-1}, 1-\\rho^{2}\\right)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;X_%7Bt%7D%20%5Cmid%5Cleft%28Y_%7Bt-1%7D%3Dy_%7Bt-1%7D%5Cright%29%20%5Csim%20N%5Cleft%28%5Crho%20y_%7Bt-1%7D%2C%201-%5Crho%5E%7B2%7D%5Cright%29 "X_{t} \mid\left(Y_{t-1}=y_{t-1}\right) \sim N\left(\rho y_{t-1}, 1-\rho^{2}\right)").  
+3. Draw
+![y\_{t}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y_%7Bt%7D "y_{t}")
+from the conditional distribution
+![Y\_{t} \\mid\\left(X\_{t}=x\_{t}\\right) \\sim N\\left(\\rho x\_{t}, 1-\\rho^{2}\\right)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Y_%7Bt%7D%20%5Cmid%5Cleft%28X_%7Bt%7D%3Dx_%7Bt%7D%5Cright%29%20%5Csim%20N%5Cleft%28%5Crho%20x_%7Bt%7D%2C%201-%5Crho%5E%7B2%7D%5Cright%29 "Y_{t} \mid\left(X_{t}=x_{t}\right) \sim N\left(\rho x_{t}, 1-\rho^{2}\right)").  
+4. Increment
+![t:=t+1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t%3A%3Dt%2B1 "t:=t+1")  
 5. Return to Step 2, etc.
 
 ### `6.2-3` - OpenBUGS Model and Pretty Print Output
@@ -645,6 +657,8 @@ source("DBDA2E-utilities.R") # Must be in R's current working directory.
     ## Kruschke, J. K. (2015). Doing Bayesian Data Analysis, Second Edition:
     ## A Tutorial with R, JAGS, and Stan. Academic Press / Elsevier.
     ## *********************************************************************
+
+    ## Warning: package 'coda' was built under R version 4.1.3
 
 ``` r
 require(rjags)               # Must have previously installed package rjags.
@@ -749,8 +763,8 @@ save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 ![](lab5_files/figure-gfm/6.4-6-4.png)<!-- -->
 
-    ##              ESS     mean   median     mode hdiMass   hdiLow  hdiHigh compVal
-    ## beta[0] 3255.398 9.135013 9.154445 9.151447    0.95 6.810013 11.41578      NA
+    ##            ESS     mean   median     mode hdiMass   hdiLow  hdiHigh compVal
+    ## beta[0] 3184.6 9.140372 9.141447 9.082752    0.95 6.879379 11.45215      NA
     ##         pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
     ## beta[0]         NA      NA       NA      NA      NA      NA
 
@@ -765,8 +779,8 @@ save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 ![](lab5_files/figure-gfm/6.4-6-5.png)<!-- -->
 
-    ##              ESS     mean    median      mode hdiMass    hdiLow   hdiHigh
-    ## beta[1] 3270.691 0.482034 0.4809776 0.4793913    0.95 0.3615536 0.6059358
+    ##              ESS      mean    median     mode hdiMass    hdiLow  hdiHigh
+    ## beta[1] 3273.644 0.4818818 0.4817267 0.477457    0.95 0.3604904 0.603814
     ##         compVal pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
     ## beta[1]      NA         NA      NA       NA      NA      NA      NA
 
@@ -781,8 +795,8 @@ save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 ![](lab5_files/figure-gfm/6.4-6-6.png)<!-- -->
 
-    ##            ESS     mean   median     mode hdiMass   hdiLow hdiHigh compVal
-    ## sigma 42806.91 1.742712 1.720515 1.698423    0.95 1.340107 2.18759      NA
+    ##            ESS     mean   median     mode hdiMass   hdiLow  hdiHigh compVal
+    ## sigma 41731.17 1.740305 1.718906 1.679205    0.95 1.336861 2.175738      NA
     ##       pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
     ## sigma         NA      NA       NA      NA      NA      NA
 
@@ -803,29 +817,34 @@ summary(codaSamples)
     ## 1. Empirical mean and standard deviation for each variable,
     ##    plus standard error of the mean:
     ## 
-    ##        Mean      SD  Naive SE Time-series SE
-    ## beta0 9.135 1.16793 0.0036930       0.020423
-    ## beta1 0.482 0.06218 0.0001966       0.001088
-    ## sigma 1.743 0.22141 0.0007001       0.001076
+    ##         Mean      SD  Naive SE Time-series SE
+    ## beta0 9.1404 1.16248 0.0036757       0.020496
+    ## beta1 0.4819 0.06188 0.0001957       0.001087
+    ## sigma 1.7403 0.21988 0.0006952       0.001073
     ## 
     ## 2. Quantiles for each variable:
     ## 
-    ##         2.5%    25%   50%    75%  97.5%
-    ## beta0 6.7973 8.3643 9.154 9.9179 11.406
-    ## beta1 0.3616 0.4403 0.481 0.5231  0.606
-    ## sigma 1.3751 1.5860 1.721 1.8738  2.243
+    ##         2.5%    25%    50%   75%   97.5%
+    ## beta0 6.8556 8.3713 9.1414 9.909 11.4300
+    ## beta1 0.3598 0.4408 0.4817 0.523  0.6033
+    ## sigma 1.3721 1.5851 1.7189 1.871  2.2291
 
 <br>
 
 #### **Analysis:** For all variables:
 
 -   Param. Values seem to be around the mean value, which is stationary
--   Autocorrelation drops quickly for *σ*, which provides good
-    estimates. However, this does not occur with *β*<sub>0</sub> or
-    *β*<sub>1</sub>
+-   Autocorrelation drops quickly for
+    ![\\sigma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Csigma "\sigma"),
+    which provides good estimates. However, this does not occur with
+    ![\\beta_0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta_0 "\beta_0")
+    or
+    ![\\beta_1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta_1 "\beta_1")
 -   Shrink factor evens out
--   *σ*’s 3 densities overlay each other, so they are superimposed.
-    Slight skewness for *β*’s
+-   ![\\sigma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Csigma "\sigma")’s
+    3 densities overlay each other, so they are superimposed. Slight
+    skewness for
+    ![\\beta](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta "\beta")’s
 
 ### `6.7` Compare classical tests using the `lm()` function
 
@@ -870,17 +889,19 @@ ciReg(est)
 
 #### **Analysis:** Point Estimates:
 
--   Classical estimated mean and standard error’s for *b**e**t**a*
+-   Classical estimated mean and standard error’s for
+    ![beta](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta "beta")
     values fall very close to the Bayesian estimates.
 
 <br>
 
-### `6.8` Adding *b**e**t**a*<sub>2</sub><sup>2</sup> to Model
+### `6.8` Adding ![beta^{2}\_{2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta%5E%7B2%7D_%7B2%7D "beta^{2}_{2}") to Model
 
-#### Open Bugs Model Pretty Print Output using *b**e**t**a*<sub>2</sub><sup>2</sup>
+#### Open Bugs Model Pretty Print Output using ![beta^{2}\_{2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta%5E%7B2%7D_%7B2%7D "beta^{2}_{2}")
 
-![Figure: Jags Model using *b**e**t**a*<sub>2</sub><sup>2</sup> - Daniel
-Carpenter](openBugsModel2.png)
+![Figure: Jags Model using
+![beta^{2}\_{2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta%5E%7B2%7D_%7B2%7D "beta^{2}_{2}") -
+Daniel Carpenter](openBugsModel2.png)
 
 <br>
 
@@ -1003,10 +1024,10 @@ save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 ![](lab5_files/figure-gfm/6.5-5.png)<!-- -->
 
-    ##              ESS      mean    median      mode hdiMass    hdiLow  hdiHigh
-    ## beta[0] 182.4726 0.6314634 0.6791542 0.8748363    0.95 -4.149054 5.169781
-    ##         compVal pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
-    ## beta[0]      NA         NA      NA       NA      NA      NA      NA
+    ##              ESS     mean   median      mode hdiMass    hdiLow  hdiHigh compVal
+    ## beta[0] 210.9158 1.065652 1.028113 0.7746207    0.95 -3.230195 5.650779      NA
+    ##         pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
+    ## beta[0]         NA      NA       NA      NA      NA      NA
 
 ``` r
     saveGraph( file=filename , type="png" )
@@ -1019,8 +1040,8 @@ save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 ![](lab5_files/figure-gfm/6.5-6.png)<!-- -->
 
-    ##             ESS     mean  median     mode hdiMass    hdiLow  hdiHigh compVal
-    ## beta[1] 157.565 1.495587 1.48786 1.457981    0.95 0.9743763 2.004898      NA
+    ##              ESS     mean   median     mode hdiMass    hdiLow  hdiHigh compVal
+    ## beta[1] 181.7403 1.445823 1.449469 1.495487    0.95 0.9338267 1.920567      NA
     ##         pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
     ## beta[1]         NA      NA       NA      NA      NA      NA
 
@@ -1035,10 +1056,10 @@ save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 ![](lab5_files/figure-gfm/6.5-7.png)<!-- -->
 
-    ##              ESS        mean      median        mode hdiMass      hdiLow
-    ## beta[1] 169.1425 -0.02815005 -0.02795785 -0.02704407    0.95 -0.04181733
+    ##              ESS        mean      median        mode hdiMass     hdiLow
+    ## beta[1] 197.7463 -0.02681243 -0.02685869 -0.02568459    0.95 -0.0396694
     ##             hdiHigh compVal pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
-    ## beta[1] -0.01392325      NA         NA      NA       NA      NA      NA      NA
+    ## beta[1] -0.01288126      NA         NA      NA       NA      NA      NA      NA
 
 ``` r
     saveGraph( file=paste0(fileNameRoot,"beta2_Post") , type="png" )
@@ -1051,8 +1072,8 @@ save( codaSamples , file=paste0(fileNameRoot,"Mcmc.Rdata") )
 
 ![](lab5_files/figure-gfm/6.5-8.png)<!-- -->
 
-    ##            ESS    mean   median    mode hdiMass   hdiLow  hdiHigh compVal
-    ## sigma 17274.32 1.43745 1.418883 1.38359    0.95 1.091662 1.801545      NA
+    ##           ESS    mean   median     mode hdiMass   hdiLow  hdiHigh compVal
+    ## sigma 17044.6 1.43615 1.417396 1.378303    0.95 1.098391 1.811598      NA
     ##       pGtCompVal ROPElow ROPEhigh pLtROPE pInROPE pGtROPE
     ## sigma         NA      NA       NA      NA      NA      NA
 
@@ -1074,18 +1095,18 @@ summary(codaSamples)
     ##    plus standard error of the mean:
     ## 
     ##           Mean       SD  Naive SE Time-series SE
-    ## beta0  0.63146 2.343197 7.409e-03      0.1636254
-    ## beta1  1.49559 0.258122 8.162e-04      0.0200075
-    ## beta2 -0.02815 0.006999 2.213e-05      0.0005181
-    ## sigma  1.43745 0.185666 5.871e-04      0.0013616
+    ## beta0  1.06565 2.242803 7.092e-03      0.1490877
+    ## beta1  1.44582 0.247735 7.833e-04      0.0186260
+    ## beta2 -0.02681 0.006755 2.136e-05      0.0004748
+    ## sigma  1.43615 0.186252 5.889e-04      0.0013565
     ## 
     ## 2. Quantiles for each variable:
     ## 
     ##           2.5%      25%      50%      75%    97.5%
-    ## beta0 -4.09856 -0.88326  0.67915  2.17471  5.22462
-    ## beta1  0.98844  1.32358  1.48786  1.66561  2.02167
-    ## beta2 -0.04246 -0.03277 -0.02796 -0.02345 -0.01453
-    ## sigma  1.12857  1.30633  1.41888  1.54788  1.85540
+    ## beta0 -3.33065 -0.39136  1.02811  2.53529  5.55626
+    ## beta1  0.94183  1.28516  1.44947  1.60851  1.93014
+    ## beta2 -0.03999 -0.03127 -0.02686 -0.02244 -0.01317
+    ## sigma  1.12664  1.30453  1.41740  1.54726  1.85399
 
 <br>
 
@@ -1136,6 +1157,9 @@ ciReg(est2)
 -   Both the classical and the Bayesian estimate are very close to each
     other when comparing mean and standard deviation estimations.
 -   Interestingly, the new model including
-    *b**e**t**a*<sub>2</sub><sup>2</sup>, sees that the Bayesian
-    estimate experiences a high level of autocorrelation with both
-    *b**e**t**a*<sub>1</sub> and *b**e**t**a*<sub>2</sub><sup>2</sup>.
+    ![beta^{2}\_{2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta%5E%7B2%7D_%7B2%7D "beta^{2}_{2}"),
+    sees that the Bayesian estimate experiences a high level of
+    autocorrelation with both
+    ![beta\_{1}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta_%7B1%7D "beta_{1}")
+    and
+    ![beta^{2}\_{2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;beta%5E%7B2%7D_%7B2%7D "beta^{2}_{2}").

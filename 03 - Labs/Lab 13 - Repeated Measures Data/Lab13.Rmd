@@ -3,15 +3,15 @@ title: 'Lab 13: Repeated Measures Data'
 author: "Daniel Carpenter"
 date: "April 2022"
 output:
-  html_document: 
-    df_print: default
-    theme: cosmo
-    toc: yes
-    toc_float: yes
-  # github_document:
+  # html_document: 
+  #   df_print: default
+  #   theme: cosmo
   #   toc: yes
-  #   # number_sections: yes
-  #   toc_depth: 2
+    # toc_float: yes
+  github_document:
+    toc: yes
+    # number_sections: yes
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}

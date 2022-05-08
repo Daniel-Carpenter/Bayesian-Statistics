@@ -22,6 +22,13 @@ April 2022
 -   [The following is a Jags code to perform the
     simulation](#the-following-is-a-jags-code-to-perform-the-simulation)
     -   [Task 2](#task-2)
+        -   [Make a function that will run this
+            model](#make-a-function-that-will-run-this-model)
+        -   [Call it `myrepmeasure()`](#call-it-myrepmeasure)
+        -   [Use different priors.](#use-different-priors)
+        -   [Add some MCMC diagnostics (you could use some of JK’s
+            code)](#add-some-mcmc-diagnostics-you-could-use-some-of-jks-code)
+        -   [Now run the model](#now-run-the-model)
 
 # Flexible modeling
 
@@ -140,8 +147,9 @@ t.test(df$Fst-df$Snd)
 The conclusion in both tests is that we should not reject the NULL
 hypothesis of
 
-*H*<sub>0</sub> : *μ*<sub>*F**s**t*</sub> − *μ*<sub>*S**n**d*</sub> = 0
-since the pValue is &gt; 0.05. Note also that the confidence interval
+![H_0:\\mu\_{Fst}-\\mu\_{Snd}=0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;H_0%3A%5Cmu_%7BFst%7D-%5Cmu_%7BSnd%7D%3D0 "H_0:\mu_{Fst}-\mu_{Snd}=0")
+
+since the pValue is \> 0.05. Note also that the confidence interval
 contains 0.
 
 ## repeated aov
@@ -164,7 +172,10 @@ summary(av)
     ## Residuals   19  331.4   17.44
 
 Please note that the pvalues are the same and in this case
-*t*<sup>2</sup> = *F*, that is: ( − 0.30287)<sup>2</sup>= 0.0917302
+![t^2=F](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;t%5E2%3DF "t^2=F"),
+that is:
+![(-0.30287)^2=](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28-0.30287%29%5E2%3D "(-0.30287)^2=")
+0.0917302
 
 # Theory
 
@@ -177,40 +188,57 @@ To understand this terminology please read
 There will be correlation between measurements for a particular
 individual since blood pressure is measured twice on the same patient.
 
-We want to allow the two random variables *Y*<sub>*i*, 1</sub> and
-*Y*<sub>*i*, 2</sub> to have covariance *σ*<sub>*a*</sub><sup>2</sup>
+We want to allow the two random variables
+![Y\_{i,1}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Y_%7Bi%2C1%7D "Y_{i,1}")
+and
+![Y\_{i,2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Y_%7Bi%2C2%7D "Y_{i,2}")
+to have covariance
+![\\sigma_a^2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Csigma_a%5E2 "\sigma_a^2")
 
 Each datum is the realization of two sources of variablity: 1) between
-subject *a*<sub>*i*</sub> (dependent on i) and within subject
-*ϵ*<sub>*i**j*</sub>.
+subject
+![a_i](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;a_i "a_i")
+(dependent on i) and within subject
+![\\epsilon\_{ij}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cepsilon_%7Bij%7D "\epsilon_{ij}").
 
 This means that we can write each response as
 
-*Y*<sub>*i**j*</sub> = *μ* + *a*<sub>*i*</sub> + *ϵ*<sub>*i**j*</sub>
+![Y\_{ij} = \\mu+a_i +\\epsilon\_{ij}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Y_%7Bij%7D%20%3D%20%5Cmu%2Ba_i%20%2B%5Cepsilon_%7Bij%7D "Y_{ij} = \mu+a_i +\epsilon_{ij}")
 
 For a given `i` there can only be two values of `j` , hence the two
 samples are paired.
 
-The *a*<sub>*i*</sub> term is called a `random effect` and adds or
-subtracts to the overal mean *μ* giving the mean for the
-*i*<sup>*t**h*</sup> individual by taking in consideration the between
-persons variability.
+The
+![a_i](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;a_i "a_i")
+term is called a `random effect` and adds or subtracts to the overal
+mean
+![\\mu](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cmu "\mu")
+giving the mean for the
+![i^{th}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;i%5E%7Bth%7D "i^{th}")
+individual by taking in consideration the between persons variability.
 
 The following are within and between variability expressions
 
-*ϵ*<sub>*i**j*</sub> ∼ *N*(0, *σ*<sup>2</sup>)
-*a*<sub>*i*</sub> ∼ *N*(0, *σ*<sub>*a*</sub><sup>2</sup>)
+![\\epsilon\_{ij}\\sim N(0,\\sigma^2)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cepsilon_%7Bij%7D%5Csim%20N%280%2C%5Csigma%5E2%29 "\epsilon_{ij}\sim N(0,\sigma^2)")
+
+![a_i \\sim N(0,\\sigma_a^2)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;a_i%20%5Csim%20N%280%2C%5Csigma_a%5E2%29 "a_i \sim N(0,\sigma_a^2)")
+
 We could also write the model as
 
-*Y*<sub>*i**j*</sub> ∼ *N*(*μ*<sub>*i**j*</sub>, *σ*<sup>2</sup>)
+![Y\_{ij}\\sim N(\\mu\_{ij},\\sigma^2)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Y_%7Bij%7D%5Csim%20N%28%5Cmu_%7Bij%7D%2C%5Csigma%5E2%29 "Y_{ij}\sim N(\mu_{ij},\sigma^2)")
+
 where
-*μ*<sub>*i**j*</sub> = *μ* + *a*<sub>*i*</sub>
+
+![\\mu\_{ij}=\\mu+a_i](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cmu_%7Bij%7D%3D%5Cmu%2Ba_i "\mu_{ij}=\mu+a_i")
 
 and
 
-*a*<sub>*i*</sub> ∼ *N*(0, *σ*<sub>*a*</sub><sup>2</sup>)
+![a_i\\sim N(0,\\sigma_a^2)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;a_i%5Csim%20N%280%2C%5Csigma_a%5E2%29 "a_i\sim N(0,\sigma_a^2)")
 
-Notice that *i* = 1, …, *n* and *j* = 1, 2.
+Notice that
+![i=1,\\ldots,n](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;i%3D1%2C%5Cldots%2Cn "i=1,\ldots,n")
+and
+![j=1,2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;j%3D1%2C2 "j=1,2").
 
 ## Priors
 
@@ -229,24 +257,27 @@ completeness.
 
 The following bivariate normal is equivalent to the above model.
 
-*Y*<sub>*i*</sub>\|*μ*, *σ*<sup>2</sup> ∼ *N*<sub>2</sub>(*μ*1<sub>2</sub>, *Σ*)
+![{Y}\_i\|\\mu,\\sigma^2  \\sim N_2 (\\mu 1_2, \\Sigma)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%7BY%7D_i%7C%5Cmu%2C%5Csigma%5E2%20%20%5Csim%20N_2%20%28%5Cmu%201_2%2C%20%5CSigma%29 "{Y}_i|\mu,\sigma^2  \sim N_2 (\mu 1_2, \Sigma)")
+
 where
 
 # Expression for correlation
 
 ## Notice the following results:
 
-*E*(*Y*<sub>*i**j*</sub>) = *μ*
-*V**a**r*(*Y*<sub>*i**j*</sub>) = *V**a**r*(*μ* + *a*<sub>*i*</sub> + *ϵ*<sub>*i**j*</sub>) = *V**a**r*(*a*<sub>*i*</sub>) + *V**a**r*(*ϵ*<sub>*i**j*</sub>) = *σ*<sub>*a*</sub><sup>2</sup> + *σ*<sup>2</sup>
+![E(Y\_{ij})=\\mu](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;E%28Y_%7Bij%7D%29%3D%5Cmu "E(Y_{ij})=\mu")
 
-*C**o**v*(*Y*<sub>*i*1</sub>, *Y*<sub>*i*, 2</sub>) = *C**o**v*(*μ* + *a*<sub>*i*</sub> + *ϵ*<sub>*i*, 1</sub>, *μ* + *a*<sub>*i*</sub> + *ϵ*<sub>*i*, 2</sub>)
+![Var(Y\_{ij})=Var(\\mu +a\_{i}+\\epsilon\_{ij})=Var(a_i)+Var(\\epsilon\_{ij})=\\sigma_a^2 +\\sigma^2 ](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Var%28Y_%7Bij%7D%29%3DVar%28%5Cmu%20%2Ba_%7Bi%7D%2B%5Cepsilon_%7Bij%7D%29%3DVar%28a_i%29%2BVar%28%5Cepsilon_%7Bij%7D%29%3D%5Csigma_a%5E2%20%2B%5Csigma%5E2%20 "Var(Y_{ij})=Var(\mu +a_{i}+\epsilon_{ij})=Var(a_i)+Var(\epsilon_{ij})=\sigma_a^2 +\sigma^2 ")
+
+![ Cov(Y\_{i1},Y\_{i,2})=Cov(\\mu+a_i+\\epsilon\_{i,1},\\mu+a_i+\\epsilon\_{i,2})](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%20Cov%28Y_%7Bi1%7D%2CY_%7Bi%2C2%7D%29%3DCov%28%5Cmu%2Ba_i%2B%5Cepsilon_%7Bi%2C1%7D%2C%5Cmu%2Ba_i%2B%5Cepsilon_%7Bi%2C2%7D%29 " Cov(Y_{i1},Y_{i,2})=Cov(\mu+a_i+\epsilon_{i,1},\mu+a_i+\epsilon_{i,2})")
+
 Because of independence we get:
 
-*C**o**v*(*Y*<sub>*i*1</sub>, *Y*<sub>*i*, 2</sub>) = *σ*<sub>*a*</sub><sup>2</sup>
+![Cov(Y\_{i1},Y\_{i,2}) = \\sigma_a^2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;Cov%28Y_%7Bi1%7D%2CY_%7Bi%2C2%7D%29%20%3D%20%5Csigma_a%5E2 "Cov(Y_{i1},Y_{i,2}) = \sigma_a^2")
 
 ## Now look at the within correlation
 
-$$r\_{12}= Cor(Y\_{i1},Y\_{i,2}) = \\frac{Cov(Y\_{i1},Y\_{i,2})}{\\sigma\_a^2+\\sigma^2}=\\frac{\\sigma\_a^2}{\\sigma\_a^2+\\sigma^2}$$
+![r\_{12}= Cor(Y\_{i1},Y\_{i,2}) = \\frac{Cov(Y\_{i1},Y\_{i,2})}{\\sigma_a^2+\\sigma^2}=\\frac{\\sigma_a^2}{\\sigma_a^2+\\sigma^2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;r_%7B12%7D%3D%20Cor%28Y_%7Bi1%7D%2CY_%7Bi%2C2%7D%29%20%3D%20%5Cfrac%7BCov%28Y_%7Bi1%7D%2CY_%7Bi%2C2%7D%29%7D%7B%5Csigma_a%5E2%2B%5Csigma%5E2%7D%3D%5Cfrac%7B%5Csigma_a%5E2%7D%7B%5Csigma_a%5E2%2B%5Csigma%5E2%7D "r_{12}= Cor(Y_{i1},Y_{i,2}) = \frac{Cov(Y_{i1},Y_{i,2})}{\sigma_a^2+\sigma^2}=\frac{\sigma_a^2}{\sigma_a^2+\sigma^2}")
 
 # The following is a Jags code to perform the simulation
 

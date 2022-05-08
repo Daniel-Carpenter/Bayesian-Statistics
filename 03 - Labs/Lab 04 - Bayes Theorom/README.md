@@ -4,40 +4,40 @@ Daniel Carpenter
 February 2022
 
 -   [1 Task `1`: Point Estimates
-    (*Incorrect*)](#task-1-point-estimates-incorrect)
+    (*Incorrect*)](#1-task-1-point-estimates-incorrect)
     -   [1.1 `a.` Classical Point Estimate for
-        𝜃](#a-classical-point-estimate-for-𝜃)
+        𝜃](#11-a-classical-point-estimate-for-𝜃)
     -   [1.2 `b.` Confidence Interval using
-        𝜃](#b-confidence-interval-using-𝜃)
+        𝜃](#12-b-confidence-interval-using-𝜃)
 -   [2 Task `2`: Calculate/Plot Uniform Prior, Likelihood, and
-    Post](#task-2-calculateplot-uniform-prior-likelihood-and-post)
+    Post](#2-task-2-calculateplot-uniform-prior-likelihood-and-post)
     -   [2.1 `a.` Suppose we take
-        `theta = seq(0, 1, length = 20)`](#a-suppose-we-take-theta--seq0-1-length--20)
-    -   [2.2 `b.` Plot the prior using
-        base R.](#b-plot-the-prior-using-base-r)
+        `theta = seq(0, 1, length = 20)`](#21-a-suppose-we-take-theta--seq0-1-length--20)
+    -   [2.2 `b.` Plot the prior using base
+        R.](#22-b-plot-the-prior-using-base-r)
     -   [2.3 `c.` Formula for the
-        Likelihood](#c-formula-for-the-likelihood)
+        Likelihood](#23-c-formula-for-the-likelihood)
     -   [2.4 `d.` Plot the Likelihood over Discrete Values of
-        𝜃](#d-plot-the-likelihood-over-discrete-values-of-𝜃)
+        𝜃](#24-d-plot-the-likelihood-over-discrete-values-of-𝜃)
     -   [2.5 `e.` Prior and the Likelihood Plotted
-        Together](#e-prior-and-the-likelihood-plotted-together)
+        Together](#25-e-prior-and-the-likelihood-plotted-together)
     -   [2.6 `f.` Formula and Plot of the
-        Posterior](#f-formula-and-plot-of-the-posterior)
--   [3 Task `3`: Bayes Box](#task-3-bayes-box)
+        Posterior](#26-f-formula-and-plot-of-the-posterior)
+-   [3 Task `3`: Bayes Box](#3-task-3-bayes-box)
     -   [3.1 `a.` Matrix in R that will hold the 5 column
-        vectors](#a-matrix-in-r-that-will-hold-the-5-column-vectors)
+        vectors](#31-a-matrix-in-r-that-will-hold-the-5-column-vectors)
     -   [3.2 `b.` Rewrite Bayes’ theorem in terms of
-        `h = prior * likelihood`](#b-rewrite-bayes-theorem-in-terms-of-h--prior--likelihood)
+        `h = prior * likelihood`](#32-b-rewrite-bayes-theorem-in-terms-of-h--prior--likelihood)
     -   [3.3 `c.` Plot Prior, Likelihood, and Posterior in
-        `ggplot`](#c-plot-prior-likelihood-and-posterior-in-ggplot)
+        `ggplot`](#33-c-plot-prior-likelihood-and-posterior-in-ggplot)
 -   [4 Task `4`: Create Function `mybinpost()` to Dynamically Produce
     Above
-    Calculations](#task-4-create-function-mybinpost-to-dynamically-produce-above-calculations)
+    Calculations](#4-task-4-create-function-mybinpost-to-dynamically-produce-above-calculations)
     -   [4.1 `a. - b.` Create Function
-        `mybinpost()`](#a---b-create-function-mybinpost)
--   [5 Task `5`: Run `mybinpost()`](#task-5-run-mybinpost)
-    -   [5.1 `a.` Test \#1 of `mybinpost()`](#a-test-1-of-mybinpost)
-    -   [5.2 `b.` Test \#2 of `mybinpost()`](#b-test-2-of-mybinpost)
+        `mybinpost()`](#41-a---b-create-function-mybinpost)
+-   [5 Task `5`: Run `mybinpost()`](#5-task-5-run-mybinpost)
+    -   [5.1 `a.` Test \#1 of `mybinpost()`](#51-a-test-1-of-mybinpost)
+    -   [5.2 `b.` Test \#2 of `mybinpost()`](#52-b-test-2-of-mybinpost)
 
 ------------------------------------------------------------------------
 
@@ -62,7 +62,8 @@ pointEst
 
 ## 1.2 `b.` Confidence Interval using 𝜃
 
-`i.` Find classical 95% confidence interval using *θ*
+`i.` Find classical 95% confidence interval using
+![\\theta](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctheta "\theta")
 
 ``` r
 classicalEst <- pointEst + c(-1, 1) * 1.95 * sqrt(pointEst*(1 - pointEst) / n)
@@ -144,9 +145,11 @@ priorPlot <- plot(x = theta, y = prior,
 
 ### 2.3.1 Formula
 
-$$
+![
 likelihood: p(D\|\\theta) = \\frac{p(\\theta\|D)}{p(\\theta) / \\sum\_{\\theta^\*}p(D\|\\theta^\*) \\ p(\\theta^\*)}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Alikelihood%3A%20p%28D%7C%5Ctheta%29%20%3D%20%5Cfrac%7Bp%28%5Ctheta%7CD%29%7D%7Bp%28%5Ctheta%29%20%2F%20%5Csum_%7B%5Ctheta%5E%2A%7Dp%28D%7C%5Ctheta%5E%2A%29%20%5C%20p%28%5Ctheta%5E%2A%29%7D%0A "
+likelihood: p(D|\theta) = \frac{p(\theta|D)}{p(\theta) / \sum_{\theta^*}p(D|\theta^*) \ p(\theta^*)}
+")
 
 ### 2.3.2 R Calculations
 
@@ -188,9 +191,11 @@ lines(x = theta, y = prior, type = "b", pch = 19, col = red)
 
 ### 2.6.1 Formula for Posterior
 
-$$
+![
 posterior: p(\\theta\|D) = \\frac{p(D\|\\theta) \\ p(\\theta)}{p(D)}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Aposterior%3A%20p%28%5Ctheta%7CD%29%20%3D%20%5Cfrac%7Bp%28D%7C%5Ctheta%29%20%5C%20p%28%5Ctheta%29%7D%7Bp%28D%29%7D%0A "
+posterior: p(\theta|D) = \frac{p(D|\theta) \ p(\theta)}{p(D)}
+")
 
 ### 2.6.2 Plot of Posterior
 
@@ -278,7 +283,7 @@ knitr::kable(colSums(bayesMatrix))
 ```
 
 |            |          x |
-|:-----------|-----------:|
+|------------|-----------:|
 | theta      | 10.0000000 |
 | prior      |  1.0000000 |
 | likelihood |  0.9047619 |
@@ -287,9 +292,11 @@ knitr::kable(colSums(bayesMatrix))
 
 ## 3.2 `b.` Rewrite Bayes’ theorem in terms of `h = prior * likelihood`
 
-$$
+![
 p(\\theta\|D) = \\frac{p(D\|\\theta) \\ p(\\theta)}{\\sum\_{\\theta^\*}p(D\|\\theta^\*) \\ p(\\theta^\*)}  
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Ap%28%5Ctheta%7CD%29%20%3D%20%5Cfrac%7Bp%28D%7C%5Ctheta%29%20%5C%20p%28%5Ctheta%29%7D%7B%5Csum_%7B%5Ctheta%5E%2A%7Dp%28D%7C%5Ctheta%5E%2A%29%20%5C%20p%28%5Ctheta%5E%2A%29%7D%20%20%0A "
+p(\theta|D) = \frac{p(D|\theta) \ p(\theta)}{\sum_{\theta^*}p(D|\theta^*) \ p(\theta^*)}  
+")
 
 ## 3.3 `c.` Plot Prior, Likelihood, and Posterior in `ggplot`
 
@@ -302,6 +309,17 @@ df <- as.data.frame(cbind(bayesMatrix, thetaNumericValues))
 
 
 if(!require(tidyverse)) install.packages(tidyverse)
+```
+
+    ## Warning: package 'tidyverse' was built under R version 4.1.3
+
+    ## Warning: package 'purrr' was built under R version 4.1.3
+
+    ## Warning: package 'dplyr' was built under R version 4.1.3
+
+    ## Warning: package 'stringr' was built under R version 4.1.3
+
+``` r
 df <- df %>%
   
   # Select to only the needed data
@@ -506,7 +524,7 @@ mybinpost(n=20,x=12,theta = seq(0,1,length=50), alpha=0.05)
     ## 
     ## $latexBayesMat
     ## % latex table generated in R 4.1.2 by xtable 1.8-4 package
-    ## % Mon Apr 04 08:46:48 2022
+    ## % Sun May 08 11:15:07 2022
     ## \begin{table}[ht]
     ## \centering
     ## \begin{tabular}{rrrrrr}
@@ -622,7 +640,7 @@ mybinpost(n=50, x=25, theta=seq(0,1,length=30), alpha=0.1)
     ## 
     ## $latexBayesMat
     ## % latex table generated in R 4.1.2 by xtable 1.8-4 package
-    ## % Mon Apr 04 08:46:48 2022
+    ## % Sun May 08 11:15:07 2022
     ## \begin{table}[ht]
     ## \centering
     ## \begin{tabular}{rrrrrr}

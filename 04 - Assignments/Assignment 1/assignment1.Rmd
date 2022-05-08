@@ -6,13 +6,13 @@ date:     "February 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  html_document:
-    toc: yes
-    toc_float: yes
-  # github_document:
+  # html_document:
   #   toc: yes
-  #   # number_sections: yes
-  #   toc_depth: 2
+  #   toc_float: yes
+  github_document:
+    toc: yes
+    # number_sections: yes
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}

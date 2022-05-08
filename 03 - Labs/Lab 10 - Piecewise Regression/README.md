@@ -38,15 +38,18 @@ March, 2022
 
 ## The Change Point Model Expression
 
-*y*<sub>*i*</sub> ∼ *N*(*μ*<sub>*i*</sub>, *σ*<sup>2</sup>)
-*μ*<sub>*i*</sub> = *β*<sub>0</sub> + *β*<sub>1</sub>*x*<sub>*i*</sub> + *β*<sub>2</sub>(*x*<sub>*i*</sub> − *θ*)*I*<sub>(1, *x*<sub>*i*</sub> ≥ *θ*, 0 *e**l**s**e*)</sub>
+![y_i \\sim N(\\mu_i, \\sigma^2)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y_i%20%5Csim%20N%28%5Cmu_i%2C%20%5Csigma%5E2%29 "y_i \sim N(\mu_i, \sigma^2)")
+
+![\\mu_i = \\beta_0 + \\beta_1 x_i +  \\beta_2(x_i -\\theta)I\_{(1, x_i\\ge\\theta,\\; 0\\; else)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cmu_i%20%3D%20%5Cbeta_0%20%2B%20%5Cbeta_1%20x_i%20%2B%20%20%5Cbeta_2%28x_i%20-%5Ctheta%29I_%7B%281%2C%20x_i%5Cge%5Ctheta%2C%5C%3B%200%5C%3B%20else%29%7D "\mu_i = \beta_0 + \beta_1 x_i +  \beta_2(x_i -\theta)I_{(1, x_i\ge\theta,\; 0\; else)}")
 
 ## Example: Stagnant Water: Change point model
 
-*y*<sub>*i*</sub> is the log flow rate down an inclined channel, and
-*x*<sub>*i*</sub> is the log height of stagnant surface layers of
-different surfactants. The rate of decline in flow rate seems to
-suddenly increase around *x* = 0.
+![y_i](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y_i "y_i")
+is the log flow rate down an inclined channel, and
+![x_i](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;x_i "x_i")
+is the log height of stagnant surface layers of different surfactants.
+The rate of decline in flow rate seems to suddenly increase around
+![x=0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;x%3D0 "x=0").
 
 ## Data Overview
 
@@ -134,13 +137,16 @@ model {
 ### `step()` Function
 
 -   In the expression of the analytical model we used
-    *I*<sub>(1, *x*<sub>*i*</sub> ≥ *θ*, 0 *e**l**s**e*)</sub>
+    ![I\_{(1, x_i\\ge\\theta,\\; 0\\; else)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;I_%7B%281%2C%20x_i%5Cge%5Ctheta%2C%5C%3B%200%5C%3B%20else%29%7D "I_{(1, x_i\ge\theta,\; 0\; else)}")
 
--   What jags function is used for *I*? `step()`
+-   What jags function is used for
+    ![I](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;I "I")?
+    `step()`
 
-### A prior is placed on *τ*
+### A prior is placed on ![\\tau](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctau "\tau")
 
-What is the mean and variance of the prior distribution for *τ*?
+What is the mean and variance of the prior distribution for
+![\\tau](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctau "\tau")?
 
 ``` r
 # What it looks like
@@ -259,26 +265,26 @@ summary(codaSamples)
     ##    plus standard error of the mean:
     ## 
     ##               Mean        SD  Naive SE Time-series SE
-    ## beta[1]   -0.41951 1.523e-02 4.815e-05      2.481e-04
-    ## beta[2]   -0.59415 2.084e-02 6.589e-05      2.058e-04
-    ## beta0      0.54730 1.318e-02 4.167e-05      2.331e-04
-    ## int2       0.55938 7.942e-03 2.511e-05      7.156e-05
-    ## sigma      0.02209 3.303e-03 1.044e-05      1.633e-05
-    ## slope2    -1.01367 1.759e-02 5.561e-05      1.859e-04
-    ## tau     2181.92491 6.215e+02 1.965e+00      2.920e+00
-    ## theta      0.02791 3.327e-02 1.052e-04      5.901e-04
+    ## beta[1]   -0.41922 1.468e-02 4.642e-05      2.299e-04
+    ## beta[2]   -0.59436 2.082e-02 6.583e-05      2.066e-04
+    ## beta0      0.54760 1.257e-02 3.974e-05      2.130e-04
+    ## int2       0.55933 7.824e-03 2.474e-05      6.839e-05
+    ## sigma      0.02202 3.248e-03 1.027e-05      1.456e-05
+    ## slope2    -1.01357 1.726e-02 5.457e-05      1.714e-04
+    ## tau     2192.39412 6.189e+02 1.957e+00      2.654e+00
+    ## theta      0.02721 3.148e-02 9.954e-05      5.260e-04
     ## 
     ## 2. Quantiles for each variable:
     ## 
     ##               2.5%        25%        50%        75%      97.5%
-    ## beta[1]   -0.44868 -4.295e-01   -0.41995   -0.40979   -0.38849
-    ## beta[2]   -0.63543 -6.079e-01   -0.59410   -0.58050   -0.55293
-    ## beta0      0.52230  5.387e-01    0.54666    0.55555    0.57464
-    ## int2       0.54352  5.543e-01    0.55944    0.56452    0.57486
-    ## sigma      0.01677  1.976e-02    0.02170    0.02399    0.02963
-    ## slope2    -1.04870 -1.025e+00   -1.01346   -1.00205   -0.97979
-    ## tau     1139.21056  1.738e+03 2124.61676 2562.27472 3557.59303
-    ## theta     -0.03810  5.753e-03    0.03007    0.04926    0.08926
+    ## beta[1]   -0.44704 -4.290e-01   -0.41975   -0.40985   -0.38907
+    ## beta[2]   -0.63566 -6.081e-01   -0.59428   -0.58062   -0.55346
+    ## beta0      0.52439  5.391e-01    0.54691    0.55550    0.57394
+    ## int2       0.54360  5.543e-01    0.55946    0.56451    0.57440
+    ## sigma      0.01675  1.972e-02    0.02165    0.02390    0.02945
+    ## slope2    -1.04726 -1.025e+00   -1.01366   -1.00229   -0.97967
+    ## tau     1153.28008  1.750e+03 2133.14433 2571.56880 3564.50658
+    ## theta     -0.03736  6.161e-03    0.03003    0.04863    0.08328
 
 ``` r
 # Plot the model output
@@ -314,35 +320,41 @@ su
     ##    plus standard error of the mean:
     ## 
     ##               Mean        SD  Naive SE Time-series SE
-    ## beta[1]   -0.41951 1.523e-02 4.815e-05      2.481e-04
-    ## beta[2]   -0.59415 2.084e-02 6.589e-05      2.058e-04
-    ## beta0      0.54730 1.318e-02 4.167e-05      2.331e-04
-    ## int2       0.55938 7.942e-03 2.511e-05      7.156e-05
-    ## sigma      0.02209 3.303e-03 1.044e-05      1.633e-05
-    ## slope2    -1.01367 1.759e-02 5.561e-05      1.859e-04
-    ## tau     2181.92491 6.215e+02 1.965e+00      2.920e+00
-    ## theta      0.02791 3.327e-02 1.052e-04      5.901e-04
+    ## beta[1]   -0.41922 1.468e-02 4.642e-05      2.299e-04
+    ## beta[2]   -0.59436 2.082e-02 6.583e-05      2.066e-04
+    ## beta0      0.54760 1.257e-02 3.974e-05      2.130e-04
+    ## int2       0.55933 7.824e-03 2.474e-05      6.839e-05
+    ## sigma      0.02202 3.248e-03 1.027e-05      1.456e-05
+    ## slope2    -1.01357 1.726e-02 5.457e-05      1.714e-04
+    ## tau     2192.39412 6.189e+02 1.957e+00      2.654e+00
+    ## theta      0.02721 3.148e-02 9.954e-05      5.260e-04
     ## 
     ## 2. Quantiles for each variable:
     ## 
     ##               2.5%        25%        50%        75%      97.5%
-    ## beta[1]   -0.44868 -4.295e-01   -0.41995   -0.40979   -0.38849
-    ## beta[2]   -0.63543 -6.079e-01   -0.59410   -0.58050   -0.55293
-    ## beta0      0.52230  5.387e-01    0.54666    0.55555    0.57464
-    ## int2       0.54352  5.543e-01    0.55944    0.56452    0.57486
-    ## sigma      0.01677  1.976e-02    0.02170    0.02399    0.02963
-    ## slope2    -1.04870 -1.025e+00   -1.01346   -1.00205   -0.97979
-    ## tau     1139.21056  1.738e+03 2124.61676 2562.27472 3557.59303
-    ## theta     -0.03810  5.753e-03    0.03007    0.04926    0.08926
+    ## beta[1]   -0.44704 -4.290e-01   -0.41975   -0.40985   -0.38907
+    ## beta[2]   -0.63566 -6.081e-01   -0.59428   -0.58062   -0.55346
+    ## beta0      0.52439  5.391e-01    0.54691    0.55550    0.57394
+    ## int2       0.54360  5.543e-01    0.55946    0.56451    0.57440
+    ## sigma      0.01675  1.972e-02    0.02165    0.02390    0.02945
+    ## slope2    -1.04726 -1.025e+00   -1.01366   -1.00229   -0.97967
+    ## tau     1153.28008  1.750e+03 2133.14433 2571.56880 3564.50658
+    ## theta     -0.03736  6.161e-03    0.03003    0.04863    0.08328
 
 ### Interpret the estimates:
 
 -   The mean and standard deviation for each monitored variable can be
-    shown above. For example, the mean *μ* of *β*<sub>1</sub> is around
-    -0.42 and its standard deviation *σ* is around 1.499e-02  
+    shown above. For example, the mean
+    ![\\mu](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cmu "\mu")
+    of
+    ![\\beta_1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta_1 "\beta_1")
+    is around -0.42 and its standard deviation
+    ![\\sigma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Csigma "\sigma")
+    is around 1.499e-02  
 -   We can also analyze the credibility intervals for each variable. For
-    example, there is a 95% probability that *β*<sub>1</sub>’s mean will
-    approximately fall between -0.449 and -0.389.  
+    example, there is a 95% probability that
+    ![\\beta_1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbeta_1 "\beta_1")’s
+    mean will approximately fall between -0.449 and -0.389.  
 -   Above values rounded since each MCMC run varies in results (since it
     is an estimation)
 

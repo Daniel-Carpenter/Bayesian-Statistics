@@ -58,12 +58,17 @@ March 2022
 
 ## `a` Bayes Thereom
 
-$$
+![
 \\underbrace{p(\\theta \\mid D)}\_{\\text {posterior }}
 =\\underbrace{p(D \\mid \\theta)}\_{\\text {likelihood}} \\times
 \\underbrace{p(\\theta)}\_{\\text {prior}} 
 / \\underbrace{p(D)}\_{\\text {evidence }}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cunderbrace%7Bp%28%5Ctheta%20%5Cmid%20D%29%7D_%7B%5Ctext%20%7Bposterior%20%7D%7D%0A%3D%5Cunderbrace%7Bp%28D%20%5Cmid%20%5Ctheta%29%7D_%7B%5Ctext%20%7Blikelihood%7D%7D%20%5Ctimes%0A%5Cunderbrace%7Bp%28%5Ctheta%29%7D_%7B%5Ctext%20%7Bprior%7D%7D%20%0A%2F%20%5Cunderbrace%7Bp%28D%29%7D_%7B%5Ctext%20%7Bevidence%20%7D%7D%0A "
+\underbrace{p(\theta \mid D)}_{\text {posterior }}
+=\underbrace{p(D \mid \theta)}_{\text {likelihood}} \times
+\underbrace{p(\theta)}_{\text {prior}} 
+/ \underbrace{p(D)}_{\text {evidence }}
+")
 
 ## `b` General Posterior
 
@@ -74,23 +79,24 @@ $$
 
 #### Bayes’ rule
 
-*p*(*θ* ∣ *z*, *N*) = *p*(*z*, *N* ∣ *θ*)*p*(*θ*)/*p*(*z*, *N*) <br>
+![p(\\theta \\mid z, N)=p(z, N \\mid \\theta) p(\\theta) / p(z, N)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;p%28%5Ctheta%20%5Cmid%20z%2C%20N%29%3Dp%28z%2C%20N%20%5Cmid%20%5Ctheta%29%20p%28%5Ctheta%29%20%2F%20p%28z%2C%20N%29 "p(\theta \mid z, N)=p(z, N \mid \theta) p(\theta) / p(z, N)")
+<br>
 
 #### Define Bernoulli and beta distributions
 
-$=\\theta^{z}(1-\\theta)^{(N-z)} \\frac{\\theta^{(a-1)}(1-\\theta)^{(b-1)}}{B(a, b)} / p(z, N)$
+![=\\theta^{z}(1-\\theta)^{(N-z)} \\frac{\\theta^{(a-1)}(1-\\theta)^{(b-1)}}{B(a, b)} / p(z, N)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%3D%5Ctheta%5E%7Bz%7D%281-%5Ctheta%29%5E%7B%28N-z%29%7D%20%5Cfrac%7B%5Ctheta%5E%7B%28a-1%29%7D%281-%5Ctheta%29%5E%7B%28b-1%29%7D%7D%7BB%28a%2C%20b%29%7D%20%2F%20p%28z%2C%20N%29 "=\theta^{z}(1-\theta)^{(N-z)} \frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a, b)} / p(z, N)")
 <br>
 
 #### Rearrange factors
 
- = *θ*<sup>*z*</sup>(1 − *θ*)<sup>(*N* − *z*)</sup>*θ*<sup>(*a* − 1)</sup>(1 − *θ*)<sup>(*b* − 1)</sup>/\[*B*(*a*, *b*)*p*(*z*, *N*)\]  
+![=\\theta^{z}(1-\\theta)^{(N-z)} \\theta^{(a-1)}(1-\\theta)^{(b-1)} /\[B(a, b) p(z, N)\] \\quad](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%3D%5Ctheta%5E%7Bz%7D%281-%5Ctheta%29%5E%7B%28N-z%29%7D%20%5Ctheta%5E%7B%28a-1%29%7D%281-%5Ctheta%29%5E%7B%28b-1%29%7D%20%2F%5BB%28a%2C%20b%29%20p%28z%2C%20N%29%5D%20%5Cquad "=\theta^{z}(1-\theta)^{(N-z)} \theta^{(a-1)}(1-\theta)^{(b-1)} /[B(a, b) p(z, N)] \quad")
 <br>
 
 #### Collect Powers
 
- = *θ*<sup>((*z* + *a*) − 1)</sup>(1 − *θ*)<sup>((*N* − *z* + *b*) − 1)</sup>/\[*B*(*a*, *b*)*p*(*z*, *N*)\]  
+![=\\theta^{((z+a)-1)}(1-\\theta)^{((N-z+b)-1)} /\[B(a, b) p(z, N)\] \\quad](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%3D%5Ctheta%5E%7B%28%28z%2Ba%29-1%29%7D%281-%5Ctheta%29%5E%7B%28%28N-z%2Bb%29-1%29%7D%20%2F%5BB%28a%2C%20b%29%20p%28z%2C%20N%29%5D%20%5Cquad "=\theta^{((z+a)-1)}(1-\theta)^{((N-z+b)-1)} /[B(a, b) p(z, N)] \quad")
 <br>
- = *θ*<sup>((*z* + *a*) − 1)</sup>(1 − *θ*)<sup>((*N* − *z* + *b*) − 1)</sup>/*B*(*z* + *a*, *N* − *z* + *b*)
+![=\\theta^{((z+a)-1)}(1-\\theta)^{((N-z+b)-1)} / B(z+a, N-z+b)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%3D%5Ctheta%5E%7B%28%28z%2Ba%29-1%29%7D%281-%5Ctheta%29%5E%7B%28%28N-z%2Bb%29-1%29%7D%20%2F%20B%28z%2Ba%2C%20N-z%2Bb%29 "=\theta^{((z+a)-1)}(1-\theta)^{((N-z+b)-1)} / B(z+a, N-z+b)")
 <br>
 
 ## `c` Plot Prior, Likelihood, and Posterior
@@ -279,37 +285,50 @@ Mybeta2(alpha = 2, beta=2, n=10, x=3, alphalevel=0.01)
 
 #### 1. Two beta distributions with two shape parameters
 
-$$
+![
 dbeta1 = dbeta(x, a1, b1) \\\\
 dbeta2 = dbeta(x, a2, b2)
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Adbeta1%20%3D%20dbeta%28x%2C%20a1%2C%20b1%29%20%5C%5C%0Adbeta2%20%3D%20dbeta%28x%2C%20a2%2C%20b2%29%0A "
+dbeta1 = dbeta(x, a1, b1) \\
+dbeta2 = dbeta(x, a2, b2)
+")
 
 #### 2. The sum of w is 1
 
-$$
+![
 \\sum\_{-\\infty}^{+\\infty} w = 1
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Csum_%7B-%5Cinfty%7D%5E%7B%2B%5Cinfty%7D%20w%20%3D%201%0A "
+\sum_{-\infty}^{+\infty} w = 1
+")
 
 ### Explanation of above
 
-1.  *f*(*x*) ≥ 0
+1.  ![f(x) \\geq 0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;f%28x%29%20%5Cgeq%200 "f(x) \geq 0")
 
 -   Answer: The area under a beta distribution is from 0 to 1. Since the
-    sum of the weight *w* is 1, the area of both weighted betas will
-    be 1.
+    sum of the weight
+    ![w](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;w "w")
+    is 1, the area of both weighted betas will be 1.
 
-$$
+![
 dbeta(x, a, b)=\\frac{x^{a-1}(1-x)^{b-1}}{B(a, b)} \\geq 0
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0Adbeta%28x%2C%20a%2C%20b%29%3D%5Cfrac%7Bx%5E%7Ba-1%7D%281-x%29%5E%7Bb-1%7D%7D%7BB%28a%2C%20b%29%7D%20%5Cgeq%200%0A "
+dbeta(x, a, b)=\frac{x^{a-1}(1-x)^{b-1}}{B(a, b)} \geq 0
+")
 
-2.  ∫<sub> − ∞</sub><sup> + ∞</sup>*f*(*x*)*d**x* = 1
+2.  ![\\int\_{-\\infty}^{+\\infty} f(x) d x=1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cint_%7B-%5Cinfty%7D%5E%7B%2B%5Cinfty%7D%20f%28x%29%20d%20x%3D1 "\int_{-\infty}^{+\infty} f(x) d x=1")
 
--   Answer: If the sum of the weight *w* is 1, and the area under a beta
-    distribution must always be 1, then the area from -∞ to +∞ will
-    cover that interval and sum to 1, making
-    ∫<sub> − ∞</sub><sup> + ∞</sup>*f*(*x*)*d**x* = 1
+-   Answer: If the sum of the weight
+    ![w](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;w "w")
+    is 1, and the area under a beta distribution must always be 1, then
+    the area from
+    -![\\infty](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cinfty "\infty")
+    to
+    +![\\infty](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cinfty "\infty")
+    will cover that interval and sum to 1, making
+    ![\\int\_{-\\infty}^{+\\infty} f(x) d x=1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cint_%7B-%5Cinfty%7D%5E%7B%2B%5Cinfty%7D%20f%28x%29%20d%20x%3D1 "\int_{-\infty}^{+\infty} f(x) d x=1")
 
-$$
+![
 \\begin{gathered}
 \\text { If, } \\int\_{-\\infty}^{\\infty} dbeta(x, a, b) d x = \\int\_{-\\infty}^{\\infty} \\frac{x^{a-1}(1-x)^{b-1}}{B(a, b)} d x=1 \\\\
 \\text { Then, } \\int\_{-\\infty}^{\\infty} dbeta(x, a 1, b 1) d x=1 \\\\
@@ -317,7 +336,15 @@ $$
 \\text { Therefore, } \\int\_{-\\infty}^{\\infty} w \* dbeta(x, a 1, b 1) d x=w \* 1 \\\\
 \\text { and } \\int\_{-\\infty}^{\\infty}(1-w) \* dbeta(x, a 2, b 2) d x=(1-w) \* 1
 \\end{gathered}
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Bgathered%7D%0A%5Ctext%20%7B%20If%2C%20%7D%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20dbeta%28x%2C%20a%2C%20b%29%20d%20x%20%3D%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20%5Cfrac%7Bx%5E%7Ba-1%7D%281-x%29%5E%7Bb-1%7D%7D%7BB%28a%2C%20b%29%7D%20d%20x%3D1%20%5C%5C%0A%5Ctext%20%7B%20Then%2C%20%7D%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20dbeta%28x%2C%20a%201%2C%20b%201%29%20d%20x%3D1%20%5C%5C%0A%5Ctext%20%7B%20and%20%7D%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20dbeta%28x%2C%20a%202%2C%20b%202%29%20d%20x%3D1%20%5C%5C%0A%5Ctext%20%7B%20Therefore%2C%20%7D%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20w%20%2A%20dbeta%28x%2C%20a%201%2C%20b%201%29%20d%20x%3Dw%20%2A%201%20%5C%5C%0A%5Ctext%20%7B%20and%20%7D%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%281-w%29%20%2A%20dbeta%28x%2C%20a%202%2C%20b%202%29%20d%20x%3D%281-w%29%20%2A%201%0A%5Cend%7Bgathered%7D%0A "
+\begin{gathered}
+\text { If, } \int_{-\infty}^{\infty} dbeta(x, a, b) d x = \int_{-\infty}^{\infty} \frac{x^{a-1}(1-x)^{b-1}}{B(a, b)} d x=1 \\
+\text { Then, } \int_{-\infty}^{\infty} dbeta(x, a 1, b 1) d x=1 \\
+\text { and } \int_{-\infty}^{\infty} dbeta(x, a 2, b 2) d x=1 \\
+\text { Therefore, } \int_{-\infty}^{\infty} w * dbeta(x, a 1, b 1) d x=w * 1 \\
+\text { and } \int_{-\infty}^{\infty}(1-w) * dbeta(x, a 2, b 2) d x=(1-w) * 1
+\end{gathered}
+")
 
 ## `b` `mymix()` - Function to Created Mixed Beta Distribution and Plots
 
@@ -375,9 +402,11 @@ Mymixplot(w=0.9, a1=2,b1=4, a2=4,b2=2)
 
 ### `i` Analytical Posterior
 
-$$
+![
 \\underbrace{\\frac{z+a}{N+a+b}}\_{\\text{posterior}} = \\underbrace{\\frac{z}{N}}\_{\\text{data}} \\underbrace{\\frac{N}{N+a+b}}\_{\\text{weight}} + \\underbrace{\\frac{a}{a+b}}\_{\\text{prior}} \\underbrace{\\frac{a+b}{N+a+b}}\_{\\text{weight}} .
-$$
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cunderbrace%7B%5Cfrac%7Bz%2Ba%7D%7BN%2Ba%2Bb%7D%7D_%7B%5Ctext%7Bposterior%7D%7D%20%3D%20%5Cunderbrace%7B%5Cfrac%7Bz%7D%7BN%7D%7D_%7B%5Ctext%7Bdata%7D%7D%20%5Cunderbrace%7B%5Cfrac%7BN%7D%7BN%2Ba%2Bb%7D%7D_%7B%5Ctext%7Bweight%7D%7D%20%2B%20%5Cunderbrace%7B%5Cfrac%7Ba%7D%7Ba%2Bb%7D%7D_%7B%5Ctext%7Bprior%7D%7D%20%5Cunderbrace%7B%5Cfrac%7Ba%2Bb%7D%7BN%2Ba%2Bb%7D%7D_%7B%5Ctext%7Bweight%7D%7D%20.%0A "
+\underbrace{\frac{z+a}{N+a+b}}_{\text{posterior}} = \underbrace{\frac{z}{N}}_{\text{data}} \underbrace{\frac{N}{N+a+b}}_{\text{weight}} + \underbrace{\frac{a}{a+b}}_{\text{prior}} \underbrace{\frac{a+b}{N+a+b}}_{\text{weight}} .
+")
 
 ### `ii` Posterior Mixing Weight
 
@@ -583,17 +612,17 @@ ans$su
     ## 1. Empirical mean and standard deviation for each variable,
     ##    plus standard error of the mean:
     ## 
-    ##            Mean     SD Naive SE Time-series SE
-    ## biased   0.2702 0.4441 0.004441       0.006300
-    ## theta[1] 0.5000 0.0000 0.000000       0.000000
-    ## theta[2] 0.5650 0.2702 0.002701       0.003806
+    ##           Mean     SD Naive SE Time-series SE
+    ## biased   0.255 0.4359 0.004359       0.006128
+    ## theta[1] 0.500 0.0000 0.000000       0.000000
+    ## theta[2] 0.556 0.2741 0.002741       0.003777
     ## 
     ## 2. Quantiles for each variable:
     ## 
     ##             2.5%    25%    50%    75%  97.5%
     ## biased   0.00000 0.0000 0.0000 1.0000 1.0000
     ## theta[1] 0.50000 0.5000 0.5000 0.5000 0.5000
-    ## theta[2] 0.03732 0.3511 0.6325 0.7784 0.9687
+    ## theta[2] 0.03146 0.3285 0.6222 0.7772 0.9656
 
 ``` r
 head(ans$codaSamples)
@@ -605,13 +634,13 @@ head(ans$codaSamples)
     ## End = 1007 
     ## Thinning interval = 1 
     ##      biased theta[1]  theta[2]
-    ## [1,]      0      0.5 0.4238237
-    ## [2,]      0      0.5 0.4791809
-    ## [3,]      0      0.5 0.5651325
-    ## [4,]      0      0.5 0.3203489
-    ## [5,]      0      0.5 0.9216697
-    ## [6,]      1      0.5 0.8901893
-    ## [7,]      1      0.5 0.6005658
+    ## [1,]      0      0.5 0.7196810
+    ## [2,]      1      0.5 0.8398909
+    ## [3,]      1      0.5 0.8389247
+    ## [4,]      0      0.5 0.7856147
+    ## [5,]      1      0.5 0.6278833
+    ## [6,]      0      0.5 0.7495900
+    ## [7,]      1      0.5 0.7605082
     ## 
     ## [[2]]
     ## Markov Chain Monte Carlo (MCMC) output:
@@ -619,27 +648,27 @@ head(ans$codaSamples)
     ## End = 1007 
     ## Thinning interval = 1 
     ##      biased theta[1]  theta[2]
-    ## [1,]      1      0.5 0.6832375
-    ## [2,]      0      0.5 0.4125257
-    ## [3,]      0      0.5 0.9184628
-    ## [4,]      0      0.5 0.5680756
-    ## [5,]      0      0.5 0.9076723
-    ## [6,]      0      0.5 0.4719755
-    ## [7,]      0      0.5 0.8215983
+    ## [1,]      1      0.5 0.5078082
+    ## [2,]      0      0.5 0.8434503
+    ## [3,]      1      0.5 0.7545609
+    ## [4,]      1      0.5 0.7135601
+    ## [5,]      1      0.5 0.7072328
+    ## [6,]      0      0.5 0.6771685
+    ## [7,]      0      0.5 0.9143456
     ## 
     ## [[3]]
     ## Markov Chain Monte Carlo (MCMC) output:
     ## Start = 1001 
     ## End = 1007 
     ## Thinning interval = 1 
-    ##      biased theta[1]   theta[2]
-    ## [1,]      0      0.5 0.04053161
-    ## [2,]      0      0.5 0.01449225
-    ## [3,]      0      0.5 0.02691566
-    ## [4,]      0      0.5 0.01313482
-    ## [5,]      0      0.5 0.10346145
-    ## [6,]      0      0.5 0.77759603
-    ## [7,]      0      0.5 0.60270817
+    ##      biased theta[1]  theta[2]
+    ## [1,]      0      0.5 0.6316350
+    ## [2,]      0      0.5 0.7603644
+    ## [3,]      1      0.5 0.6990585
+    ## [4,]      1      0.5 0.7677856
+    ## [5,]      0      0.5 0.9973635
+    ## [6,]      0      0.5 0.5966314
+    ## [7,]      0      0.5 0.6454070
     ## 
     ## attr(,"class")
     ## [1] "mcmc.list"
@@ -669,17 +698,17 @@ str(ans$codaSamples)   # Structure of the mcmc list
 ```
 
     ## List of 3
-    ##  $ : 'mcmc' num [1:3334, 1:3] 0 0 0 0 0 1 1 0 0 0 ...
+    ##  $ : 'mcmc' num [1:3334, 1:3] 0 1 1 0 1 0 1 1 0 0 ...
     ##   ..- attr(*, "dimnames")=List of 2
     ##   .. ..$ : NULL
     ##   .. ..$ : chr [1:3] "biased" "theta[1]" "theta[2]"
     ##   ..- attr(*, "mcpar")= num [1:3] 1001 4334 1
-    ##  $ : 'mcmc' num [1:3334, 1:3] 1 0 0 0 0 0 0 1 0 0 ...
+    ##  $ : 'mcmc' num [1:3334, 1:3] 1 0 1 1 1 0 0 0 0 0 ...
     ##   ..- attr(*, "dimnames")=List of 2
     ##   .. ..$ : NULL
     ##   .. ..$ : chr [1:3] "biased" "theta[1]" "theta[2]"
     ##   ..- attr(*, "mcpar")= num [1:3] 1001 4334 1
-    ##  $ : 'mcmc' num [1:3334, 1:3] 0 0 0 0 0 0 0 0 0 0 ...
+    ##  $ : 'mcmc' num [1:3334, 1:3] 0 0 1 1 0 0 0 1 0 0 ...
     ##   ..- attr(*, "dimnames")=List of 2
     ##   .. ..$ : NULL
     ##   .. ..$ : chr [1:3] "biased" "theta[1]" "theta[2]"
@@ -696,36 +725,36 @@ mcmc1 = as.data.frame(ans$codaSamples[[1]]); head(mcmc1)
 ```
 
     ##   biased theta[1]  theta[2]
-    ## 1      0      0.5 0.4238237
-    ## 2      0      0.5 0.4791809
-    ## 3      0      0.5 0.5651325
-    ## 4      0      0.5 0.3203489
-    ## 5      0      0.5 0.9216697
-    ## 6      1      0.5 0.8901893
+    ## 1      0      0.5 0.7196810
+    ## 2      1      0.5 0.8398909
+    ## 3      1      0.5 0.8389247
+    ## 4      0      0.5 0.7856147
+    ## 5      1      0.5 0.6278833
+    ## 6      0      0.5 0.7495900
 
 ``` r
 mcmc2 = as.data.frame(ans$codaSamples[[2]]); head(mcmc2)
 ```
 
     ##   biased theta[1]  theta[2]
-    ## 1      1      0.5 0.6832375
-    ## 2      0      0.5 0.4125257
-    ## 3      0      0.5 0.9184628
-    ## 4      0      0.5 0.5680756
-    ## 5      0      0.5 0.9076723
-    ## 6      0      0.5 0.4719755
+    ## 1      1      0.5 0.5078082
+    ## 2      0      0.5 0.8434503
+    ## 3      1      0.5 0.7545609
+    ## 4      1      0.5 0.7135601
+    ## 5      1      0.5 0.7072328
+    ## 6      0      0.5 0.6771685
 
 ``` r
 mcmc3 = as.data.frame(ans$codaSamples[[3]]); head(mcmc3)
 ```
 
-    ##   biased theta[1]   theta[2]
-    ## 1      0      0.5 0.04053161
-    ## 2      0      0.5 0.01449225
-    ## 3      0      0.5 0.02691566
-    ## 4      0      0.5 0.01313482
-    ## 5      0      0.5 0.10346145
-    ## 6      0      0.5 0.77759603
+    ##   biased theta[1]  theta[2]
+    ## 1      0      0.5 0.6316350
+    ## 2      0      0.5 0.7603644
+    ## 3      1      0.5 0.6990585
+    ## 4      1      0.5 0.7677856
+    ## 5      0      0.5 0.9973635
+    ## 6      0      0.5 0.5966314
 
 ``` r
 # make mcmcT by combining above
@@ -753,8 +782,10 @@ ggplot(mcmcT, aes(x = `theta[2]`, fill = biased)) +
 
 ## `d` Interpretation of Pick
 
-`i.` When the parameter `biased` = 0: `pick` = 1, `ii.` When the
-parameter `biased` = 1: `pick` = 2,
+`i.` When the parameter `biased` = 0: `pick` =
+![1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;1 "1"),
+`ii.` When the parameter `biased` = 1: `pick` =
+![2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;2 "2"),
 
 ## `e` Incorrect Posterior
 
@@ -800,15 +831,19 @@ informed prior for an additional sample.
 
 -   See JK’s *Inferring a Binomial Probability via Exact Mathematical
     Analysis, page 131*  
--   For a beta density with mean *μ* and standard deviation *σ*, the
-    shape parameters are:
+-   For a beta density with mean
+    ![\\mu](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cmu "\mu")
+    and standard deviation
+    ![\\sigma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Csigma "\sigma"),
+    the shape parameters are:
 
-$$a=\\mu\\left(\\frac{\\mu(1-\\mu)}{\\sigma^{2}}-1\\right)$$
-$$b=(1-\\mu)\\left(\\frac{\\mu(1-\\mu)}{\\sigma^{2}}-1\\right)$$
+![a=\\mu\\left(\\frac{\\mu(1-\\mu)}{\\sigma^{2}}-1\\right)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;a%3D%5Cmu%5Cleft%28%5Cfrac%7B%5Cmu%281-%5Cmu%29%7D%7B%5Csigma%5E%7B2%7D%7D-1%5Cright%29 "a=\mu\left(\frac{\mu(1-\mu)}{\sigma^{2}}-1\right)")
+
+![b=(1-\\mu)\\left(\\frac{\\mu(1-\\mu)}{\\sigma^{2}}-1\\right)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;b%3D%281-%5Cmu%29%5Cleft%28%5Cfrac%7B%5Cmu%281-%5Cmu%29%7D%7B%5Csigma%5E%7B2%7D%7D-1%5Cright%29 "b=(1-\mu)\left(\frac{\mu(1-\mu)}{\sigma^{2}}-1\right)")
 
 Derivation
 
-$$\\text { Given } \\mu=\\frac{a}{a+b}, \\sigma^{2}=\\frac{\\mu(1-\\mu)}{a+b+1}, a=\\mu \\kappa, b=(1-\\mu) \\kappa \\text {, and } \\kappa=a+b$$
+![\\text { Given } \\mu=\\frac{a}{a+b}, \\sigma^{2}=\\frac{\\mu(1-\\mu)}{a+b+1}, a=\\mu \\kappa, b=(1-\\mu) \\kappa \\text {, and } \\kappa=a+b](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%20%7B%20Given%20%7D%20%5Cmu%3D%5Cfrac%7Ba%7D%7Ba%2Bb%7D%2C%20%5Csigma%5E%7B2%7D%3D%5Cfrac%7B%5Cmu%281-%5Cmu%29%7D%7Ba%2Bb%2B1%7D%2C%20a%3D%5Cmu%20%5Ckappa%2C%20b%3D%281-%5Cmu%29%20%5Ckappa%20%5Ctext%20%7B%2C%20and%20%7D%20%5Ckappa%3Da%2Bb "\text { Given } \mu=\frac{a}{a+b}, \sigma^{2}=\frac{\mu(1-\mu)}{a+b+1}, a=\mu \kappa, b=(1-\mu) \kappa \text {, and } \kappa=a+b")
 
 ## `b-e` `pseudobin()` - Use Pseudo Priors for Prior
 
@@ -980,10 +1015,10 @@ pseudoAns$hyperParams
 ```
 
     ## $alpha
-    ## [1] 15.79299
+    ## [1] 15.88274
     ## 
     ## $beta
-    ## [1] 5.991436
+    ## [1] 5.932526
 
 ``` r
 # See the summary stats also
@@ -992,9 +1027,9 @@ pseudoAns$su
 
 |            |      Mean |        SD |  Naive SE | Time-series SE |
 |:-----------|----------:|----------:|----------:|---------------:|
-| biased     | 0.2593481 | 0.4382989 | 0.0043826 |      0.0062592 |
+| biased     | 0.2575485 | 0.4373058 | 0.0043726 |      0.0066829 |
 | theta\[1\] | 0.5000000 | 0.0000000 | 0.0000000 |      0.0000000 |
-| theta\[2\] | 0.7264225 | 0.0924527 | 0.0009244 |      0.0010853 |
+| theta\[2\] | 0.7284003 | 0.0934865 | 0.0009348 |      0.0011073 |
 
 ``` r
 # Show the Plots
