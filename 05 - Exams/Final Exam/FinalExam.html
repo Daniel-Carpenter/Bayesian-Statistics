@@ -1767,13 +1767,13 @@ prior proof knowledge that <span class="math inline">\(E(Y)\)</span> =
 <p><span class="math display">\[
 \frac{-b^{\prime \prime}(\theta)}{a(\phi)}
 +     \frac{1}{a(\phi)^2} \
-\int_y (y - E(y))^2
+\int_y (y - E(Y))^2
 \ f \ dy = 0
 \]</span></p>
 </div>
 <div id="subsititute-variance-sigma2-for-y---ey2" class="section level3">
 <h3>Subsititute Variance <span class="math inline">\(\sigma^2\)</span>
-for <span class="math inline">\((y - E(y))^2\)</span></h3>
+for <span class="math inline">\((y - E(Y))^2\)</span></h3>
 <p><span class="math display">\[
 \frac{-b^{\prime \prime}(\theta)}{a(\phi)}
 +     \frac{1}{a(\phi)^2} \
@@ -1789,7 +1789,7 @@ for <span class="math inline">\((y - E(y))^2\)</span></h3>
 <div id="solution-therefore-we-get-see-that-the-variance-sigma2-is-bprime-primeaphi" class="section level3">
 <h3><em>Solution</em>: Therefore, we get see that the variance <span class="math inline">\(\sigma^2\)</span> is <span class="math inline">\(b^{\prime \prime}a(\phi)\)</span></h3>
 <p><span class="math display">\[
-\sigma^2 = b^{\prime \prime}a(\phi)
+V(Y) = \sigma^2 = b^{\prime \prime}a(\phi)
 \]</span></p>
 <hr />
 <p><br></p>
@@ -1798,15 +1798,125 @@ for <span class="math inline">\((y - E(y))^2\)</span></h3>
 <div id="c-show-that-the-binomial-distribution-belongs-to-the-exponential-family" class="section level2">
 <h2>5. c) Show that the <code>Binomial</code> distribution belongs to
 the <code>exponential</code> family</h2>
+<div id="given-the-binomial-definition-rearrange" class="section level3">
+<h3>Given the binomial definition, rearrange:</h3>
+<p><span class="math display">\[
+\begin{aligned}
+p(Y = y) &amp;=\left(\begin{array}{c}
+n \\ y
+\end{array}\right) p^{y}(1-p)^{n-y} \\
+&amp;=\left(\begin{array}{c}
+n \\ y
+\end{array}\right)(1-p)^{n}\left(\frac{p}{1-p}\right)^{y} \\
+\end{aligned}
+\]</span></p>
+</div>
+<div id="therefore-we-see-it-is-apart-of-the-exponential-family" class="section level3">
+<h3>Therefore we see it is apart of the exponential family</h3>
+<p><span class="math display">\[
+p(Y = y) =
+\left(\begin{array}{l} n \\ y
+\end{array}\right)(1-p)^{n} \exp \left(\log \left(\frac{p}{1-p}\right)
+y\right)
+\]</span></p>
+<hr />
 <p><br></p>
+</div>
 </div>
 <div id="d-show-ey-np" class="section level2">
 <h2>5. d) Show <span class="math inline">\(E(Y) = np\)</span></h2>
+<div id="using-the-definition-of-a-moment-generating-function" class="section level3">
+<h3>Using the definition of a Moment Generating Function</h3>
+<p><span class="math display">\[
+b(y ; n, p)=\frac{n !}{y !(n-y) !} p^{y} q^{n-y} \quad \text { with }
+\quad q=1-p .
+\]</span></p>
+</div>
+<div id="mgf-given-by" class="section level3">
+<h3>MGF Given by:</h3>
+<p><span class="math display">\[
+\begin{aligned}
+M(y, t) &amp;=\sum_{y=0}^{n} e^{y t} \frac{n !}{y !(n-y) !} p^{y}
+q^{n-y} \\
+&amp;=\sum_{y=0}^{n} \frac{n !}{y !(n-y) !}\left(p e^{t}\right)^{y}
+q^{n-y} \\
+&amp;=\left(p e^{t}+q\right)^{n}
+\end{aligned}
+\]</span></p>
+</div>
+<div id="differentiate-the-mgf-with-respect-to-t-using-the-function-of-a-function-rule" class="section level3">
+<h3>Differentiate the MGF with respect to <span class="math inline">\(t\)</span> using the function-of-a-function
+rule:</h3>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{d M(y, t)}{d t} &amp;=n\left(q+p e^{t}\right)^{n-1} p e^{t} \\
+&amp;=n p e^{t}\left(p e^{t}+q\right)^{n-1}
+\end{aligned}
+\]</span></p>
+</div>
+<div id="solution-now-use-t0-to-get-ey-which-is-n-p" class="section level3">
+<h3><em>Solution</em>: Now use <span class="math inline">\(t=0\)</span>
+to get <span class="math inline">\(E(Y)\)</span>, which is = <span class="math inline">\(n p\)</span></h3>
+<p><span class="math display">\[
+\begin{aligned}
+E(Y) &amp;=n p(p+q)^{n-1} \\
+&amp;=n p
+\end{aligned}
+\]</span></p>
+<hr />
 <p><br></p>
+</div>
 </div>
 <div id="e-show-vy-np1p" class="section level2">
 <h2>5. e) Show <span class="math inline">\(V(Y) = np(1−p)\)</span></h2>
-<hr />
+<div id="find-the-second-moment-using-product-rule" class="section level3">
+<h3>Find the second moment using product rule:</h3>
+<p><span class="math display">\[
+\frac{d u v}{d y}=u \frac{d v}{d y}+v \frac{d u}{d y}
+\]</span> <span class="math display">\[
+\begin{aligned}
+\frac{d^{2} M(y, t)}{d t^{2}} &amp;=n p e^{t}\left\{(n-1)\left(p
+e^{t}+q\right)^{n-2} p e^{t}\right\}+\left(p
+e^{t}+q\right)^{n-1}\left\{n p e^{t}\right\} \\
+&amp;=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{(n-1) p e^{t}+\left(p
+e^{t}+q\right)\right\} \\
+&amp;=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{q+n p e^{t}\right\} .
+\end{aligned}
+\]</span></p>
+</div>
+<div id="use-t0-again" class="section level3">
+<h3>Use <span class="math inline">\(t=0\)</span> again:</h3>
+<p><span class="math display">\[
+\begin{aligned}
+E\left(y^{2}\right) &amp;=n p(p+q)^{n-2}(n p+q) \\
+&amp;=n p(n p+q)
+\end{aligned}
+\]</span></p>
+</div>
+<div id="derive-vyey-mu2-in-turn-this-means-that-vy-np1---p" class="section level3">
+<h3>Derive <span class="math inline">\(V(Y)=E(Y-\mu)^{2}\)</span>, in
+turn this means that <span class="math inline">\(V(Y) = np(1 -
+p)\)</span></h3>
+<blockquote>
+<p>You could also write it as <span class="math inline">\(V(Y) = n p
+q\)</span> where <span class="math inline">\(q=1-p\)</span></p>
+</blockquote>
+<p><span class="math display">\[
+\begin{aligned}
+E(Y) &amp;=E\left(y^{2}\right)-\{E(Y)\}^{2} \\
+&amp;=n p(n p+q)-n^{2} p^{2} \\
+&amp;=n p q \\
+\end{aligned}
+\]</span></p>
+</div>
+<div id="solution-knowing-that-q-1---p-we-know-vy-n-p-1---p-from-above-n-p-q" class="section level3">
+<h3><em>Solution</em>: Knowing that <span class="math inline">\(q = 1 -
+p\)</span>, we know <span class="math inline">\(V(Y) = n p (1 -
+p)\)</span> from above <span class="math inline">\(n p q\)</span></h3>
+</div>
+</div>
+<div id="vy-n-p-1---p" class="section level2">
+<h2><span class="math display">\[ V(Y) = n p (1 - p)\]</span></h2>
 <p><br></p>
 </div>
 </div>

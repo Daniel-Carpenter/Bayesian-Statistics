@@ -209,11 +209,11 @@ $$
 $$
 \frac{-b^{\prime \prime}(\theta)}{a(\phi)} 
 +     \frac{1}{a(\phi)^2} \ 
-\int_y (y - E(y))^2
+\int_y (y - E(Y))^2
 \ f \ dy = 0
 $$
 
-### Subsititute Variance $\sigma^2$ for $(y - E(y))^2$
+### Subsititute Variance $\sigma^2$ for $(y - E(Y))^2$
 $$
 \frac{-b^{\prime \prime}(\theta)}{a(\phi)} 
 +     \frac{1}{a(\phi)^2} \ 
@@ -228,7 +228,7 @@ $$
 
 ### *Solution*: Therefore, we get see that the variance $\sigma^2$ is $b^{\prime \prime}a(\phi)$
 $$
-\sigma^2 = b^{\prime \prime}a(\phi)
+V(Y) = \sigma^2 = b^{\prime \prime}a(\phi)
 $$
 
 ---
@@ -237,14 +237,101 @@ $$
 
 ## 5. c) Show that the `Binomial` distribution belongs to the `exponential` family
 
+### Given the binomial definition, rearrange:
+
+$$
+\begin{aligned}
+p(Y = y) &=\left(\begin{array}{c}
+n \\ y
+\end{array}\right) p^{y}(1-p)^{n-y} \\
+&=\left(\begin{array}{c}
+n \\ y
+\end{array}\right)(1-p)^{n}\left(\frac{p}{1-p}\right)^{y} \\
+\end{aligned}
+$$
+
+### Therefore we see it is apart of the exponential family
+$$
+p(Y = y) = 
+\left(\begin{array}{l} n \\ y
+\end{array}\right)(1-p)^{n} \exp \left(\log \left(\frac{p}{1-p}\right) y\right)
+$$
+
+---
+
 <br>
 
 ## 5. d) Show $E(Y) = np$ 
+
+### Using the definition of a Moment Generating Function
+$$
+b(y ; n, p)=\frac{n !}{y !(n-y) !} p^{y} q^{n-y} \quad \text { with } \quad q=1-p .
+$$
+
+### MGF Given by:
+$$
+\begin{aligned}
+M(y, t) &=\sum_{y=0}^{n} e^{y t} \frac{n !}{y !(n-y) !} p^{y} q^{n-y} \\
+&=\sum_{y=0}^{n} \frac{n !}{y !(n-y) !}\left(p e^{t}\right)^{y} q^{n-y} \\
+&=\left(p e^{t}+q\right)^{n}
+\end{aligned}
+$$
+
+### Differentiate the MGF with respect to $t$ using the function-of-a-function rule:
+$$
+\begin{aligned}
+\frac{d M(y, t)}{d t} &=n\left(q+p e^{t}\right)^{n-1} p e^{t} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-1}
+\end{aligned}
+$$
+
+### *Solution*: Now use $t=0$ to get $E(Y)$, which is = $n p$
+$$
+\begin{aligned}
+E(Y) &=n p(p+q)^{n-1} \\
+&=n p 
+\end{aligned}
+$$
+
+---
 
 <br>
 
 ## 5. e) Show $V(Y) = np(1−p)$
 
+### Find the second moment using product rule:
+$$
+\frac{d u v}{d y}=u \frac{d v}{d y}+v \frac{d u}{d y}
+$$
+$$
+\begin{aligned}
+\frac{d^{2} M(y, t)}{d t^{2}} &=n p e^{t}\left\{(n-1)\left(p e^{t}+q\right)^{n-2} p e^{t}\right\}+\left(p e^{t}+q\right)^{n-1}\left\{n p e^{t}\right\} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{(n-1) p e^{t}+\left(p e^{t}+q\right)\right\} \\
+&=n p e^{t}\left(p e^{t}+q\right)^{n-2}\left\{q+n p e^{t}\right\} .
+\end{aligned}
+$$
+
+### Use $t=0$ again:
+$$
+\begin{aligned}
+E\left(y^{2}\right) &=n p(p+q)^{n-2}(n p+q) \\
+&=n p(n p+q)
+\end{aligned}
+$$
+
+### Derive $V(Y)=E(Y-\mu)^{2}$, in turn this means that $V(Y) = np(1 - p)$
+> You could also write it as $V(Y) = n p q$ where $q=1-p$
+
+$$
+\begin{aligned}
+E(Y) &=E\left(y^{2}\right)-\{E(Y)\}^{2} \\
+&=n p(n p+q)-n^{2} p^{2} \\
+&=n p q \\
+\end{aligned}
+$$
+
+### *Solution*: Knowing that $q = 1 - p$, we know $V(Y) = n p (1 - p)$ from above $n p q$
+$$ V(Y) = n p (1 - p)$$
 ---
 
 <br>
