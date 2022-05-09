@@ -196,7 +196,7 @@ Mymixbeta(w=0.5, n=20, x=12, a1=1, a2=1, b1=5, b2=5)
 
 <br>
 
-# Question 2
+# Question 2 - Probability
 
 ## 2. a) P(X > 0.7|α = 2, β = 3)
 ```{r}
@@ -259,13 +259,23 @@ kable(randBetaDist)
 
 <br>
 
-# Question 3
+# Question 3 - Interpret Posteriors
 
-## 3. a)
-## 3. b) 
-## 3. c)
-## 3. d)
-## 3. e)
+## 3. a) Give the 95% HDI for θ the probability of a success.
+* There is a probability of 95% that the value will fall between 0.184 and 0.433
+
+## 3. b) What is the posterior probability that θ < 0.5
+* The posterior probability that θ < 0.5 is $99.7$%
+
+## 3. c) If H0 : θ = 0.5 should we reject it (the NULL), yes/no?
+* Yes, we should reject it because 0.5 falls outside the 95% and 90% HDI
+
+## 3. d) The posterior probability that θ lies in (0.203, 0.413) is 0.90. True or False?
+* It is `TRUE` that there is a probability of 90% that the value will fall between 0.203 and 0.413
+
+
+## 3. e) What does ROPE stand for?
+* ROPE stands for “Region Of Practical Equivalence”. In bayesian analysis, if the ROPE is entirely within the HDI for θ then we should reject the NULL for practical purposes.
 
 ---
 
