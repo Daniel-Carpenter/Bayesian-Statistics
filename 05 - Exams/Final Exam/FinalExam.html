@@ -1722,39 +1722,147 @@ Mymixbeta(w=0.5, n=20, x=12, a1=1, a2=1, b1=5, b2=5)</code></pre>
 </div>
 <div id="question-2" class="section level1">
 <h1>Question 2</h1>
-<div id="a" class="section level2">
-<h2>2. a)</h2>
+<div id="a-px-0.7α-2-β-3" class="section level2">
+<h2>2. a) P(X &gt; 0.7|α = 2, β = 3)</h2>
+<pre class="r"><code>pbeta(q = 0.7, 
+      shape1 = 2, shape2 = 3,
+      lower.tail = FALSE) # &gt;</code></pre>
+<pre><code>## [1] 0.0837</code></pre>
 </div>
-<div id="b" class="section level2">
-<h2>2. b)</h2>
+<div id="b-px-0.2α-1-β-1" class="section level2">
+<h2>2. b) P(X &lt; 0.2|α = 1, β = 1)</h2>
+<pre class="r"><code>pbeta(q = 0.2, 
+      shape1 = 1, shape2 = 1,
+      lower.tail = TRUE) # &lt;</code></pre>
+<pre><code>## [1] 0.2</code></pre>
 </div>
-<div id="c" class="section level2">
-<h2>2. c)</h2>
+<div id="c-find-the-value-of-x-with-lower-tail-probability-0.04.-x-beta5-4" class="section level2">
+<h2>2. c) Find the value of X with lower tail probability 0.04. X ∼
+Beta(5, 4)</h2>
+<pre class="r"><code>qbeta(p = 0.04, 
+      shape1 = 5, shape2 = 4, 
+      lower.tail = TRUE) # &lt;</code></pre>
+<pre><code>## [1] 0.2739266</code></pre>
 </div>
-<div id="d" class="section level2">
-<h2>2. d)</h2>
+<div id="d-find-the-equal-tail-interval-that-contains-95-of-the-distribution-x-beta4-8" class="section level2">
+<h2>2. d) Find the equal tail interval that contains 95% of the
+distribution, X ∼ Beta(4, 8)</h2>
+<pre class="r"><code>alphaCI = 0.05 / 2  # 2.5% upper/lower
+a = 4 # shape 1 
+b = 8 # shape 2
+
+# Upper tail 97.5%
+upperTail = qbeta(p = alphaCI, 
+                  shape1=a, shape2=b, 
+                  lower.tail = FALSE) # &lt;
+
+# Lower tail 2.5%
+lowerTail = qbeta(p = alphaCI, 
+                  shape1=a, shape2=b, 
+                  lower.tail = TRUE) # &gt;
+# Equal tail interval: 95% confidence between 2.5% and 97.5%
+paste0(&#39;There is a &#39;, (1 - alphaCI * 2) * 100, &#39;% Probability that the value will fall between &#39;, 
+      round(lowerTail, 3),&#39; and &#39;, round(upperTail, 3))</code></pre>
+<pre><code>## [1] &quot;There is a 95% Probability that the value will fall between 0.109 and 0.61&quot;</code></pre>
 </div>
-<div id="e" class="section level2">
-<h2>2. e)</h2>
+<div id="e-generate-a-random-sample-of-x-values-of-size-20-with-x-beta5-7" class="section level2">
+<h2>2. e) Generate a random sample of X values of size 20 with X ∼
+Beta(5, 7)</h2>
+<pre class="r"><code>randBetaDist &lt;- rbeta(n = 20, 
+                      shape1 = 5,
+                      shape2 = 7)
+
+# Print the data
+library(knitr)
+kable(randBetaDist)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.1473652</td>
+</tr>
+<tr class="even">
+<td align="right">0.3414695</td>
+</tr>
+<tr class="odd">
+<td align="right">0.3790753</td>
+</tr>
+<tr class="even">
+<td align="right">0.5990221</td>
+</tr>
+<tr class="odd">
+<td align="right">0.1688627</td>
+</tr>
+<tr class="even">
+<td align="right">0.3106732</td>
+</tr>
+<tr class="odd">
+<td align="right">0.4549681</td>
+</tr>
+<tr class="even">
+<td align="right">0.4229360</td>
+</tr>
+<tr class="odd">
+<td align="right">0.2755652</td>
+</tr>
+<tr class="even">
+<td align="right">0.6384255</td>
+</tr>
+<tr class="odd">
+<td align="right">0.4879525</td>
+</tr>
+<tr class="even">
+<td align="right">0.5366231</td>
+</tr>
+<tr class="odd">
+<td align="right">0.3975446</td>
+</tr>
+<tr class="even">
+<td align="right">0.2831815</td>
+</tr>
+<tr class="odd">
+<td align="right">0.4208538</td>
+</tr>
+<tr class="even">
+<td align="right">0.4166925</td>
+</tr>
+<tr class="odd">
+<td align="right">0.3997429</td>
+</tr>
+<tr class="even">
+<td align="right">0.4053113</td>
+</tr>
+<tr class="odd">
+<td align="right">0.4567047</td>
+</tr>
+<tr class="even">
+<td align="right">0.1826109</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <p><br></p>
 </div>
 </div>
 <div id="question-3" class="section level1">
 <h1>Question 3</h1>
-<div id="a-1" class="section level2">
+<div id="a" class="section level2">
 <h2>3. a)</h2>
 </div>
-<div id="b-1" class="section level2">
+<div id="b" class="section level2">
 <h2>3. b)</h2>
 </div>
-<div id="c-1" class="section level2">
+<div id="c" class="section level2">
 <h2>3. c)</h2>
 </div>
-<div id="d-1" class="section level2">
+<div id="d" class="section level2">
 <h2>3. d)</h2>
 </div>
-<div id="e-1" class="section level2">
+<div id="e" class="section level2">
 <h2>3. e)</h2>
 <hr />
 <p><br></p>
@@ -1762,21 +1870,21 @@ Mymixbeta(w=0.5, n=20, x=12, a1=1, a2=1, b1=5, b2=5)</code></pre>
 </div>
 <div id="question-4" class="section level1">
 <h1>Question 4</h1>
-<div id="a-2" class="section level2">
+<div id="a-1" class="section level2">
 <h2>4. a)</h2>
 </div>
-<div id="b-2" class="section level2">
+<div id="b-1" class="section level2">
 <h2>4. b)</h2>
 </div>
-<div id="c-2" class="section level2">
+<div id="c-1" class="section level2">
 <h2>4. c)</h2>
 </div>
-<div id="d-2" class="section level2">
+<div id="d-1" class="section level2">
 <h2>4. d)</h2>
 <div id="d-1-1" class="section level3">
 <h3>4. d, 1)</h3>
 </div>
-<div id="d-2-1" class="section level3">
+<div id="d-2" class="section level3">
 <h3>4. d, 2)</h3>
 <hr />
 <p><br></p>
@@ -2151,13 +2259,13 @@ x\end{array}\right) \theta^{x}(1-\theta)^{(n-x)}} {\underbrace{p(\theta
 </div>
 <div id="question-7" class="section level1">
 <h1>Question 7</h1>
-<div id="a-3" class="section level2">
+<div id="a-2" class="section level2">
 <h2>7. a)</h2>
 </div>
-<div id="b-3" class="section level2">
+<div id="b-2" class="section level2">
 <h2>7. b)</h2>
 </div>
-<div id="c-3" class="section level2">
+<div id="c-2" class="section level2">
 <h2>7. c)</h2>
 </div>
 <div id="d-3" class="section level2">
@@ -2168,13 +2276,13 @@ x\end{array}\right) \theta^{x}(1-\theta)^{(n-x)}} {\underbrace{p(\theta
 </div>
 <div id="question-8" class="section level1">
 <h1>Question 8</h1>
-<div id="a-4" class="section level2">
+<div id="a-3" class="section level2">
 <h2>8. a)</h2>
 </div>
-<div id="b-4" class="section level2">
+<div id="b-3" class="section level2">
 <h2>8. b)</h2>
 </div>
-<div id="c-4" class="section level2">
+<div id="c-3" class="section level2">
 <h2>8. c)</h2>
 </div>
 <div id="d-4" class="section level2">
@@ -2189,7 +2297,7 @@ x\end{array}\right) \theta^{x}(1-\theta)^{(n-x)}} {\underbrace{p(\theta
 3, 4, 5, 6, 7, 8, 9, 10), y = c(21.72, 20.41, 14.06, 14.6, 13.8, 
 10.4, 8.22, 6.79, 4.92, 0.45, 4.57, 1.95, 10.14, 13.28, 21.88, 
 18.88, 22.91, 23.53, 34.99, 35.07, 39.17), N = 21)</code></pre>
-<div id="b-5" class="section level2">
+<div id="b-4" class="section level2">
 <h2>9. b)</h2>
 <div id="bi" class="section level3">
 <h3>9. b,i)</h3>
@@ -2201,13 +2309,13 @@ x\end{array}\right) \theta^{x}(1-\theta)^{(n-x)}} {\underbrace{p(\theta
 <h3>9. b,iii)</h3>
 </div>
 </div>
-<div id="c-5" class="section level2">
+<div id="c-4" class="section level2">
 <h2>9. c)</h2>
 </div>
 <div id="d-5" class="section level2">
 <h2>9. d)</h2>
 </div>
-<div id="e-2" class="section level2">
+<div id="e-1" class="section level2">
 <h2>9. e)</h2>
 <hr />
 <p><br></p>
@@ -2222,10 +2330,10 @@ y=10+2*x+rnorm(31,0,10)
 xx=-15:15
 set.seed(24)
 yy=10+2*xx+rnorm(31,0,10)</code></pre>
-<div id="a-5" class="section level2">
+<div id="a-4" class="section level2">
 <h2>10. a)</h2>
 </div>
-<div id="b-6" class="section level2">
+<div id="b-5" class="section level2">
 <h2>10. b)</h2>
 <div id="b-i" class="section level3">
 <h3>10. b, i)</h3>

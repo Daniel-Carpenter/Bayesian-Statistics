@@ -198,11 +198,62 @@ Mymixbeta(w=0.5, n=20, x=12, a1=1, a2=1, b1=5, b2=5)
 
 # Question 2
 
-## 2. a)
-## 2. b)
-## 2. c)
-## 2. d)
-## 2. e)
+## 2. a) P(X > 0.7|α = 2, β = 3)
+```{r}
+pbeta(q = 0.7, 
+      shape1 = 2, shape2 = 3,
+      lower.tail = FALSE) # >
+```
+
+## 2. b) P(X < 0.2|α = 1, β = 1)
+```{r}
+pbeta(q = 0.2, 
+      shape1 = 1, shape2 = 1,
+      lower.tail = TRUE) # <
+```
+
+## 2. c) Find the value of X with lower tail probability 0.04. X ∼ Beta(5, 4)
+```{r}
+qbeta(p = 0.04, 
+      shape1 = 5, shape2 = 4, 
+      lower.tail = TRUE) # <
+
+```
+
+## 2. d) Find the equal tail interval that contains 95% of the distribution, X ∼ Beta(4, 8)
+```{r}
+alphaCI = 0.05 / 2  # 2.5% upper/lower
+a = 4 # shape 1 
+b = 8 # shape 2
+
+# Upper tail 97.5%
+upperTail = qbeta(p = alphaCI, 
+                  shape1=a, shape2=b, 
+                  lower.tail = FALSE) # <
+
+# Lower tail 2.5%
+lowerTail = qbeta(p = alphaCI, 
+                  shape1=a, shape2=b, 
+                  lower.tail = TRUE) # >
+# Equal tail interval: 95% confidence between 2.5% and 97.5%
+paste0('There is a ', (1 - alphaCI * 2) * 100, '% Probability that the value will fall between ', 
+      round(lowerTail, 3),' and ', round(upperTail, 3))
+
+
+```
+
+## 2. e) Generate a random sample of X values of size 20 with X ∼ Beta(5, 7)
+```{r}
+randBetaDist <- rbeta(n = 20, 
+                      shape1 = 5,
+                      shape2 = 7)
+
+# Print the data
+library(knitr)
+kable(randBetaDist)
+
+```
+
 
 ---
 
