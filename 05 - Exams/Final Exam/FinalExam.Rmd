@@ -641,13 +641,39 @@ where $\alpha_{i, j}$ is the probability of accepting state $j$ given that the s
 <br>
 
 
-# Question 8
+# Question 8 - SLR JAGS
 
 
-## 8. a)
-## 8. b)
-## 8. c)
-## 8. d)
+## 8. a) SLR Doodle Bug
+![](openBugsSLR.png){ width=80% }
+
+
+## 8. b) JAGS Code
+> Jags code for the model using uniform’s on the sigma’s
+
+* The data came as a data frame of x and y values with a total of n rows
+
+```{r jagsModel, eval=FALSE, include=TRUE}
+model{
+    for( i in 1 : n ) {
+        y[i] ~ dnorm(mu[i], tau)
+        mu[i] <- beta0 + beta1 * x[i]
+    }
+    beta0 ~ dnorm(0.0, 1.0E-6)
+    beta1 ~ dnorm(0.0, 1.0E-6)
+    sigma ~ dunif(0, 1000)
+    tau <- pow(sigma,  -2)
+}
+```
+
+
+## 8. c) Logical Node?
+* `tau` is considered a logical node,
+* Because `tau` is logically related to `sigma`
+* `tau` is a function of sigma.
+
+## 8. d) Linear Predictors?
+The linear predictor variables are: $\beta_0 +\beta_1 x$
 
 ---
 
