@@ -9,7 +9,7 @@ output:
   html_document:
     toc: yes
     toc_float: yes
-    number_sections: yes
+    # number_sections: yes
     toc_depth: 2
   # github_document:
   #   toc: yes
@@ -30,101 +30,120 @@ knitr::opts_chunk$set(
 
 Please place all answers in this document - use $\LaTeX$, R and Jags as needed. Answers to many qestions will be made dynamically through an R chunk.
 
-# Question 1
+# Question 1 - 
 
-## a)
+## 1. (a)
+## 1. (b)
+## 1. (c)
+## 1. (d)
+## 1. (e)
+## 1. (f)
+### 1. f, i)
+### 1. f, ii)
 
-## b)
+---
 
-## c)
-
-## d)
-
-## e)
-
-## f)
-
-### i)
-
-### ii)
+<br>
 
 # Question 2
 
-## a)
+## 2. a)
+## 2. b)
+## 2. c)
+## 2. d)
+## 2. e)
 
-## b)
+---
 
-## c)
-
-## d)
-
-## e)
+<br>
 
 # Question 3
 
-## a)
+## 3. a)
+## 3. b) 
+## 3. c)
+## 3. d)
+## 3. e)
 
-## b) 
+---
 
-## c)
+<br>
 
-## d)
-
-## e)
 
 # Question 4
 
-## a)
+## 4. a)
+## 4. b) 
+## 4. c)
+## 4. d)
+### 4. d, 1)
+### 4. d, 2)
 
-## b) 
+---
 
-## c)
+<br>
 
-## d)
 
-### 1)
+# Question 5 - Exponential Family
 
-### 2)
+The exponential family can be defined as any density of the following form:
+$$
+f(y \mid \theta, \phi)=\exp \left(\frac{y \theta-b(\theta)}{a(\phi)}+c(y, \phi)\right)
+$$
 
-# Question 5
+## 5. a) Show $E(Y) = b^{\prime}(\theta)$
 
-## a)
+<br>
 
-## b)
+## 5. b) Show $V(Y) = b^{\prime \prime}(\theta) a(\phi)$
 
-## c)
+<br>
 
-## d)
+## 5. c) Show that the `Binomial` distribution belongs to the `exponential` family
 
-## e)
+<br>
 
+## 5. d) Show $E(Y) = np$ 
+
+<br>
+
+## 5. e) Show $V(Y) = np(1−p)$
+
+---
+
+<br>
 
 
 # Question 6
 
+---
+
+<br>
 
 # Question 7
 
-## a)
+## 7. a)
+## 7. b)
+## 7. c)
+## 7. d)
 
-## b)
+---
 
-## c)
-
-## d)
-
+<br>
 
 
 # Question 8
 
 
-## a)
+## 8. a)
+## 8. b)
+## 8. c)
+## 8. d)
 
-## b)
+---
 
-## c)
+<br>
 
-## d)
 
 # Question 9
 
@@ -135,21 +154,18 @@ dataList = list(x = c(-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2,
 18.88, 22.91, 23.53, 34.99, 35.07, 39.17), N = 21)
 ```
 
-## b)
+## 9. b)
+### 9. b,i)
+### 9. b,ii)
+### 9. b,iii)
 
-### i)
+## 9. c)
+## 9. d)
+## 9. e)
 
-### ii)
+---
 
-### iii)
-
-## c)
-
-## d)
-
-## e)
-
-
+<br>
 
 
 # Question 10
@@ -165,13 +181,10 @@ yy=10+2*xx+rnorm(31,0,10)
 
 ```
 
-## a)
-
-## b)
-
-### i)
-
-### ii)
+## 10. a)
+## 10. b)
+### 10. b, i)
+### 10. b, ii)
 
 
 
