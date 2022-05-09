@@ -6,6 +6,7 @@
 * [Book Resources](https://sites.google.com/site/doingbayesiandataanalysis/home)
 * [How to install the package `rstan`](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started)
 * [`bayesplot` functions and uses](https://mc-stan.org/bayesplot/)
+* [`bayesplot` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/bayesplot.pdf)
 
 
 ---
