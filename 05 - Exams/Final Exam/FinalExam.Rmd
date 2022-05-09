@@ -26,9 +26,9 @@ knitr::opts_chunk$set(
 ```
 
 
-# Question 1 - General Posterior
+# Question 1 
 
-## 1. (a)
+## 1. (a) General Posterior
 
 *Adapted from JK's book - page 132 Doing Bayesian Data Analysis:* <br>  
 
@@ -55,13 +55,142 @@ $=\frac{1}{B(\alpha, \beta)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \left(\b
 
 <br>
 
-## 1. (b)
-## 1. (c)
-## 1. (d)
-## 1. (e)
-## 1. (f)
-### 1. f, i)
-### 1. f, ii)
+## 1. (b) If $\alpha$ = $\beta$ = 1 what prior distribution does this correspond to?
+* Shape 1 and Shape two with values of 1 create a `uniform` distribution.  
+
+## 1. (c) Suppose she uses $\alpha$ = $\beta$ = 5 for the prior what is the posterior distribution?
+* Mixing a beta-prior and bernoulli likelihood Creates a `Beta` posterior`
+* n=10, x=4, $\alpha$ = $\beta$ = 5
+```{r 1c}
+# These need to be in your document directory to load
+source("DBDA2E-utilities.R")  # Load definitions of graphics functions etc.
+source("BernBeta.R")          # Load the definition of the BernBeta function
+
+# Specify the prior:
+t = 4              # Specify the prior MODE.
+n = 10             # Specify the effective prior sample size.
+a = 5              # Convert to beta shape parameter a.
+b = 5              # Convert to beta shape parameter b.
+
+Prior = c(a,b)     # Specify Prior as vector with the two shape parameters.
+
+# Specify the data:
+N = 10                        # The total number of flips.
+x = 4                         # The number of heads.
+Data = c(rep(0,N-x),rep(1,x)) # Convert N and z into vector of 0's and 1's.
+
+
+# Plot the three graphs, and >> VIEW THE POSTERIOR <<:
+posterior = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" , 
+                      showCentTend="Mode" , showHDI=TRUE , showpD=FALSE )
+```
+
+## 1. (d) If a further experiment is made after the first using the same coin, this time with n = 20, x = 12, what prior should the researcher use in the absence of any other information than what is given in this problem?
+* Since there is no information, use hyper parameters $\alpha$ = $\beta$ = 1 for this experiment.
+* In question 1(f) we will mix the betas to get a more informed result
+
+## 1. (e) Find the posterior after the second sequential experiment.
+* Mixing a beta-prior and bernoulli likelihood Creates a `Beta posterior`
+* n=20, x=12, $\alpha$ = $\beta$ = 1
+```{r 1e}
+# These need to be in your document directory to load
+source("DBDA2E-utilities.R")  # Load definitions of graphics functions etc.
+source("BernBeta.R")          # Load the definition of the BernBeta function
+
+# Specify the prior:
+t = 12              # Specify the prior MODE.
+n = 20             # Specify the effective prior sample size.
+a = 1              # Convert to beta shape parameter a.
+b = 1              # Convert to beta shape parameter b.
+
+Prior = c(a,b)     # Specify Prior as vector with the two shape parameters.
+
+# Specify the data:
+N = 20                        # The total number of flips.
+x = 12                         # The number of heads.
+Data = c(rep(0,N-x),rep(1,x)) # Convert N and z into vector of 0's and 1's.
+
+
+# Plot the three graphs, and >> VIEW THE POSTERIOR <<:
+posterior2 = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" , 
+                       showCentTend="Mode" , showHDI=TRUE , showpD=FALSE )
+```
+## 1. (f) The researcher now wishes to plot the posterior (that which is formed from the two experiments). Fill in the gaps of the code so that the correct plot is
+created.  
+
+### Mixed beta Calculation:
+$$
+w \times dbeta(x, a1, b1) + (1-w) \times dbeta(x, a2,b2)
+$$
+
+### Mixed Beta function
+```{r 1f}
+Mymixbeta <- function(w=0.5, n=10, x, a1=1, a2=1, b1=1, b2=1) {
+  # Specify the prior:
+  t = x                          # Specify the prior MODE.
+  
+  # Specify the data:
+  N = n                          # The total number of flips.
+  z = x                          # The number of heads.
+  Data = c(rep(0,N-z),rep(1,z))  # Convert N and z into vector of 0's and 1's.
+  
+  # Create summary values of Data:
+  z = sum( Data ) # number of 1's in Data
+  N = length( Data ) 
+  
+  Theta = seq(0.001,0.999,by=0.001)                                                 # points for plotting
+  pTheta = w*dbeta(Theta,a1,b1) +(1-w)*dbeta(Theta,a2,b2)                           # prior for plotting
+  pThetaGivenData = w*dbeta(Theta, a1+z, b1+N-z) + (1-w)*dbeta(Theta, a2+z, b2+N-z) # posterior for plotting
+  pDataGivenTheta = Theta^z * (1-Theta)^(N-z)                                       # likelihood for plotting
+  
+  
+  # Plot Layout
+  layout( matrix( c( 1,2,3 ) ,nrow=3 ,ncol=1 ,byrow=FALSE ) ) # 3x1 panels
+  par( mar=c(3,3,1,0) , mgp=c(2,0.7,0) , mai=c(0.5,0.5,0.3,0.1) ) # margins
+  cexAxis = 1.33
+  cexLab = 1.75
+  
+  # convert plotType to notation used by plot:
+  plotType="h"
+  dotsize = 5 # how big to make the plotted dots
+  barsize = 5 # how wide to make the bar lines   
+  
+  # y limits for prior and posterior:
+  yLim = c(0,1.1*max(c(pTheta,pThetaGivenData)))
+  
+  
+  # Plot the Prior
+  plot( Theta , pTheta , type=plotType , 
+        pch="." , cex=dotsize , lwd=barsize ,
+        xlim=c(0,1) , ylim=yLim , cex.axis=cexAxis ,
+        xlab=bquote(theta) , ylab='Mixed Beta' , 
+        cex.lab=cexLab ,
+        main="Prior (beta) - Daniel Carpenter" , cex.main=1.5 , col="skyblue")
+  
+  # Plot the likelihood
+  plot( Theta , pDataGivenTheta , type=plotType , 
+        pch="." , cex=dotsize , lwd=barsize ,
+        xlim=c(0,1) , ylim=c(0,1.1*max(pDataGivenTheta)) , cex.axis=cexAxis ,
+        xlab=bquote(theta) , ylab=bquote( "p(D|" * theta * ")" ) , 
+        cex.lab=cexLab ,
+        main="Likelihood (Bernoulli)" , cex.main=1.5 , col="skyblue" )
+  
+  # Plot the posterior.
+  plot( Theta , pThetaGivenData , type=plotType , 
+        pch="." , cex=dotsize , lwd=barsize ,
+        xlim=c(0,1) , ylim=yLim , cex.axis=cexAxis ,
+        xlab=bquote(theta) , ylab='Mixed Beta Posterior' , 
+        cex.lab=cexLab ,
+        main="Posterior (beta)" , cex.main=1.5 , col="skyblue" )
+}
+
+# Call the function and print the prior (mixed beta), likelihood and posterior)
+Mymixbeta(w=0.5, n=20, x=12, a1=1, a2=1, b1=5, b2=5)
+```
+
+<!-- ### 1. f, i) A = ... -->
+
+<!-- ### 1. f, ii) B = ... -->
 
 ---
 
