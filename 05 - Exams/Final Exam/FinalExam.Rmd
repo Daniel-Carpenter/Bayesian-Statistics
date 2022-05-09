@@ -90,12 +90,148 @@ The exponential family can be defined as any density of the following form:
 $$
 f(y \mid \theta, \phi)=\exp \left(\frac{y \theta-b(\theta)}{a(\phi)}+c(y, \phi)\right)
 $$
+<br>
 
 ## 5. a) Show $E(Y) = b^{\prime}(\theta)$
 
+### Sum of distribution is 1
+$$
+\int_y f(y)dy = 1 \\
+$$
+
+### Differentiate above equation
+$$
+\frac{d}{d\theta} \int_y f(y)dy = \frac{d}{d\theta} 1 = 0
+$$
+
+### Take inside the integral
+$$
+\int_y \frac{df}{d\theta} dy = 0
+$$
+
+### Differentiate with $f$ being the exponential
+$$
+\frac{df}{d\theta} = 
+\frac{y -b^{\prime}(\theta)}{a(\phi)} \ 
+\exp \left(\frac{y \theta-b(\theta)}{a(\phi)}
++ c(y, \phi)\right)
+$$
+
+### Replace with $f$ since it is the expontial
+$$
+\frac{df}{d\theta} = 
+\frac{y -b^{\prime}(\theta)}{a(\phi)} \ f
+$$
+
+### Plug $\int_y \frac{df}{d\theta} dy = 0$ into above $\frac{df}{d\theta}$
+$$
+\int_y \begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)} \end{bmatrix} \ f \ dy = 0
+$$
+
+### Distribute $f$
+$$
+\int_y \begin{bmatrix} \frac{yf -b^{\prime}(\theta)f}{a(\phi)} \end{bmatrix} \ f \ dy = 0
+$$
+
+### Multiply by $a(\phi)$ to get rid of it
+$$
+\int_y yf \ dy 
+- \int_y b^{\prime}(\theta)f \ dy= 0
+$$
+
+### Writing above in terms of E(Y)
+$$
+E(Y) - b^{\prime}(\theta) \ \int_yf \ dy= 0
+$$
+
+### *Solution*: Therefore, the expected value of Y $E(Y)$ is $b^{\prime}(\theta)$
+$$
+E(Y) = b^{\prime}(\theta)
+$$
+
+---
+
 <br>
 
+
 ## 5. b) Show $V(Y) = b^{\prime \prime}(\theta) a(\phi)$
+
+### From the prior proof above
+$$
+\frac{df}{d\theta} = 
+\begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)} \end{bmatrix} \ f
+$$
+
+### Get the second derivative of above
+$$
+\frac{d^2f}{d\theta^2} = 
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \ f
++ \frac{y -b^{\prime}(\theta)}{a(\phi)} \ f^{\prime}
+$$
+
+### Replace above $f^{\prime}$ with $f$ from prior proof (two above points)
+$$
+\frac{d^2f}{d\theta^2} = 
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \ f
++ \begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)} \end{bmatrix}^2 \ f
+$$
+
+### Note sum is 1 for all densities
+$$
+\int_y dy = 1 \\
+$$
+
+### Take 2nd dertivative using above notes to get 0
+$$
+\int_y \frac{d^2f}{d\theta^2} \ dy = 0
+$$
+
+### Plug $\frac{d^2f}{d\theta^2}$ into above equation
+$$
+\int_y
+\begin{pmatrix}
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \ f
++ \begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)} \end{bmatrix}^2 \ f
+\end{pmatrix} \
+dy = 0
+$$
+
+### Simplify prior equation and isolate $\frac{-b^{\prime \prime}(\theta)}{a(\phi)}$
+$$
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \ 
+\int_y f \ dy
++ \int_y  \frac{(y -b^{\prime}(\theta))^2}{a(\phi)^2} 
+\ f \ dy = 0
+$$
+
+### Plug expected value $E(Y)$ from prior proof knowledge that $E(Y)$ = $b^{\prime}(\theta)$
+
+$$
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} 
++     \frac{1}{a(\phi)^2} \ 
+\int_y (y - E(y))^2
+\ f \ dy = 0
+$$
+
+### Subsititute Variance $\sigma^2$ for $(y - E(y))^2$
+$$
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} 
++     \frac{1}{a(\phi)^2} \ 
+\sigma^2 = 0
+$$
+
+
+### Simplify by Multiplying by $a(\phi)$
+$$
+-b^{\prime \prime}(\theta) \ a(\phi) + \sigma^2 = 0
+$$
+
+### *Solution*: Therefore, we get see that the variance $\sigma^2$ is $b^{\prime \prime}a(\phi)$
+$$
+\sigma^2 = b^{\prime \prime}a(\phi)
+$$
+
+---
 
 <br>
 

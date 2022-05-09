@@ -1618,16 +1618,182 @@ many qestions will be made dynamically through an R chunk.</p>
 form: <span class="math display">\[
 f(y \mid \theta, \phi)=\exp \left(\frac{y
 \theta-b(\theta)}{a(\phi)}+c(y, \phi)\right)
-\]</span></p>
+\]</span> <br></p>
 <div id="a-show-ey-bprimetheta" class="section level2">
 <h2>5. a) Show <span class="math inline">\(E(Y) =
 b^{\prime}(\theta)\)</span></h2>
+<div id="sum-of-distribution-is-1" class="section level3">
+<h3>Sum of distribution is 1</h3>
+<p><span class="math display">\[
+\int_y f(y)dy = 1 \\
+\]</span></p>
+</div>
+<div id="differentiate-above-equation" class="section level3">
+<h3>Differentiate above equation</h3>
+<p><span class="math display">\[
+\frac{d}{d\theta} \int_y f(y)dy = \frac{d}{d\theta} 1 = 0
+\]</span></p>
+</div>
+<div id="take-inside-the-integral" class="section level3">
+<h3>Take inside the integral</h3>
+<p><span class="math display">\[
+\int_y \frac{df}{d\theta} dy = 0
+\]</span></p>
+</div>
+<div id="differentiate-with-f-being-the-exponential" class="section level3">
+<h3>Differentiate with <span class="math inline">\(f\)</span> being the
+exponential</h3>
+<p><span class="math display">\[
+\frac{df}{d\theta} =
+\frac{y -b^{\prime}(\theta)}{a(\phi)} \
+\exp \left(\frac{y \theta-b(\theta)}{a(\phi)}
++ c(y, \phi)\right)
+\]</span></p>
+</div>
+<div id="replace-with-f-since-it-is-the-expontial" class="section level3">
+<h3>Replace with <span class="math inline">\(f\)</span> since it is the
+expontial</h3>
+<p><span class="math display">\[
+\frac{df}{d\theta} =
+\frac{y -b^{\prime}(\theta)}{a(\phi)} \ f
+\]</span></p>
+</div>
+<div id="plug-int_y-fracdfdtheta-dy-0-into-above-fracdfdtheta" class="section level3">
+<h3>Plug <span class="math inline">\(\int_y \frac{df}{d\theta} dy =
+0\)</span> into above <span class="math inline">\(\frac{df}{d\theta}\)</span></h3>
+<p><span class="math display">\[
+\int_y \begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)}
+\end{bmatrix} \ f \ dy = 0
+\]</span></p>
+</div>
+<div id="distribute-f" class="section level3">
+<h3>Distribute <span class="math inline">\(f\)</span></h3>
+<p><span class="math display">\[
+\int_y \begin{bmatrix} \frac{yf -b^{\prime}(\theta)f}{a(\phi)}
+\end{bmatrix} \ f \ dy = 0
+\]</span></p>
+</div>
+<div id="multiply-by-aphi-to-get-rid-of-it" class="section level3">
+<h3>Multiply by <span class="math inline">\(a(\phi)\)</span> to get rid
+of it</h3>
+<p><span class="math display">\[
+\int_y yf \ dy
+- \int_y b^{\prime}(\theta)f \ dy= 0
+\]</span></p>
+</div>
+<div id="writing-above-in-terms-of-ey" class="section level3">
+<h3>Writing above in terms of E(Y)</h3>
+<p><span class="math display">\[
+E(Y) - b^{\prime}(\theta) \ \int_yf \ dy= 0
+\]</span></p>
+</div>
+<div id="solution-therefore-the-expected-value-of-y-ey-is-bprimetheta" class="section level3">
+<h3><em>Solution</em>: Therefore, the expected value of Y <span class="math inline">\(E(Y)\)</span> is <span class="math inline">\(b^{\prime}(\theta)\)</span></h3>
+<p><span class="math display">\[
+E(Y) = b^{\prime}(\theta)
+\]</span></p>
+<hr />
 <p><br></p>
+</div>
 </div>
 <div id="b-show-vy-bprime-primetheta-aphi" class="section level2">
 <h2>5. b) Show <span class="math inline">\(V(Y) = b^{\prime
 \prime}(\theta) a(\phi)\)</span></h2>
+<div id="from-the-prior-proof-above" class="section level3">
+<h3>From the prior proof above</h3>
+<p><span class="math display">\[
+\frac{df}{d\theta} =
+\begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)} \end{bmatrix} \ f
+\]</span></p>
+</div>
+<div id="get-the-second-derivative-of-above" class="section level3">
+<h3>Get the second derivative of above</h3>
+<p><span class="math display">\[
+\frac{d^2f}{d\theta^2} =
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \ f
++ \frac{y -b^{\prime}(\theta)}{a(\phi)} \ f^{\prime}
+\]</span></p>
+</div>
+<div id="replace-above-fprime-with-f-from-prior-proof-two-above-points" class="section level3">
+<h3>Replace above <span class="math inline">\(f^{\prime}\)</span> with
+<span class="math inline">\(f\)</span> from prior proof (two above
+points)</h3>
+<p><span class="math display">\[
+\frac{d^2f}{d\theta^2} =
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \ f
++ \begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)} \end{bmatrix}^2
+\ f
+\]</span></p>
+</div>
+<div id="note-sum-is-1-for-all-densities" class="section level3">
+<h3>Note sum is 1 for all densities</h3>
+<p><span class="math display">\[
+\int_y dy = 1 \\
+\]</span></p>
+</div>
+<div id="take-2nd-dertivative-using-above-notes-to-get-0" class="section level3">
+<h3>Take 2nd dertivative using above notes to get 0</h3>
+<p><span class="math display">\[
+\int_y \frac{d^2f}{d\theta^2} \ dy = 0
+\]</span></p>
+</div>
+<div id="plug-fracd2fdtheta2-into-above-equation" class="section level3">
+<h3>Plug <span class="math inline">\(\frac{d^2f}{d\theta^2}\)</span>
+into above equation</h3>
+<p><span class="math display">\[
+\int_y
+\begin{pmatrix}
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \ f
++ \begin{bmatrix} \frac{y -b^{\prime}(\theta)}{a(\phi)} \end{bmatrix}^2
+\ f
+\end{pmatrix} \
+dy = 0
+\]</span></p>
+</div>
+<div id="simplify-prior-equation-and-isolate-frac-bprime-primethetaaphi" class="section level3">
+<h3>Simplify prior equation and isolate <span class="math inline">\(\frac{-b^{\prime
+\prime}(\theta)}{a(\phi)}\)</span></h3>
+<p><span class="math display">\[
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)} \
+\int_y f \ dy
++ \int_y  \frac{(y -b^{\prime}(\theta))^2}{a(\phi)^2}
+\ f \ dy = 0
+\]</span></p>
+</div>
+<div id="plug-expected-value-ey-from-prior-proof-knowledge-that-ey-bprimetheta" class="section level3">
+<h3>Plug expected value <span class="math inline">\(E(Y)\)</span> from
+prior proof knowledge that <span class="math inline">\(E(Y)\)</span> =
+<span class="math inline">\(b^{\prime}(\theta)\)</span></h3>
+<p><span class="math display">\[
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)}
++     \frac{1}{a(\phi)^2} \
+\int_y (y - E(y))^2
+\ f \ dy = 0
+\]</span></p>
+</div>
+<div id="subsititute-variance-sigma2-for-y---ey2" class="section level3">
+<h3>Subsititute Variance <span class="math inline">\(\sigma^2\)</span>
+for <span class="math inline">\((y - E(y))^2\)</span></h3>
+<p><span class="math display">\[
+\frac{-b^{\prime \prime}(\theta)}{a(\phi)}
++     \frac{1}{a(\phi)^2} \
+\sigma^2 = 0
+\]</span></p>
+</div>
+<div id="simplify-by-multiplying-by-aphi" class="section level3">
+<h3>Simplify by Multiplying by <span class="math inline">\(a(\phi)\)</span></h3>
+<p><span class="math display">\[
+-b^{\prime \prime}(\theta) \ a(\phi) + \sigma^2 = 0
+\]</span></p>
+</div>
+<div id="solution-therefore-we-get-see-that-the-variance-sigma2-is-bprime-primeaphi" class="section level3">
+<h3><em>Solution</em>: Therefore, we get see that the variance <span class="math inline">\(\sigma^2\)</span> is <span class="math inline">\(b^{\prime \prime}a(\phi)\)</span></h3>
+<p><span class="math display">\[
+\sigma^2 = b^{\prime \prime}a(\phi)
+\]</span></p>
+<hr />
 <p><br></p>
+</div>
 </div>
 <div id="c-show-that-the-binomial-distribution-belongs-to-the-exponential-family" class="section level2">
 <h2>5. c) Show that the <code>Binomial</code> distribution belongs to
