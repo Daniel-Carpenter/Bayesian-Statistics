@@ -9,11 +9,9 @@ output:
   html_document:
     toc: yes
     toc_float: yes
-    # number_sections: yes
     toc_depth: 2
   # github_document:
   #   toc: yes
-  #   number_sections: yes
   #   toc_depth: 2
 ---
 
@@ -28,11 +26,35 @@ knitr::opts_chunk$set(
 ```
 
 
-Please place all answers in this document - use $\LaTeX$, R and Jags as needed. Answers to many qestions will be made dynamically through an R chunk.
-
-# Question 1 - 
+# Question 1 - General Posterior
 
 ## 1. (a)
+
+*Adapted from JK's book - page 132 Doing Bayesian Data Analysis:* <br>  
+
+If $\theta \sim \operatorname{Beta}(\alpha, \beta)$ and $X \sim \operatorname{Bin}(n, \theta)$, prove that $\theta \mid X \sim \operatorname{Beta}(x+\alpha, n-x+\beta)$ through proof below:    
+
+$p(\theta \mid x) \propto p(\theta) p(x \mid \theta) = \frac{1}{B(\alpha, \beta)} \theta^{\alpha-1}(1-\theta)^{\beta-1}\left(\begin{array}{l}n \\ x\end{array}\right) \theta^{x}(1-\theta)^{n-x}$  
+
+
+Note Bayes' rule  
+$\underbrace{p(\theta \mid x)}_{Posterior} \propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid \theta)}_{Lik.} = \frac{p(x, n \mid \theta) p(\theta)}{p(x, n)} = p(\theta \mid x, n)$ <br>  
+
+Define Bernoulli and beta distributions  
+$=\underbrace{\theta^{x}(1-\theta)^{(n-x)}}_{Bernoulli \ Lik.} \underbrace{\frac{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}{B(\alpha, \beta)}}_{Beta \ Prior} / p(x, n)$ <br>  
+
+Rearrange factors  
+$=\frac{1}{B(\alpha, \beta) p(x, n)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \theta^{x}(1-\theta)^{(n-x)}$ <br>
+
+$=\frac{1}{B(\alpha, \beta)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \left(\begin{array}{l}\frac{1}{p(x, n)}\end{array}\right)\theta^{x}(1-\theta)^{(n-x)}$ <br>
+
+By definition of the binomial coefficient, which we arrive at the **solution**:  
+$=\frac{1}{B(\alpha, \beta)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \left(\begin{array}{l}n \\ x\end{array}\right) \theta^{x}(1-\theta)^{(n-x)}$ <br>
+
+---
+
+<br>
+
 ## 1. (b)
 ## 1. (c)
 ## 1. (d)
@@ -337,8 +359,9 @@ $$ V(Y) = n p (1 - p)$$
 <br>
 
 
-# Question 6 - Evidence
+# Question 6 - Derive Evidence
 
+*Some of the derivation below may look similar to question 1 (a):* <br>  
 *Adapted from JK's book - page 132 Doing Bayesian Data Analysis:* <br>  
 
 If $\theta \sim \operatorname{Beta}(\alpha, \beta)$ and $X \sim \operatorname{Bin}(n, \theta)$, prove that $\theta \mid X \sim \operatorname{Beta}(x+\alpha, n-x+\beta)$ through proof below:    

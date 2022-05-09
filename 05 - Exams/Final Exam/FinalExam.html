@@ -1518,12 +1518,46 @@ div.tocify {
 </div>
 
 
-<p>Please place all answers in this document - use <span class="math inline">\(\LaTeX\)</span>, R and Jags as needed. Answers to
-many qestions will be made dynamically through an R chunk.</p>
-<div id="question-1--" class="section level1">
-<h1>Question 1 -</h1>
+<div id="question-1---general-posterior" class="section level1">
+<h1>Question 1 - General Posterior</h1>
 <div id="a" class="section level2">
 <h2>1. (a)</h2>
+<p><em>Adapted from JK’s book - page 132 Doing Bayesian Data
+Analysis:</em> <br></p>
+<p>If <span class="math inline">\(\theta \sim
+\operatorname{Beta}(\alpha, \beta)\)</span> and <span class="math inline">\(X \sim \operatorname{Bin}(n, \theta)\)</span>,
+prove that <span class="math inline">\(\theta \mid X \sim
+\operatorname{Beta}(x+\alpha, n-x+\beta)\)</span> through proof
+below:</p>
+<p><span class="math inline">\(p(\theta \mid x) \propto p(\theta) p(x
+\mid \theta) = \frac{1}{B(\alpha, \beta)}
+\theta^{\alpha-1}(1-\theta)^{\beta-1}\left(\begin{array}{l}n \\
+x\end{array}\right) \theta^{x}(1-\theta)^{n-x}\)</span></p>
+<p>Note Bayes’ rule<br />
+<span class="math inline">\(\underbrace{p(\theta \mid x)}_{Posterior}
+\propto \underbrace{p(\theta)}_{Prior} \underbrace{p(x \mid
+\theta)}_{Lik.} = \frac{p(x, n \mid \theta) p(\theta)}{p(x, n)} =
+p(\theta \mid x, n)\)</span> <br></p>
+<p>Define Bernoulli and beta distributions<br />
+<span class="math inline">\(=\underbrace{\theta^{x}(1-\theta)^{(n-x)}}_{Bernoulli
+\ Lik.}
+\underbrace{\frac{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}{B(\alpha,
+\beta)}}_{Beta \ Prior} / p(x, n)\)</span> <br></p>
+<p>Rearrange factors<br />
+<span class="math inline">\(=\frac{1}{B(\alpha, \beta) p(x, n)}
+\theta^{(\alpha-1)} (1-\theta)^{(\beta-1)}
+\theta^{x}(1-\theta)^{(n-x)}\)</span> <br></p>
+<p><span class="math inline">\(=\frac{1}{B(\alpha, \beta)}
+\theta^{(\alpha-1)} (1-\theta)^{(\beta-1)}
+\left(\begin{array}{l}\frac{1}{p(x,
+n)}\end{array}\right)\theta^{x}(1-\theta)^{(n-x)}\)</span> <br></p>
+<p>By definition of the binomial coefficient, which we arrive at the
+<strong>solution</strong>:<br />
+<span class="math inline">\(=\frac{1}{B(\alpha, \beta)}
+\theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \left(\begin{array}{l}n \\
+x\end{array}\right) \theta^{x}(1-\theta)^{(n-x)}\)</span> <br></p>
+<hr />
+<p><br></p>
 </div>
 <div id="b" class="section level2">
 <h2>1. (b)</h2>
@@ -1920,10 +1954,12 @@ p)\)</span> from above <span class="math inline">\(n p q\)</span></h3>
 <p><br></p>
 </div>
 </div>
-<div id="question-6---evidence" class="section level1">
-<h1>Question 6 - Evidence</h1>
-<p><em>Adapted from JK’s book - page 132 Doing Bayesian Data
-Analysis:</em> <br></p>
+<div id="question-6---derive-evidence" class="section level1">
+<h1>Question 6 - Derive Evidence</h1>
+<p><em>Some of the derivation below may look similar to question 1
+(a):</em> <br><br />
+<em>Adapted from JK’s book - page 132 Doing Bayesian Data Analysis:</em>
+<br></p>
 <p>If <span class="math inline">\(\theta \sim
 \operatorname{Beta}(\alpha, \beta)\)</span> and <span class="math inline">\(X \sim \operatorname{Bin}(n, \theta)\)</span>,
 prove that <span class="math inline">\(\theta \mid X \sim
