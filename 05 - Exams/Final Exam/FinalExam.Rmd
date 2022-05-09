@@ -282,14 +282,31 @@ kable(randBetaDist)
 <br>
 
 
-# Question 4
+# Question 4 - GLM
 
-## 4. a)
-## 4. b) 
-## 4. c)
-## 4. d)
-### 4. d, 1)
-### 4. d, 2)
+## 4. a) Link function?
+* There is a logit link function used. Model:
+
+$$
+logit(p) = log (p/(1 − p))
+$$
+
+## 4. b) What numerical values will replace the y variable?
+* The value of y is transformed onto a new scale, and that transformed value is modeled as a linear combination of predictors. 
+* Maps theta *from* `0-1` *to* the real value between $-\infty$ and $\infty$
+
+## 4. c) High impact priors?
+* They are `low` impact priors
+* It means that the prior distribution will not impact the posterior significantly
+
+## 4. d) Interpret Point/Interval Estimates
+
+### 4. d, 1) $\beta_3$ Point Estimate
+* The point estimate for $\beta_3$ is -0.75905 with a standard deviation of 0.199376. 
+* I.e. a male is more likely to die than a female.
+
+### 4. d, 2) $\beta_1$ Interval Estimate
+* There is a 95% probability that the values of $\beta_1$ will fall between 0.025778 and 0.6118
 
 ---
 
