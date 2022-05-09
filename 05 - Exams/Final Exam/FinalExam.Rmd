@@ -680,7 +680,7 @@ The linear predictor variables are: $\beta_0 +\beta_1 x$
 <br>
 
 
-# Question 9
+# Question 9 - Change Point Regression
 
 ```{r data9}
 dataList = list(x = c(-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 
@@ -689,15 +689,113 @@ dataList = list(x = c(-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2,
 18.88, 22.91, 23.53, 34.99, 35.07, 39.17), N = 21)
 ```
 
-## 9. b)
-### 9. b,i)
-### 9. b,ii)
-### 9. b,iii)
+```{r plotPiece}
+df = data.frame(x = dataList$x, y=dataList$y)
+head(df)
 
-## 9. c)
-## 9. d)
-## 9. e)
+library(ggplot2)
+basePlot <- ggplot(df, aes(x=x, y=y)) +
+              geom_smooth(method = 'loess', se = TRUE, 
+                          color = 'steelblue3', fill = 'grey90', alpha = 0.5) + 
+              geom_point(color ='tomato3', alpha = 0.5, size = 3) +
+              theme_minimal() +
+              labs(title = 'Plot of Data',
+                   subtitle = 'Daniel Carpenter')
+basePlot
+```
 
+## 9. b) JAGS Piecewise
+
+### 9. b,i) Jags Code
+```{r jagsPiece, cache=TRUE}
+library(rjags)
+#Define the model:
+modelString = "
+model {
+  for (i in 1:N) {
+    y[i]    ~ dnorm(mu[i], tau)
+    mu[i]  <- beta0 + beta[1]*x[i] + beta[2]*(x[i] - theta)
+            * step(x[i] - theta)
+  }
+  tau       ~ dgamma(0.001, 0.001)
+  beta0     ~ dnorm(0.0, 1.0E-6)
+  
+  for (j in 1:2) {
+    beta[j] ~ dnorm(0.0, 1.0E-6)
+  }
+  sigma    <- 1/sqrt(tau)
+  theta     ~ dunif(-1.3, 1.1)
+  
+  int2 <- beta0 - beta[1]*theta
+  slope2 <- beta[1] + beta[2]
+}
+" # close quote for modelString
+writeLines( modelString , con="TEMPmodel.txt" )
+
+initsList = list(tau = 1, beta0 = 2, beta = c(1, 2), theta = 1)
+
+# Run the chains:
+jagsModel = jags.model( file="TEMPmodel.txt" , data=dataList , inits=initsList , 
+                        n.chains=3 , n.adapt=500 )
+
+update( jagsModel , n.iter=500 )
+codaSamples = coda.samples( jagsModel , variable.names=c("tau", "sigma",
+                                                         'beta', 'beta0', 'theta',
+                                                         'int2', 'slope2'),
+                            n.iter=33340 )
+save( codaSamples , file=paste0("FinalExamJags","Mcmc.Rdata") )
+```
+
+### 9. b,ii) Interpret Summary Output
+```{r summaryPiece, fig.height=14, cache=TRUE}
+# diagMCMC( codaObject=codaSamples , parName="beta0" )
+# diagMCMC( codaObject=codaSamples , parName="beta[1]" )
+# diagMCMC( codaObject=codaSamples , parName="int2" )
+# diagMCMC( codaObject=codaSamples , parName="slope2" )
+
+# Quick check
+library(ggmcmc)
+s = ggs(codaSamples)
+ggs_density(s)
+
+
+# Output of model
+su = summary(codaSamples)
+su
+```
+
+#### Interpret the value of theta using both the point estimate and 95% BCI
+* Point estimate: the mean value of theta is -0.35806 with a standard deviation of 0.44068
+* Inteval estimate: There is a 95% probability that the value of theta will fall between 
+-1.12416 and 0.6013
+* Above values rounded since each MCMC run varies in results (since it is an estimation)
+* Note some high autocorelation among the variables
+
+### 9. b,iii) Plot Estimating Lines over Data
+
+```{r}
+# Create objects using summary stats
+beta0  = su$statistics[,'Mean']['beta0']
+beta1  = su$statistics[,'Mean']['beta[1]']
+beta2  = su$statistics[,'Mean']['beta[2]']
+int2   = su$statistics[,'Mean']['int2']
+slope2 = su$statistics[,'Mean']['slope2']
+theta  = su$statistics[,'Mean']['theta']
+
+# Plot the two estimated linear pieces with the cuttoff point
+basePlot + 
+  
+  # Piece 1
+  geom_abline(intercept = beta0, slope = beta1 , 
+              linetype = 'dotdash', size = 1, color = 'grey40')  +  
+  
+  
+  # Piece 2
+  geom_abline(intercept = int2,  slope = slope2, 
+              linetype = 'dotdash', size = 1, color = 'grey40') + # Piece 2
+  geom_vline(xintercept = theta)                 + # Intersection 
+  labs(title = 'Plot of data with Piece-Wise Linear Regression Estimates using MCMC')
+```
 ---
 
 <br>
@@ -705,21 +803,152 @@ dataList = list(x = c(-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2,
 
 # Question 10
 
-```{r}
+Below shows the data
+```{r data10}
+
+# For x and y
 x=50:80
 set.seed(24)
 y=10+2*x+rnorm(31,0,10)
 
+# For xx and yy (notice centered around 0)
 xx=-15:15
 set.seed(24)
 yy=10+2*xx+rnorm(31,0,10)
 
 ```
 
-## 10. a)
-## 10. b)
-### 10. b, i)
-### 10. b, ii)
+## 10. a) Plot data
+```{r plot10}
+df2 = data.frame(x=x, 
+                y=y,
+                
+                xx=xx,
+                yy=yy)
+head(df2)
+
+require(ggplot2)
+ggplot(df2) +
+  
+  # Emphasize the x and y axis
+  geom_hline(aes(yintercept = 0), size = 1, color = 'grey60') +
+  geom_vline(aes(xintercept = 0), size = 1, color = 'grey60') + 
+  
+  # Two grouping
+  geom_point(aes(x=x,  y=y ), color ='darkseagreen', alpha = 0.75, size = 3) +
+  geom_point(aes(x=xx, y=yy), color ='steelblue3',    alpha = 0.75, size = 3) +
+  
+  theme_minimal() +
+  labs(title = 'Plot of Data',
+       subtitle = 'Daniel Carpenter')
+
+```
+## 10. b) 2 SLR Jags Models
+
+### This is the base function for each SLR Model to run
+
+```{r slrBaseModel}
+MyJagsSLR <- function(y, x ) {
+  
+  Ntotal = length(y)  # Compute the total number of x,y pairs.
+  dataList = list(    # Put the information into a list.
+    x = x,
+    y = y ,
+    Ntotal = Ntotal 
+  )
+  
+  modelStringSLR = "
+  model{
+      for( i in 1 : Ntotal ) {
+          y[i] ~ dnorm(mu[i], tau)
+          mu[i] <- beta0 + beta1 * x[i]
+      }
+      beta0 ~ dnorm(0.0, 1.0E-6)
+      beta1 ~ dnorm(0.0, 1.0E-6)
+      sigma ~ dunif(0, 1000)
+      tau <- pow(sigma,  -2)
+  }
+  " # close quote for modelString
+  writeLines( modelStringSLR , con="slrModel.txt" )
+  
+  # Initialize the chains based on MLE of data.
+  initsList = list(beta0 = 0, beta1 = 0, sigma =10)
+  
+  # Run the chains:
+  jagsModel = jags.model( file="slrModel.txt" , data=dataList , inits=initsList , 
+                          n.chains=3 , n.adapt=500 )
+  update( jagsModel , n.iter=500 )
+  codaSamples = coda.samples( jagsModel , variable.names=c("beta0", "beta1", "sigma") ,
+                              n.iter=33340 )
+  
+  return(list('codaSamples' = codaSamples,
+              'summary'     = summary(codaSamples)
+              )
+        )
+}
+```
 
 
+### 10. b, i) Jags Model 1
+```{r jags1, cache=TRUE}
+# Call SLR Jags model (for x and y)
+codaSamples1 <- MyJagsSLR(y=y, x=x)
 
+# Retrieve the summary stats (for x and y)
+codaSamples1$summary
+```
+
+### 10. b, ii) Jages Model 2
+```{r jags2, cache=TRUE}
+# Call SLR Jags model (for xx and yy)
+codaSamples2 <- MyJagsSLR(y=yy, x=xx)
+
+# Retrieve the summary stats (for xx and yy)
+codaSamples2$summary
+```
+
+## 10. c) Posterior Density Plots
+> Give two posterior β0 density plots. 
+
+```{r postDense, cache=TRUE}
+library(ggmcmc)
+
+# Density Plots 
+ggs_density(ggs(codaSamples1$codaSamples)) # (for x  and y )
+ggs_density(ggs(codaSamples2$codaSamples)) # (for xx and yy)
+```
+
+## 10. d) Differing Intervals Interpretation
+
+
+### Explain why the intervals for β0 are so different. 
+* Since the `xx` and `yy` dataset are centered around 0, it allows for:
+  * convergence among the chains
+  * Low levels of cross-correlation
+  * Extremely stable results
+  
+* It is obvious that the `x` and `y` model is not centered (visually and from the summary results.)
+* To overcome this, we could just make a Jags script to center the data around 0
+
+### Make reference to the density plots also.
+* For the non-centered model:
+  * You can see that there are "fatter" tails for the non-centered model. Not stationary.
+  * Chains do not represent each other as well as the centered model
+
+## 10. e) Classical estimates of the two models
+
+### Use the function `lm()` and make classical 95% confidence interval estimates for the
+
+```{r classicalLM}
+# Non-centered data
+est.nonCenter <- lm(y  ~ x , data = df2) 
+summary(est.nonCenter)
+
+# Centered data
+est.centered  <- lm(yy ~ xx, data = df2) 
+summary(est.centered)
+```
+
+### Compare to bayesian estimates
+* The models come up with same results, which is concerning! 
+* Proves the point that you could get bad results without centering your data

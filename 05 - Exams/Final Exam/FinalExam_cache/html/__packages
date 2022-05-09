@@ -2,3 +2,7 @@ coda
 rjags
 runjags
 knitr
+ggplot2
+dplyr
+tidyr
+ggmcmc
