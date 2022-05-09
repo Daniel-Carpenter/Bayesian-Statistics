@@ -612,12 +612,29 @@ $$
 
 <br>
 
-# Question 7
+# Question 7 - 2 State MCMC
 
-## 7. a)
-## 7. b)
-## 7. c)
-## 7. d)
+## 7. a) Find the value of `A`
+* Since the die landed on 6, and 6 is $\notin$ `E1` (current acceptance set), then
+* Reject the proposal of 2 and stay at state 1 
+* Therefore, `A` = State `1`
+
+## 7. b) Find the value of `B`
+* Since we are at state `2` and the proposal state is state `1`, the value of alpha (or `B`) is `0.67`
+
+## 7. c) Find the value of `C`
+* Since the die landed on 6, and 6 is  $\in$ `E2` (current acceptance set), then
+* Accept the proposal and change to at state 1 
+* Therefore, `C` = State `1`
+
+## 7. d) Formula for the acceptance probability
+Note below is from page 33 of *Teaching MCMC* by Stewart & Stewart:
+
+$$
+\alpha_{i, j}=\min \left\{1, \frac{h_{j}}{h_{i}}\right\}
+$$
+
+where $\alpha_{i, j}$ is the probability of accepting state $j$ given that the sampler is at state $i$. 
 
 ---
 
