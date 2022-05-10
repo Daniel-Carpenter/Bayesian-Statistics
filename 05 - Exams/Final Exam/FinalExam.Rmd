@@ -1,18 +1,18 @@
 ---
-title:    "Final Exam"
+title:    "Comprehensive Final Exam"
 subtitle: "Bayesian Statistics"
 author:   "Daniel Carpenter"
-date:     "May 9, 2022"
+date:     "May 2022"
 fontsize: 12pt
 geometry: margin=1in
 output:
-  html_document:
-    toc: yes
-    toc_float: yes
-    toc_depth: 2
-  # github_document:
+  # html_document:
   #   toc: yes
+  #   toc_float: yes
   #   toc_depth: 2
+  github_document:
+    toc: yes
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
@@ -63,7 +63,8 @@ $=\frac{1}{B(\alpha, \beta)} \theta^{(\alpha-1)} (1-\theta)^{(\beta-1)} \left(\b
 * Shape 1 and Shape two with values of 1 create a `uniform` distribution.  
 
 ## 1. (c) Suppose she uses $\alpha$ = $\beta$ = 5 for the prior what is the posterior distribution?
-* Mixing a beta-prior and bernoulli likelihood Creates a `Beta` posterior`
+* Mixing a beta-prior and bernoulli likelihood Creates a `Beta` prior and posterior`
+
 * n=10, x=4, $\alpha$ = $\beta$ = 5
 ```{r 1c}
 # These need to be in your document directory to load
@@ -90,7 +91,7 @@ posterior = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" ,
 ```
 
 ## 1. (d) If a further experiment is made after the first using the same coin, this time with n = 20, x = 12, what prior should the researcher use in the absence of any other information than what is given in this problem?
-* Since there is no information, use hyper parameters $\alpha$ = $\beta$ = 1 for this experiment.
+* Since there is no additional information, use hyper parameters $\alpha$ = $\beta$ = 1 for this experiment.
 * In question 1(f) we will mix the betas to get a more informed result
 
 ## 1. (e) Find the posterior after the second sequential experiment.
@@ -119,8 +120,8 @@ Data = c(rep(0,N-x),rep(1,x)) # Convert N and z into vector of 0's and 1's.
 posterior2 = BernBeta( priorBetaAB=Prior, Data=Data , plotType="Bars" , 
                        showCentTend="Mode" , showHDI=TRUE , showpD=FALSE )
 ```
-## 1. (f) The researcher now wishes to plot the posterior (that which is formed from the two experiments). Fill in the gaps of the code so that the correct plot is
-created.  
+
+## 1. (f) The researcher now wishes to plot the posterior (that which is formed from the two experiments). Fill in the gaps of the code so that the correct plot is created.  
 
 ### Mixed beta Calculation:
 $$
@@ -753,6 +754,7 @@ save( codaSamples , file=paste0("FinalExamJags","Mcmc.Rdata") )
 
 ### 9. b,ii) Interpret Summary Output
 ```{r summaryPiece, fig.height=14, cache=TRUE}
+# Uncomment to see some diagnostics - left here because high autocorrelation
 # diagMCMC( codaObject=codaSamples , parName="beta0" )
 # diagMCMC( codaObject=codaSamples , parName="beta[1]" )
 # diagMCMC( codaObject=codaSamples , parName="int2" )
@@ -774,7 +776,6 @@ su
 * Inteval estimate: There is a 95% probability that the value of theta will fall between 
 -1.12416 and 0.6013
 * Above values rounded since each MCMC run varies in results (since it is an estimation)
-* Note some high autocorelation among the variables
 
 ### 9. b,iii) Plot Estimating Lines over Data
 
@@ -801,6 +802,13 @@ basePlot +
   geom_vline(xintercept = theta)                 + # Intersection 
   labs(title = 'Plot of data with Piece-Wise Linear Regression Estimates using MCMC')
 ```
+
+### Final Remarks on Enhancements to model
+* Note the intercept of the second piece may or may not reflect the data (See graph)
+* Note high autocorelation among the variables. 
+* Centering will not fix this issue, but I anticipate that a potential enhancement to the model would be to determine a fix for the intercept issue.  
+
+
 ---
 
 <br>
