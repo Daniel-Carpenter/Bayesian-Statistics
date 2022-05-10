@@ -26,6 +26,10 @@ knitr::opts_chunk$set(
 ```
 
 
+---
+
+<br>
+
 # Question 1 
 
 ## 1. (a) General Posterior
@@ -198,14 +202,14 @@ Mymixbeta(w=0.5, n=20, x=12, a1=1, a2=1, b1=5, b2=5)
 
 # Question 2 - Probability
 
-## 2. a) P(X > 0.7|α = 2, β = 3)
+## 2. a) P(X > 0.7|α = 2, $\beta$ = 3)
 ```{r}
 pbeta(q = 0.7, 
       shape1 = 2, shape2 = 3,
       lower.tail = FALSE) # >
 ```
 
-## 2. b) P(X < 0.2|α = 1, β = 1)
+## 2. b) P(X < 0.2|α = 1, $\beta$ = 1)
 ```{r}
 pbeta(q = 0.2, 
       shape1 = 1, shape2 = 1,
@@ -261,21 +265,22 @@ kable(randBetaDist)
 
 # Question 3 - Interpret Posteriors
 
-## 3. a) Give the 95% HDI for θ the probability of a success.
+## 3. a) Give the 95% HDI for $\theta$ the probability of a success.
 * There is a probability of 95% that the value will fall between 0.184 and 0.433
 
-## 3. b) What is the posterior probability that θ < 0.5
-* The posterior probability that θ < 0.5 is $99.7$%
+## 3. b) What is the posterior probability that $\theta$ < 0.5
+* The posterior probability that $\theta$ < 0.5 is $99.7$%
 
-## 3. c) If H0 : θ = 0.5 should we reject it (the NULL), yes/no?
+## 3. c) If H0 : $\theta$ = 0.5 should we reject it (the NULL), yes/no?
 * Yes, we should reject it because 0.5 falls outside the 95% and 90% HDI
 
-## 3. d) The posterior probability that θ lies in (0.203, 0.413) is 0.90. True or False?
+## 3. d) The posterior probability that $\theta$ lies in (0.203, 0.413) is 0.90. True or False?
 * It is `TRUE` that there is a probability of 90% that the value will fall between 0.203 and 0.413
 
 
 ## 3. e) What does ROPE stand for?
-* ROPE stands for “Region Of Practical Equivalence”. In bayesian analysis, if the ROPE is entirely within the HDI for θ then we should reject the NULL for practical purposes.
+* ROPE stands for “Region Of Practical Equivalence”. 
+* In bayesian analysis, if the ROPE is entirely within the HDI for $\theta$ then we should reject the NULL for practical purposes.
 
 ---
 
@@ -288,7 +293,7 @@ kable(randBetaDist)
 * There is a logit link function used. Model:
 
 $$
-logit(p) = log (p/(1 − p))
+logit(\theta) = log (\frac{\theta}{(1 − \theta)})
 $$
 
 ## 4. b) What numerical values will replace the y variable?
@@ -296,7 +301,7 @@ $$
 * Maps theta *from* `0-1` *to* the real value between $-\infty$ and $\infty$
 
 ## 4. c) High impact priors?
-* They are `low` impact priors
+* No, they are `low` impact priors
 * It means that the prior distribution will not impact the posterior significantly
 
 ## 4. d) Interpret Point/Interval Estimates
@@ -801,7 +806,7 @@ basePlot +
 <br>
 
 
-# Question 10
+# Question 10 - Centering Data
 
 Below shows the data
 ```{r data10}
@@ -843,6 +848,7 @@ ggplot(df2) +
        subtitle = 'Daniel Carpenter')
 
 ```
+
 ## 10. b) 2 SLR Jags Models
 
 ### This is the base function for each SLR Model to run
@@ -908,7 +914,6 @@ codaSamples2$summary
 ```
 
 ## 10. c) Posterior Density Plots
-> Give two posterior β0 density plots. 
 
 ```{r postDense, cache=TRUE}
 library(ggmcmc)
@@ -921,7 +926,7 @@ ggs_density(ggs(codaSamples2$codaSamples)) # (for xx and yy)
 ## 10. d) Differing Intervals Interpretation
 
 
-### Explain why the intervals for β0 are so different. 
+### Explain why the intervals for $\beta_0$ are so different. 
 * Since the `xx` and `yy` dataset are centered around 0, it allows for:
   * convergence among the chains
   * Low levels of cross-correlation
