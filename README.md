@@ -4,12 +4,12 @@
 
 ## [Interesting Projects](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/03%20-%20Labs)
 
-### MCMC Intro
+### MCMC Simulation Intro
 * [How does MCMC work?](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/02%20-%20Notes/06%20-%20Monte%20Carlo#monte-carlo)
 * [Ground-up monte-carlo simulation using metropolis algorithm](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/03%20-%20Labs/Lab%2005%20-%20Monte%20Carlo%20Sim#lab-5---mcmc)
 * [Refined MCMC with Jags](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/03%20-%20Labs/Lab%2006%20-%20GIBBS%20Sampling#lab-6---gibbs-sampling-mcmc)
 
-### MCMC Applied
+### MCMC Simulation Applied
 * [Basics of linear regression with MCMC Jags](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/03%20-%20Labs/Lab%2005%20-%20Monte%20Carlo%20Sim#task-6-gibbs-sampling-via-mcmc)
 * [Categorical Regression Models](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/03%20-%20Labs/Lab%2007%20-%20Dummy%20Variables#laboratory-7---dummy-variables)
 * [Analyzing disparities between groups](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/03%20-%20Labs/Lab%2008%20-%20DV%20and%20ANCOVA#lab-8---dummy-variables-and-ancova)
@@ -20,7 +20,7 @@
 
 <br>
 
-## Important Concepts
+## Important Bayesian Analysis Concepts
 * [Great high-level overview of Bayesian Analysis](https://youtu.be/YyohWpjl6KU)
 * [Keys to calculating probabilities](https://github.com/Daniel-Carpenter/Bayesian-Statistics/tree/main/03%20-%20Labs/Lab%2003%20-%20Probability#lab-3---probability-distributional-theory-continued)
 * [Why Bayes is better for T-tests](https://youtu.be/IhlSD-lIQ_Y)
